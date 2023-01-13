@@ -2,8 +2,6 @@ import React, { useState } from "react";
 
 import styled from "styled-components";
 
-import SvgComponentClose from "./svg/SvgComponentClose";
-
 type Props = {
   getUserName: (userName: string) => void;
 };
@@ -21,21 +19,6 @@ const ContainerPopUp = styled.div`
   flex-direction: column;
   border-radius: 15px;
   box-shadow: 0 0 25px #f0f0f0;
-`;
-
-const WrapSvg = styled.div`
-  width: 45px;
-  height: 45px;
-  border-radius: 100%;
-  align-self: flex-end;
-  cursor: pointer;
-  background-color: #0000001d;
-  &:hover {
-    background-color: #0000003d;
-  }
-  &:active {
-    background-color: #0000007f;
-  }
 `;
 
 const TitleBlock = styled.h1`
@@ -82,7 +65,6 @@ const Button = styled.button`
 `;
 
 const WelcomePopUp = (props: Props) => {
-  const [activePopUp, setActivePopUp] = useState(true);
   const [valueInput, setValueInput] = useState("");
   const [checkValueInput, setCheckValueInput] = useState(false);
 
@@ -99,30 +81,25 @@ const WelcomePopUp = (props: Props) => {
   };
   return (
     <>
-      {activePopUp && (
-        <ContainerPopUp>
-          <WrapSvg onClick={() => setActivePopUp(false)}>
-            <SvgComponentClose size={45} />
-          </WrapSvg>
-          <TitleBlock>Welcome to board</TitleBlock>
-          <Input
-            value={valueInput}
-            onChange={onChangeInput}
-            type="text"
-            placeholder="Please, enter your name"
-            autoFocus
-          />
-          {checkValueInput && (
-            <DiscError>
-              Invalid username. Please check your name against the following
-              parameters: <br />
-              Name length min 3 max 15 characters The name can only consist of
-              letters, numbers and _ -
-            </DiscError>
-          )}
-          <Button onClick={onClickButton}>OK</Button>
-        </ContainerPopUp>
-      )}
+      <ContainerPopUp>
+        <TitleBlock>Welcome to board</TitleBlock>
+        <Input
+          value={valueInput}
+          onChange={onChangeInput}
+          type="text"
+          placeholder="Please, enter your name"
+          autoFocus
+        />
+        {checkValueInput && (
+          <DiscError>
+            Invalid name. Please check your name against the following
+            parameters: <br />
+            Name length min 3 max 15 characters The name can only consist of
+            letters, numbers and _ -
+          </DiscError>
+        )}
+        <Button onClick={onClickButton}>OK</Button>
+      </ContainerPopUp>
     </>
   );
 };
