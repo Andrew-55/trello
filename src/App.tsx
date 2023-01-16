@@ -2,20 +2,15 @@ import React, { useState } from "react";
 
 import styled from "styled-components";
 
-import Header from "./components/Header";
-import WelcomePopUp from "./components/WelcomePopUp";
-import Main from "./pages/Main";
+import { Header } from "./components/Header";
+import { WelcomePopUp } from "./components/WelcomePopUp";
+import { COLORS } from "./constants/COLORS";
+import { Main } from "./pages/Main";
 import GlobalStyles from "./styles/global";
 
-const Container = styled.div`
-  color: white;
-  text-align: center;
-  height: 100vh;
-`;
-
-function App() {
+export const App = () => {
   const [userName, setUserName] = useState("");
-  const getUserName = (userName: string) => setUserName(userName);
+  const handleUsernameChange = (userName: string) => setUserName(userName);
 
   return (
     <>
@@ -23,13 +18,16 @@ function App() {
       {userName ? (
         <Container>
           <Header userName={userName} />
-          <Main userName={userName} />
+          <Main />
         </Container>
       ) : (
-        <WelcomePopUp getUserName={getUserName} />
+        <WelcomePopUp onUsernameChange={handleUsernameChange} />
       )}
     </>
   );
-}
+};
 
-export default App;
+const Container = styled.div`
+  color: ${COLORS.white};
+  height: 100vh;
+`;

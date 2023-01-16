@@ -1,107 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 
 import styled from "styled-components";
 
+import { COLORS } from "../constants/COLORS";
+import { Button } from "../ui/Button";
+import { Input } from "../ui/Input";
+
 type Props = {
-  getUserName: (userName: string) => void;
+  onUsernameChange: (userName: string) => void;
 };
 
-const ContainerPopUp = styled.div`
-  margin: auto;
-  margin-top: 10%;
-  padding: 20px;
-  height: 330px;
-  width: 600px;
-  background-color: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border-radius: 15px;
-  box-shadow: 0 0 25px #f0f0f0;
-`;
-
-const TitleBlock = styled.h1`
-  color: #000000;
-  font-size: 32px;
-  text-transform: uppercase;
-  user-select: none;
-  margin-top: 30px;
-  margin-bottom: 30px;
-`;
-
-const Input = styled.input`
-  width: 70%;
-  height: 40px;
-  margin-bottom: 15px;
-  font-size: 25px;
-  background-color: #f0f0f0;
-  border: 1px solid #000000;
-  border-radius: 5px;
-  padding: 5px 10px;
-`;
-
-const DiscError = styled.p`
-  font-size: 15px;
-  color: #ff0000;
-`;
-
-const Button = styled.button`
-  width: 100px;
-  height: 50px;
-  margin-top: 30px;
-  font-size: 32px;
-  background-color: #bebebe;
-  cursor: pointer;
-  border-radius: 15px;
-  &:hover {
-    border: 2px solid #000000;
-    background-color: #00000090;
-    color: #bebebe;
-  }
-  &:active {
-    background-color: #000000;
-  }
-`;
-
-const WelcomePopUp = (props: Props) => {
+export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
   const [valueInput, setValueInput] = useState("");
   const [checkValueInput, setCheckValueInput] = useState(false);
 
-  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValueInput(event.target.value);
   };
-  const onClickButton = () => {
-    if (/^[a-zA-Z0-9_-]{3,15}$/.test(valueInput)) {
-      props.getUserName(valueInput);
+
+  const handleSubmit = () => {
+    if (
+      valueInput === valueInput.trim() &&
+      valueInput.length >= 3 &&
+      valueInput.length <= 15
+    ) {
+      onUsernameChange(valueInput);
       setCheckValueInput(false);
     } else {
       setCheckValueInput(true);
     }
   };
+
   return (
-    <>
-      <ContainerPopUp>
-        <TitleBlock>Welcome to board</TitleBlock>
-        <Input
-          value={valueInput}
-          onChange={onChangeInput}
-          type="text"
-          placeholder="Please, enter your name"
-          autoFocus
-        />
-        {checkValueInput && (
-          <DiscError>
-            Invalid name. Please check your name against the following
-            parameters: <br />
-            Name length min 3 max 15 characters The name can only consist of
-            letters, numbers and _ -
-          </DiscError>
-        )}
-        <Button onClick={onClickButton}>OK</Button>
-      </ContainerPopUp>
-    </>
+    <Form onSubmit={(e) => e.preventDefault()}>
+      <TitleBlock>Welcome to board</TitleBlock>
+      <InputWelcomePopUp
+        className="inputWelcomePopUp"
+        value={valueInput}
+        onChange={handleChangeName}
+        type="text"
+        maxLength={15}
+        placeholder="Please, enter your name"
+        autoFocus
+      />
+      {checkValueInput && (
+        <DescriptionError>
+          Invalid name. Please check your name against the following parameters:
+          <br />
+          Name has length min 3 max 15 characters, and it doesn't contain spaces
+          at the beginning or end.
+        </DescriptionError>
+      )}
+      <ButtonWelcomePopUp
+        className="buttonWelcomePopUp"
+        type="submit"
+        onClick={handleSubmit}
+      >
+        OK
+      </ButtonWelcomePopUp>
+    </Form>
   );
 };
 
-export default WelcomePopUp;
+const Form = styled.form`
+  margin: auto;
+  margin-top: 10%;
+  padding: 30px;
+  width: 600px;
+  background-color: ${COLORS.white_smoke};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 15px;
+  box-shadow: 0 0 25px ${COLORS.white_smoke};
+`;
+
+const TitleBlock = styled.h1`
+  color: ${COLORS.black};
+  font-size: 32px;
+  text-transform: uppercase;
+  user-select: none;
+  margin-bottom: 30px;
+`;
+
+const DescriptionError = styled.p`
+  font-size: 15px;
+  color: ${COLORS.red};
+  margin-bottom: 30px;
+`;
+
+const InputWelcomePopUp = styled(Input)``;
+
+const ButtonWelcomePopUp = styled(Button)``;
