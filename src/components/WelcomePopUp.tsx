@@ -1,10 +1,9 @@
+import { COLORS } from "constants/COLORS";
+
 import React, { useState, FC } from "react";
 
 import styled from "styled-components";
-
-import { COLORS } from "../constants/COLORS";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
+import { Button, Input } from "ui";
 
 type Props = {
   onUsernameChange: (userName: string) => void;
@@ -34,8 +33,7 @@ export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <TitleBlock>Welcome to board</TitleBlock>
-      <InputWelcomePopUp
-        className="inputWelcomePopUp"
+      <StyledInput
         value={valueInput}
         onChange={handleChangeName}
         type="text"
@@ -51,13 +49,7 @@ export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
           at the beginning or end.
         </DescriptionError>
       )}
-      <ButtonWelcomePopUp
-        className="buttonWelcomePopUp"
-        type="submit"
-        onClick={handleSubmit}
-      >
-        OK
-      </ButtonWelcomePopUp>
+      <StyledButton type="submit" onClick={handleSubmit} text="OK" />
     </Form>
   );
 };
@@ -90,6 +82,17 @@ const DescriptionError = styled.p`
   margin-bottom: 30px;
 `;
 
-const InputWelcomePopUp = styled(Input)``;
+const StyledInput = styled(Input)`
+  width: 70%;
+  margin-bottom: 30px;
+  background-color: ${COLORS.white_smoke};
+  border: 1px solid ${COLORS.black};
+`;
 
-const ButtonWelcomePopUp = styled(Button)``;
+const StyledButton = styled(Button)`
+  width: 100px;
+  height: 50px;
+  font-size: 32px;
+  background-color: ${COLORS.silver};
+  border-radius: 15px;
+`;

@@ -18,7 +18,7 @@ export const App = () => {
       {userName ? (
         <Container>
           <Header userName={userName} />
-          <Main />
+          <Main userName={userName} />
         </Container>
       ) : (
         <WelcomePopUp onUsernameChange={handleUsernameChange} />
