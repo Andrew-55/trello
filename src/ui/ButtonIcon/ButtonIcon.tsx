@@ -6,19 +6,21 @@ import styled from "styled-components";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  text: string;
+  text?: string;
+  icon: React.ReactElement;
   isDisabled?: boolean;
 }
 
-export const Button: FC<Props> = ({
+export const ButtonIcon: FC<Props> = ({
   isDisabled,
   className,
   text,
+  icon,
   ...props
 }) => {
   return (
     <Root disabled={isDisabled} className={className} {...props}>
-      {text}
+      {icon}
     </Root>
   );
 };
@@ -26,10 +28,14 @@ export const Button: FC<Props> = ({
 const Root = styled.button`
   cursor: pointer;
   border-radius: 5px;
-  padding: 5px 10px;
+  border: none;
+  background-color: initial;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    border: 2px solid ${COLORS.black};
     background-color: ${COLORS.black1};
     color: ${COLORS.silver};
   }

@@ -1,0 +1,1 @@
+export { CheckDelete } from "./CheckDelete";

@@ -1,11 +1,12 @@
-import { UUID } from "uuid-generator-ts";
+import { CardInterface, ColumnInterface, CommentInterface } from "interfaces";
+import { v4 as uuidv4 } from "uuid";
 
 export const changeColumnName = (
-  columns: any[],
+  columns: ColumnInterface[],
   columnId: string,
   newName: string
 ) => {
-  const arr = columns;
+  const arr = [...columns];
   arr.forEach((elem) => {
     if (elem.columnId === columnId) {
       elem.columnName = newName;
@@ -16,37 +17,36 @@ export const changeColumnName = (
 };
 
 export const addNewCard = (
-  cards: any[],
+  cards: CardInterface[],
   columnId: string,
   newNameCard: string,
   author: string
 ) => {
-  const uuid = new UUID();
   const newCard = {
-    id: uuid.getDashFreeUUID(),
+    id: uuidv4(),
     title: newNameCard,
     description: "",
     columnId: columnId,
     comments: [],
     author: author,
   };
-  const arr = cards;
+  const arr = [...cards];
   arr.push(newCard);
 
   return arr;
 };
 
-export const deleteCard = (cards: any[], cardId: string) => {
+export const deleteCard = (cards: CardInterface[], cardId: string) => {
   const newCard = cards.filter((elem) => elem.id !== cardId);
   return newCard;
 };
 
 export const changeCardName = (
-  cards: any[],
+  cards: CardInterface[],
   cardId: string,
   newCardName: string
 ) => {
-  const newCards = cards;
+  const newCards = [...cards];
   newCards.forEach((elem) => {
     if (elem.id === cardId) {
       elem.title = newCardName;
@@ -56,11 +56,11 @@ export const changeCardName = (
 };
 
 export const changeDescriptionCard = (
-  cards: any[],
+  cards: CardInterface[],
   cardId: string,
   newDescription: string
 ) => {
-  const newCards = cards;
+  const newCards = [...cards];
   newCards.forEach((elem) => {
     if (elem.id === cardId) {
       elem.description = newDescription;
@@ -70,15 +70,14 @@ export const changeDescriptionCard = (
 };
 
 export const addComment = (
-  comments: any[],
+  comments: CommentInterface[],
   cardId: string,
   author: string,
   comment: string
 ) => {
-  const uuid = new UUID();
-  const newComments = comments;
+  const newComments = [...comments];
   newComments.unshift({
-    commentId: uuid.getDashFreeUUID(),
+    commentId: uuidv4(),
     cardId: cardId,
     author: author,
     comment: comment,
@@ -87,11 +86,11 @@ export const addComment = (
 };
 
 export const changeComment = (
-  comments: any[],
+  comments: CommentInterface[],
   commentId: string,
   newTextComment: string
 ) => {
-  const newComments = comments;
+  const newComments = [...comments];
   newComments.forEach((elem) => {
     if (elem.commentId === commentId) {
       elem.comment = newTextComment;
@@ -100,12 +99,18 @@ export const changeComment = (
   return newComments;
 };
 
-export const deleteCommentById = (comments: any[], commentId: string) => {
+export const deleteCommentById = (
+  comments: CommentInterface[],
+  commentId: string
+) => {
   const newComments = comments.filter((elem) => elem.commentId !== commentId);
   return newComments;
 };
 
-export const deleteAllCommentByCardId = (comments: any[], cardId: string) => {
+export const deleteAllCommentByCardId = (
+  comments: CommentInterface[],
+  cardId: string
+) => {
   const newComments = comments.filter((elem) => elem.cardId !== cardId);
   return newComments;
 };

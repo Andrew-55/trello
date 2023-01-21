@@ -1,35 +1,23 @@
-import { COLORS } from "constants/COLORS";
-import { ZINDEX } from "constants/ZINDEXS";
+import { COLORS, Z_INDEX } from "constants/";
 
 import React, { FC, useState } from "react";
 
-import { Comment } from "components/Comment";
-import { Description } from "components/Description";
+import { Comment, Description } from "components";
+import { CardInterface, CommentInterface } from "interfaces";
 import styled from "styled-components";
 import { SvgCheckMark, SvgClose, SvgPencil } from "svg";
-import { Button, Input, Textarea } from "ui";
+import { Button, ButtonIcon, Input, Textarea } from "ui";
 
 type Props = {
-  onActiveCardModel: () => void;
-  itemCard: {
-    id: string;
-    title: string;
-    description: string;
-    columnId: string;
-    author: string;
-  };
-  commentsCard: {
-    commentId: string;
-    cardId: string;
-    author: string;
-    comment: string;
-  }[];
+  itemCard: CardInterface;
+  commentsCard: CommentInterface[];
   columnName: string;
-  saveNewDescriptionCard: (cardId: string, newDescription: string) => void;
+  onActiveCardModel: () => void;
+  onSaveNewDescriptionCard: (cardId: string, newDescription: string) => void;
   onClickSaveTitleCardModal: (newTitleCard: string) => void;
-  addNewComments: (cardId: string, comment: string) => void;
-  deleteComments: (commentId: string) => void;
-  changeTextComment: (commentdId: string, newTextComment: string) => void;
+  onAddNewComments: (cardId: string, comment: string) => void;
+  onDeleteComments: (commentId: string) => void;
+  onChangeTextComment: (commentdId: string, newTextComment: string) => void;
 };
 
 export const CardModal: FC<Props> = ({
@@ -37,19 +25,19 @@ export const CardModal: FC<Props> = ({
   itemCard,
   commentsCard,
   columnName,
-  saveNewDescriptionCard,
+  onSaveNewDescriptionCard,
   onClickSaveTitleCardModal,
-  addNewComments,
-  deleteComments,
-  changeTextComment,
+  onAddNewComments,
+  onDeleteComments,
+  onChangeTextComment,
 }) => {
   const [titleCard, setTitleCard] = useState(itemCard.title);
   const [newTitleCard, setNewTitleCard] = useState(titleCard);
-  const [editTitleCard, setEditTitleCard] = useState(false);
+  const [checkEditTitleCard, setCheckEditTitleCard] = useState(false);
   const [newCommentCard, setNewCommentCard] = useState("");
 
   const handleSaveNewDescriptionCard = (newDescription: string) => {
-    saveNewDescriptionCard(itemCard.id, newDescription);
+    onSaveNewDescriptionCard(itemCard.id, newDescription);
   };
 
   const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,12 +53,12 @@ export const CardModal: FC<Props> = ({
   const handelClickSaveTitleCard = () => {
     onClickSaveTitleCardModal(newTitleCard);
     setTitleCard(newTitleCard);
-    setEditTitleCard(false);
+    setCheckEditTitleCard(false);
   };
 
   const handelClickSaveNewComment = () => {
     if (newCommentCard.trim().length) {
-      addNewComments(itemCard.id, newCommentCard);
+      onAddNewComments(itemCard.id, newCommentCard);
       setNewCommentCard("");
     }
     setNewCommentCard("");
@@ -85,29 +73,32 @@ export const CardModal: FC<Props> = ({
       <CardModalBlock>
         <NameAuthor>Create by: {itemCard.author}</NameAuthor>
         <NameAuthor>Status: {columnName}</NameAuthor>
-        {!editTitleCard ? (
+        {checkEditTitleCard ? (
           <FlexBlock>
-            <TitleBlock>{itemCard.title}</TitleBlock>
-            <WrapSvgPencil onClick={() => setEditTitleCard(true)}>
-              <SvgPencil width={30} height={30} fill={COLORS.white_smoke} />
-            </WrapSvgPencil>
+            <StyledInput value={newTitleCard} onChange={handleChangeCardName} />
+            <StyledButtonIcon
+              icon={<SvgCheckMark />}
+              onClick={handelClickSaveTitleCard}
+            />
           </FlexBlock>
         ) : (
           <FlexBlock>
-            <StyledInput value={newTitleCard} onChange={handleChangeCardName} />
-            <WrapSvgPencil onClick={() => handelClickSaveTitleCard()}>
-              <SvgCheckMark width={30} height={30} fill={COLORS.white_smoke} />
-            </WrapSvgPencil>
+            <TitleBlock>{itemCard.title}</TitleBlock>
+            <StyledButtonIcon
+              icon={<SvgPencil />}
+              onClick={() => setCheckEditTitleCard(true)}
+            />
           </FlexBlock>
         )}
-        <WrapSvg onClick={onActiveCardModel}>
-          <SvgClose width={35} height={35} fill={COLORS.white_smoke} />
-        </WrapSvg>
+        <StyledButtonIconClose
+          icon={<SvgClose />}
+          onClick={onActiveCardModel}
+        />
         <Description
           description={itemCard.description}
           handleSaveNewDescriptionCard={handleSaveNewDescriptionCard}
         />
-        <WrapComment>
+        <>
           <TitleComment>Comments</TitleComment>
           <StyledTextArea
             value={newCommentCard}
@@ -115,14 +106,8 @@ export const CardModal: FC<Props> = ({
             placeholder="Write a comment ...."
           />
           <WrapButton>
-            <StyledButton
-              text="Add"
-              onClick={() => handelClickSaveNewComment()}
-            />
-            <StyledButton
-              text="Cancel"
-              onClick={() => handelClickCanselNewComment()}
-            />
+            <StyledButton text="Add" onClick={handelClickSaveNewComment} />
+            <StyledButton text="Cancel" onClick={handelClickCanselNewComment} />
           </WrapButton>
           <ContainerComments>
             {commentsCard
@@ -131,12 +116,12 @@ export const CardModal: FC<Props> = ({
                 <Comment
                   key={elem.commentId}
                   commentItem={elem}
-                  deleteComments={deleteComments}
-                  changeTextComment={changeTextComment}
+                  onDeleteComments={onDeleteComments}
+                  onChangeTextComment={onChangeTextComment}
                 />
               ))}
           </ContainerComments>
-        </WrapComment>
+        </>
       </CardModalBlock>
     </Root>
   );
@@ -154,20 +139,7 @@ const Root = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${COLORS.black1};
-  z-index: ${ZINDEX.carsModal};
-`;
-
-const WrapSvg = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  cursor: pointer;
-  width: 35px;
-  height: 35px;
-  border-radius: 100%;
-  &:hover {
-    background-color: ${COLORS.gray};
-  }
+  z-index: ${Z_INDEX.carsModal};
 `;
 
 const FlexBlock = styled.div`
@@ -176,16 +148,28 @@ const FlexBlock = styled.div`
   margin-bottom: 30px;
 `;
 
-const WrapSvgPencil = styled.div`
-  cursor: pointer;
-  width: min-content;
-  height: min-content;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  border-radius: 20%;
+const StyledButtonIconClose = styled(ButtonIcon)`
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  width: 40px;
+  height: 40px;
+  fill: ${COLORS.white_smoke};
+  border-radius: 100%;
   &:hover {
+    fill: ${COLORS.black};
+    background-color: ${COLORS.gray};
+  }
+`;
+
+const StyledButtonIcon = styled(ButtonIcon)`
+  width: 40px;
+  height: 40px;
+  border-radius: 20%;
+  fill: ${COLORS.white_smoke};
+
+  &:hover {
+    fill: ${COLORS.light_green};
     background-color: ${COLORS.gray};
   }
 `;
@@ -217,8 +201,6 @@ const TitleComment = styled.h2`
   margin-bottom: 10px;
   font-weight: 700;
 `;
-
-const WrapComment = styled.div``;
 
 const ContainerComments = styled.div`
   max-height: 300px;

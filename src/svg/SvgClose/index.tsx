@@ -1,0 +1,1 @@
+export { SvgClose } from "./SvgClose";

@@ -1,8 +1,8 @@
+import { COLORS } from "constants/";
+
 import React, { FC } from "react";
 
 import styled from "styled-components";
-
-import { COLORS } from "../constants/COLORS";
 
 type Props = {
   userName: string;

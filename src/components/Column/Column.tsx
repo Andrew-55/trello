@@ -2,70 +2,58 @@ import { COLORS } from "constants/COLORS";
 
 import React, { useState, FC } from "react";
 
-import styled from "styled-components";
-
-import { Card } from "./Card";
-import { Button } from "../ui/Button/Button";
-import { Input } from "../ui/Input/Input";
+import { Card } from "components";
+import { CardInterface, CommentInterface } from "interfaces";
+import styled, { css } from "styled-components";
+import { Button, Input } from "ui";
 
 type Props = {
   item: { columnId: string; columnName: string };
-  saveNewNameColumns: (columnId: string, newName: string) => void;
-  saveNewCard: (columnId: string, newNameCard: string) => void;
-  saveNewDescriptionCard: (cardId: string, newDescription: string) => void;
-  saveNewTitleCard: (cardId: string, newTitle: string) => void;
-  deleteCardState: (cardId: string) => void;
-  addNewComments: (cardId: string, comment: string) => void;
-  deleteComments: (commentId: string) => void;
-  changeTextComment: (commentdId: string, newTextComment: string) => void;
-  cards: {
-    id: string;
-    title: string;
-    description: string;
-    columnId: string;
-    author: string;
-  }[];
-  comments: {
-    commentId: string;
-    cardId: string;
-    author: string;
-    comment: string;
-  }[];
+  cards: CardInterface[];
+  comments: CommentInterface[];
+  onSaveNewNameColumns: (columnId: string, newName: string) => void;
+  onSaveNewCard: (columnId: string, newNameCard: string) => void;
+  onSaveNewDescriptionCard: (cardId: string, newDescription: string) => void;
+  onSaveNewTitleCard: (cardId: string, newTitle: string) => void;
+  onDeleteCardState: (cardId: string) => void;
+  onAddNewComments: (cardId: string, comment: string) => void;
+  onDeleteComments: (commentId: string) => void;
+  onChangeTextComment: (commentdId: string, newTextComment: string) => void;
 };
 
 export const Column: FC<Props> = ({
   item,
-  saveNewNameColumns,
-  saveNewCard,
-  saveNewDescriptionCard,
-  saveNewTitleCard,
-  deleteCardState,
-  addNewComments,
-  deleteComments,
-  changeTextComment,
   cards,
   comments,
+  onSaveNewNameColumns,
+  onSaveNewCard,
+  onSaveNewDescriptionCard,
+  onSaveNewTitleCard,
+  onDeleteCardState,
+  onAddNewComments,
+  onDeleteComments,
+  onChangeTextComment,
 }) => {
   const [valueColumnName, setValueColumnName] = useState(item.columnName);
   const [nameNewCard, setNameNewCard] = useState("");
-  const [addNewCard, setAddNewCard] = useState(false);
+  const [checkAddNewCard, setCheckAddNewCard] = useState(false);
   const [checkValueColumnName, setCheckValueColumnName] = useState(false);
 
-  const onSaveNewCard = () => {
+  const handelClickSaveNewCard = () => {
     if (nameNewCard) {
-      saveNewCard(item.columnId, nameNewCard);
-      setAddNewCard(false);
+      onSaveNewCard(item.columnId, nameNewCard);
+      setCheckAddNewCard(false);
       setNameNewCard("");
     }
   };
 
   const handleClickButtonChangeName = () => {
     setCheckValueColumnName(!checkValueColumnName);
-    saveNewNameColumns(item.columnId, valueColumnName);
+    onSaveNewNameColumns(item.columnId, valueColumnName);
   };
 
   const closeNewCard = () => {
-    setAddNewCard(false);
+    setCheckAddNewCard(false);
     setNameNewCard("");
   };
 
@@ -92,16 +80,15 @@ export const Column: FC<Props> = ({
           />
           <StyledButton
             type="button"
-            onClick={() => handleClickButtonChangeName()}
+            onClick={handleClickButtonChangeName}
             text="Ok"
           />
         </FlexBlock>
       ) : (
-        <TitleColumn
+        <ButtonTitleColumn
+          text={valueColumnName}
           onClick={() => setCheckValueColumnName(!checkValueColumnName)}
-        >
-          {valueColumnName}
-        </TitleColumn>
+        />
       )}
       {cards
         .filter((elem) => elem.columnId === item.columnId)
@@ -110,18 +97,16 @@ export const Column: FC<Props> = ({
             key={item.id}
             itemCard={item}
             columnName={valueColumnName}
-            saveNewDescriptionCard={saveNewDescriptionCard}
-            saveNewTitleCard={saveNewTitleCard}
-            deleteCardState={deleteCardState}
-            addNewComments={addNewComments}
-            deleteComments={deleteComments}
-            changeTextComment={changeTextComment}
+            onSaveNewDescriptionCard={onSaveNewDescriptionCard}
+            onSaveNewTitleCard={onSaveNewTitleCard}
+            onDeleteCardState={onDeleteCardState}
+            onAddNewComments={onAddNewComments}
+            onDeleteComments={onDeleteComments}
+            onChangeTextComment={onChangeTextComment}
             commentsCard={comments}
           />
         ))}
-      {!addNewCard ? (
-        <AddCard onClick={() => setAddNewCard(true)}>Add a card</AddCard>
-      ) : (
+      {checkAddNewCard ? (
         <>
           <InputNameNewCard
             value={nameNewCard}
@@ -131,10 +116,15 @@ export const Column: FC<Props> = ({
             placeholder="Enter a title for this card..."
           />
           <FlexBlock>
-            <AddCard onClick={() => onSaveNewCard()}>Save</AddCard>
-            <AddCard onClick={() => closeNewCard()}>Close</AddCard>
+            <ButtonColumn text="Save" onClick={handelClickSaveNewCard} />
+            <ButtonColumn text="Close" onClick={closeNewCard} />
           </FlexBlock>
         </>
+      ) : (
+        <ButtonAddColumn
+          text="Add a card"
+          onClick={() => setCheckAddNewCard(true)}
+        />
       )}
     </Root>
   );
@@ -150,20 +140,45 @@ const Root = styled.div`
   border-radius: 20px;
 `;
 
-const TitleColumn = styled.h2`
-  width: 100%;
-  padding: 5px 10px;
-  margin-bottom: 30px;
-  cursor: pointer;
-`;
-
-const AddCard = styled.div`
+const ButtonColumnStyles = css`
+  font-size: 20px;
   padding: 10px 10px;
   border-radius: 10px;
+  color: ${COLORS.white_smoke};
+  background-color: ${COLORS.zambezi};
+  border: none;
   cursor: pointer;
   &:hover {
+    border: none;
     background-color: ${COLORS.gray};
+    color: ${COLORS.white};
   }
+`;
+
+const ButtonTitleColumn = styled(Button)`
+  ${ButtonColumnStyles}
+  font-size: 25px;
+  font-weight: 500;
+  width: 100%;
+  text-align: start;
+  margin-bottom: 25px;
+`;
+
+const ButtonAddColumn = styled(Button)`
+  ${ButtonColumnStyles}
+  width: 100%;
+  text-align: start;
+`;
+
+const ButtonColumn = styled(Button)`
+  ${ButtonColumnStyles}
+`;
+
+const StyledButton = styled(Button)`
+  font-size: 20px;
+  width: fit-content;
+  height: min-content;
+  background-color: ${COLORS.silver};
 `;
 
 const FlexBlock = styled.div`
@@ -183,11 +198,4 @@ const InputNameNewCard = styled(Input)`
   margin-bottom: 20px;
   font-size: 20px;
   width: 100%;
-`;
-
-const StyledButton = styled(Button)`
-  font-size: 20px;
-  width: fit-content;
-  height: min-content;
-  background-color: ${COLORS.silver};
 `;

@@ -1,16 +1,15 @@
+import { COLORS } from "constants/";
+
 import React, { useState } from "react";
 
+import { Header, WelcomePopUp } from "components";
+import { Main } from "pages";
 import styled from "styled-components";
-
-import { Header } from "./components/Header";
-import { WelcomePopUp } from "./components/WelcomePopUp";
-import { COLORS } from "./constants/COLORS";
-import { Main } from "./pages/Main";
-import GlobalStyles from "./styles/global";
+import GlobalStyles from "styles/global";
 
 export const App = () => {
   const [userName, setUserName] = useState("");
-  const handleUsernameChange = (userName: string) => setUserName(userName);
+  const handleUserNameChange = (userName: string) => setUserName(userName);
 
   return (
     <>
@@ -21,7 +20,7 @@ export const App = () => {
           <Main userName={userName} />
         </Container>
       ) : (
-        <WelcomePopUp onUsernameChange={handleUsernameChange} />
+        <WelcomePopUp onUserNameChange={handleUserNameChange} />
       )}
     </>
   );

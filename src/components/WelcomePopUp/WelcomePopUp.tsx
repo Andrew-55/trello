@@ -1,4 +1,4 @@
-import { COLORS } from "constants/COLORS";
+import { COLORS } from "constants/";
 
 import React, { useState, FC } from "react";
 
@@ -6,10 +6,10 @@ import styled from "styled-components";
 import { Button, Input } from "ui";
 
 type Props = {
-  onUsernameChange: (userName: string) => void;
+  onUserNameChange: (userName: string) => void;
 };
 
-export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
+export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
   const [valueInput, setValueInput] = useState("");
   const [checkValueInput, setCheckValueInput] = useState(false);
 
@@ -17,13 +17,14 @@ export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
     setValueInput(event.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (
       valueInput === valueInput.trim() &&
       valueInput.length >= 3 &&
       valueInput.length <= 15
     ) {
-      onUsernameChange(valueInput);
+      onUserNameChange(valueInput);
       setCheckValueInput(false);
     } else {
       setCheckValueInput(true);
@@ -31,7 +32,7 @@ export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
   };
 
   return (
-    <Form onSubmit={(e) => e.preventDefault()}>
+    <Form onSubmit={(e) => handleSubmit(e)}>
       <TitleBlock>Welcome to board</TitleBlock>
       <StyledInput
         value={valueInput}
@@ -49,7 +50,7 @@ export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
           at the beginning or end.
         </DescriptionError>
       )}
-      <StyledButton type="submit" onClick={handleSubmit} text="OK" />
+      <StyledButton type="submit" text="OK" />
     </Form>
   );
 };
