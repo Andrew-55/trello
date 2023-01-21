@@ -6,10 +6,21 @@ import { Header, WelcomePopUp } from "components";
 import { Main } from "pages";
 import styled from "styled-components";
 import GlobalStyles from "styles/global";
+import { getStringLocalstorage } from "utils/logic-functions";
 
 export const App = () => {
   const [userName, setUserName] = useState("");
-  const handleUserNameChange = (userName: string) => setUserName(userName);
+  const handleUserNameChange = (userName: string) => {
+    setUserName(userName);
+    localStorage.setItem("user", userName);
+  };
+
+  if (!userName) {
+    const userName = getStringLocalstorage("user");
+    if (userName !== "") {
+      setUserName(userName);
+    }
+  }
 
   return (
     <>
@@ -29,4 +40,6 @@ export const App = () => {
 const Container = styled.div`
   color: ${COLORS.white};
   height: 100vh;
+  width: 100vw;
+  min-width: fit-content;
 `;

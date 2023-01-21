@@ -1,6 +1,14 @@
 import { CardInterface, ColumnInterface, CommentInterface } from "interfaces";
 import { v4 as uuidv4 } from "uuid";
 
+export const getStringLocalstorage = (keyString: string) =>
+  localStorage.getItem(keyString) ?? "";
+
+export const getObjectLocalstorage = (keyObject: string) =>
+  JSON.parse(localStorage.getItem(keyObject) ?? "{}");
+
+export const checkObjectIsEmpty = (obj: Object) => JSON.stringify(obj) === "{}";
+
 export const changeColumnName = (
   columns: ColumnInterface[],
   columnId: string,
@@ -12,6 +20,8 @@ export const changeColumnName = (
       elem.columnName = newName;
     }
   });
+
+  localStorage.setItem("columns", JSON.stringify(arr));
 
   return arr;
 };
@@ -33,12 +43,15 @@ export const addNewCard = (
   const arr = [...cards];
   arr.push(newCard);
 
+  localStorage.setItem("cards", JSON.stringify(arr));
+
   return arr;
 };
 
 export const deleteCard = (cards: CardInterface[], cardId: string) => {
-  const newCard = cards.filter((elem) => elem.id !== cardId);
-  return newCard;
+  const newCards = cards.filter((elem) => elem.id !== cardId);
+  localStorage.setItem("cards", JSON.stringify(newCards));
+  return newCards;
 };
 
 export const changeCardName = (
@@ -52,6 +65,9 @@ export const changeCardName = (
       elem.title = newCardName;
     }
   });
+
+  localStorage.setItem("cards", JSON.stringify(newCards));
+
   return newCards;
 };
 
@@ -66,6 +82,9 @@ export const changeDescriptionCard = (
       elem.description = newDescription;
     }
   });
+
+  localStorage.setItem("cards", JSON.stringify(newCards));
+
   return newCards;
 };
 
@@ -82,6 +101,9 @@ export const addComment = (
     author: author,
     comment: comment,
   });
+
+  localStorage.setItem("comments", JSON.stringify(newComments));
+
   return newComments;
 };
 
@@ -96,6 +118,9 @@ export const changeComment = (
       elem.comment = newTextComment;
     }
   });
+
+  localStorage.setItem("comments", JSON.stringify(newComments));
+
   return newComments;
 };
 
@@ -104,6 +129,9 @@ export const deleteCommentById = (
   commentId: string
 ) => {
   const newComments = comments.filter((elem) => elem.commentId !== commentId);
+
+  localStorage.setItem("comments", JSON.stringify(newComments));
+
   return newComments;
 };
 
@@ -112,5 +140,8 @@ export const deleteAllCommentByCardId = (
   cardId: string
 ) => {
   const newComments = comments.filter((elem) => elem.cardId !== cardId);
+
+  localStorage.setItem("comments", JSON.stringify(newComments));
+
   return newComments;
 };
