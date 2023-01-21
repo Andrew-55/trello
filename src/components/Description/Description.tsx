@@ -54,30 +54,24 @@ export const Description: FC<Props> = ({
         <TitleDescription>Description</TitleDescription>
         {checkEdit ? (
           <WrapButton>
-            <StyledButton text="Save" onClick={handelClickSaveDescription} />
-            <StyledButton
-              text="Cancel"
-              onClick={handelClickCanselSaveDescription}
-            />
+            <Button text="Save" onClick={handelClickSaveDescription} />
+            <Button text="Cancel" onClick={handelClickCanselSaveDescription} />
           </WrapButton>
         ) : (
           <WrapButton>
             {descriptionCard ? (
               <>
-                <StyledButton text="Edit" onClick={() => setCheckEdit(true)} />
-                <StyledButton
-                  text="Delete"
-                  onClick={() => setCheckDelete(true)}
-                />
+                <Button text="Edit" onClick={() => setCheckEdit(true)} />
+                <Button text="Delete" onClick={() => setCheckDelete(true)} />
               </>
             ) : (
-              <StyledButton text="Add" onClick={() => setCheckEdit(true)} />
+              <Button text="Add" onClick={() => setCheckEdit(true)} />
             )}
           </WrapButton>
         )}
       </FlexBlock>
       {checkEdit ? (
-        <StyledTextArea
+        <Textarea
           value={newDescriptionCard}
           onChange={handleChangeDescription}
           placeholder="Write a description..."
@@ -122,6 +116,3 @@ const TitleDescription = styled.h2`
 const TextDescription = styled.p`
   margin-left: 20px;
 `;
-
-const StyledButton = styled(Button)``;
-const StyledTextArea = styled(Textarea)``;

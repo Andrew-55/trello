@@ -20,8 +20,8 @@ export const CheckDelete: FC<Props> = ({
     <Root>
       <TitleCheckDelete>{question}</TitleCheckDelete>
       <WrapButton>
-        <StyledButton text="Yes" onClick={onClickDelete} />
-        <StyledButton text="Cancel" onClick={onClickCancel} />
+        <Button text="Yes" onClick={onClickDelete} />
+        <Button text="Cancel" onClick={onClickCancel} />
       </WrapButton>
     </Root>
   );
@@ -55,5 +55,3 @@ const WrapButton = styled.div`
   column-gap: 15px;
   justify-content: center;
 `;
-
-const StyledButton = styled(Button)``;

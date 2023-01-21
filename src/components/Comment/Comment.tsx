@@ -53,10 +53,7 @@ export const Comment: FC<PropsComment> = ({
       <AuthorComment>{commentItem.author}</AuthorComment>
       {checkEdit ? (
         <>
-          <StyledTextArea
-            value={textNewComment}
-            onChange={handleChangeComment}
-          />
+          <Textarea value={textNewComment} onChange={handleChangeComment} />
           <FlexBlock>
             <ButtonCommentClick text="Save" onClick={handleClickEditSave} />
             <ButtonCommentClick text="Cancel" onClick={handleClickEditCancel} />
@@ -125,5 +122,3 @@ const FlexBlock = styled.div`
   display: flex;
   column-gap: 20px;
 `;
-
-const StyledTextArea = styled(Textarea)``;
