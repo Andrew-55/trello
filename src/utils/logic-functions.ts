@@ -73,14 +73,14 @@ export const addComment = (
   comments: CommentInterface[],
   cardId: string,
   author: string,
-  comment: string
+  content: string
 ) => {
   const newComments = [...comments];
   newComments.unshift({
     commentId: uuidv4(),
     cardId: cardId,
     author: author,
-    comment: comment,
+    content: content,
   });
   return newComments;
 };
@@ -93,7 +93,7 @@ export const changeComment = (
   const newComments = [...comments];
   newComments.forEach((elem) => {
     if (elem.commentId === commentId) {
-      elem.comment = newTextComment;
+      elem.content = newTextComment;
     }
   });
   return newComments;

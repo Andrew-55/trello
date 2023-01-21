@@ -15,5 +15,5 @@ export interface CommentInterface {
   commentId: string;
   cardId: string;
   author: string;
-  comment: string;
+  content: string;
 }

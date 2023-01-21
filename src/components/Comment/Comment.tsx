@@ -18,7 +18,7 @@ export const Comment: FC<PropsComment> = ({
   onDeleteComments,
   onChangeTextComment,
 }) => {
-  const [textComment, setTextComment] = useState(comment.comment);
+  const [textComment, setTextComment] = useState(comment.content);
   const [isCommentEditEnable, setIsCommentEditEnable] = useState(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
 
@@ -43,7 +43,7 @@ export const Comment: FC<PropsComment> = ({
 
   const handleClickEditCancel = () => {
     setIsCommentEditEnable(false);
-    setTextComment(comment.comment);
+    setTextComment(comment.content);
   };
 
   return (

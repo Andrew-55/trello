@@ -56,8 +56,8 @@ export const Main: FC<Props> = ({ userName }) => {
     setComments(newComments);
   };
 
-  const handelAddNewComments = (cardId: string, comment: string) => {
-    const newComments = addComment(comments, cardId, userName, comment);
+  const handelAddNewComments = (cardId: string, content: string) => {
+    const newComments = addComment(comments, cardId, userName, content);
     setComments(newComments);
   };
 
