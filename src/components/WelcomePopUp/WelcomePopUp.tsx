@@ -1,41 +1,40 @@
+import { COLORS } from "constants/";
+
 import React, { useState, FC } from "react";
 
 import styled from "styled-components";
-
-import { COLORS } from "../constants/COLORS";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
+import { Button, Input } from "ui";
 
 type Props = {
-  onUsernameChange: (userName: string) => void;
+  onUserNameChange: (userName: string) => void;
 };
 
-export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
+export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
   const [valueInput, setValueInput] = useState("");
-  const [checkValueInput, setCheckValueInput] = useState(false);
+  const [isNotCorrectValueInput, setIsNotCorrectValueInput] = useState(false);
 
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValueInput(event.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (
       valueInput === valueInput.trim() &&
       valueInput.length >= 3 &&
       valueInput.length <= 15
     ) {
-      onUsernameChange(valueInput);
-      setCheckValueInput(false);
+      onUserNameChange(valueInput);
+      setIsNotCorrectValueInput(false);
     } else {
-      setCheckValueInput(true);
+      setIsNotCorrectValueInput(true);
     }
   };
 
   return (
-    <Form onSubmit={(e) => e.preventDefault()}>
+    <Form onSubmit={(e) => handleSubmit(e)}>
       <TitleBlock>Welcome to board</TitleBlock>
-      <InputWelcomePopUp
-        className="inputWelcomePopUp"
+      <StyledInput
         value={valueInput}
         onChange={handleChangeName}
         type="text"
@@ -43,7 +42,8 @@ export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
         placeholder="Please, enter your name"
         autoFocus
       />
-      {checkValueInput && (
+
+      {isNotCorrectValueInput && (
         <DescriptionError>
           Invalid name. Please check your name against the following parameters:
           <br />
@@ -51,13 +51,8 @@ export const WelcomePopUp: FC<Props> = ({ onUsernameChange }) => {
           at the beginning or end.
         </DescriptionError>
       )}
-      <ButtonWelcomePopUp
-        className="buttonWelcomePopUp"
-        type="submit"
-        onClick={handleSubmit}
-      >
-        OK
-      </ButtonWelcomePopUp>
+
+      <StyledButton type="submit" text="OK" />
     </Form>
   );
 };
@@ -90,6 +85,17 @@ const DescriptionError = styled.p`
   margin-bottom: 30px;
 `;
 
-const InputWelcomePopUp = styled(Input)``;
+const StyledInput = styled(Input)`
+  width: 70%;
+  margin-bottom: 30px;
+  background-color: ${COLORS.white_smoke};
+  border: 1px solid ${COLORS.black};
+`;
 
-const ButtonWelcomePopUp = styled(Button)``;
+const StyledButton = styled(Button)`
+  width: 100px;
+  height: 50px;
+  font-size: 32px;
+  background-color: ${COLORS.silver};
+  border-radius: 15px;
+`;

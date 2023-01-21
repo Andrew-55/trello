@@ -1,0 +1,1 @@
+export { SvgComment } from "./SvgComment";

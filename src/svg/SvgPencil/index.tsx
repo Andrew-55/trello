@@ -1,0 +1,1 @@
+export { SvgPencil } from "./SvgPencil";

@@ -1,0 +1,1 @@
+export { SvgCheckMark } from "./SvgCheckMark";
