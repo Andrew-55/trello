@@ -1,6 +1,6 @@
 import { COLORS } from "constants/";
 
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 
 import { CardModal, CheckDelete } from "components";
 import { CardInterface, CommentInterface } from "interfaces";
@@ -51,6 +51,11 @@ export const Card: FC<PropsCard> = ({
     setCheckEditTitleCard(false);
   };
 
+  const handelCliclCancelSaveTitleCard = () => {
+    setNewTitleCard(titleCard);
+    setCheckEditTitleCard(false);
+  };
+
   const handelClickDeleteCard = () => {
     onDeleteCardState(itemCard.id);
     setCheckDelete(false);
@@ -66,9 +71,12 @@ export const Card: FC<PropsCard> = ({
     setCheckDelete(false);
   };
 
-  let countComments = commentsCard.filter(
-    (elem) => elem.cardId === itemCard.id
-  ).length;
+  let countComments = useMemo(() => {
+    const sortCommentsCard = commentsCard.filter(
+      (elem) => elem.cardId === itemCard.id
+    );
+    return sortCommentsCard.length;
+  }, [commentsCard, itemCard.id]);
 
   return (
     <>
@@ -78,10 +86,7 @@ export const Card: FC<PropsCard> = ({
             <StyledInput value={newTitleCard} onChange={handleChangeCardName} />
             <WrapButton>
               <Button text="Save" onClick={handelClickSaveTitleCard} />
-              <Button
-                text="Cancel"
-                onClick={() => setCheckEditTitleCard(false)}
-              />
+              <Button text="Cancel" onClick={handelCliclCancelSaveTitleCard} />
             </WrapButton>
           </div>
         ) : (
