@@ -16,8 +16,8 @@ export const Description: FC<Props> = ({
   handleSaveNewDescriptionCard,
 }) => {
   const [descriptionCard, setDescriptionCard] = useState(description);
-  const [checkEdit, setCheckEdit] = useState(false);
-  const [checkDelete, setCheckDelete] = useState(false);
+  const [isDescriptionEditEnable, setIsDescriptionEditEnable] = useState(false);
+  const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
 
   const handleChangeDescription = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -28,29 +28,30 @@ export const Description: FC<Props> = ({
   const handelClickSaveDescription = () => {
     handleSaveNewDescriptionCard(descriptionCard);
     setDescriptionCard(descriptionCard);
-    setCheckEdit(false);
+    setIsDescriptionEditEnable(false);
   };
 
   const handelClickCanselSaveDescription = () => {
     setDescriptionCard(description);
-    setCheckEdit(false);
+    setIsDescriptionEditEnable(false);
   };
 
   const handelClickDeleteDescription = () => {
     handleSaveNewDescriptionCard("");
     setDescriptionCard("");
-    setCheckDelete(false);
+    setIsConfirmDeleteVisible(false);
   };
 
   const handelClickCancelDescription = () => {
-    setCheckDelete(false);
+    setIsConfirmDeleteVisible(false);
   };
 
   return (
     <Root>
       <FlexBlock>
         <TitleDescription>Description</TitleDescription>
-        {checkEdit ? (
+
+        {isDescriptionEditEnable ? (
           <WrapButton>
             <Button text="Save" onClick={handelClickSaveDescription} />
             <Button text="Cancel" onClick={handelClickCanselSaveDescription} />
@@ -59,16 +60,26 @@ export const Description: FC<Props> = ({
           <WrapButton>
             {descriptionCard ? (
               <>
-                <Button text="Edit" onClick={() => setCheckEdit(true)} />
-                <Button text="Delete" onClick={() => setCheckDelete(true)} />
+                <Button
+                  text="Edit"
+                  onClick={() => setIsDescriptionEditEnable(true)}
+                />
+                <Button
+                  text="Delete"
+                  onClick={() => setIsConfirmDeleteVisible(true)}
+                />
               </>
             ) : (
-              <Button text="Add" onClick={() => setCheckEdit(true)} />
+              <Button
+                text="Add"
+                onClick={() => setIsDescriptionEditEnable(true)}
+              />
             )}
           </WrapButton>
         )}
       </FlexBlock>
-      {checkEdit ? (
+
+      {isDescriptionEditEnable ? (
         <Textarea
           value={descriptionCard}
           onChange={handleChangeDescription}
@@ -77,7 +88,8 @@ export const Description: FC<Props> = ({
       ) : (
         <TextDescription>{descriptionCard}</TextDescription>
       )}
-      {checkDelete && (
+
+      {isConfirmDeleteVisible && (
         <CheckDelete
           question="Do you really want to delete the description?"
           onClickDelete={handelClickDeleteDescription}

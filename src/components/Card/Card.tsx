@@ -9,8 +9,8 @@ import { SvgComment, SvgDelete, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input } from "ui";
 
 type PropsCard = {
-  itemCard: CardInterface;
-  commentsCard: CommentInterface[];
+  card: CardInterface;
+  comments: CommentInterface[];
   columnName: string;
   onSaveNewDescriptionCard: (cardId: string, newDescription: string) => void;
   onSaveNewTitleCard: (cardId: string, newTitle: string) => void;
@@ -21,8 +21,8 @@ type PropsCard = {
 };
 
 export const Card: FC<PropsCard> = ({
-  itemCard,
-  commentsCard,
+  card,
+  comments,
   columnName,
   onSaveNewDescriptionCard,
   onSaveNewTitleCard,
@@ -31,73 +31,74 @@ export const Card: FC<PropsCard> = ({
   onDeleteComments,
   onChangeTextComment,
 }) => {
-  const [titleCard, setTitleCard] = useState(itemCard.title);
-  const [checkEditTitleCard, setCheckEditTitleCard] = useState(false);
-  const [checkActiveCardModel, setCheckActiveCardModel] = useState(false);
-  const [checkDelete, setCheckDelete] = useState(false);
+  const [titleCard, setTitleCard] = useState(card.title);
+  const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
+  const [isCardModalVisible, setIsCardModalVisible] = useState(false);
+  const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
+
+  const { id } = card ?? {};
 
   const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleCard(event.target.value);
   };
 
   const handleActiveCardModel = () => {
-    setCheckActiveCardModel(!checkActiveCardModel);
+    setIsCardModalVisible((prevState) => !prevState);
   };
 
   const handelClickSaveTitleCard = () => {
-    onSaveNewTitleCard(itemCard.id, titleCard);
-    setCheckEditTitleCard(false);
+    onSaveNewTitleCard(id, titleCard);
+    setIsTitleCardEditEnable(false);
   };
 
   const handelCliclCancelSaveTitleCard = () => {
-    setTitleCard(itemCard.title);
-    setCheckEditTitleCard(false);
+    setTitleCard(card.title);
+    setIsTitleCardEditEnable(false);
   };
 
   const handelClickDeleteCard = () => {
-    onDeleteCardState(itemCard.id);
-    setCheckDelete(false);
+    onDeleteCardState(id);
+    setIsConfirmDeleteVisible(false);
   };
 
   const handelClickSaveTitleCardModal = (newTitleCard: string) => {
-    onSaveNewTitleCard(itemCard.id, newTitleCard);
+    onSaveNewTitleCard(id, newTitleCard);
     setTitleCard(newTitleCard);
   };
 
   const handelClickCancelCard = () => {
-    setCheckDelete(false);
+    setIsConfirmDeleteVisible(false);
   };
 
   let countComments = useMemo(() => {
-    const sortCommentsCard = commentsCard.filter(
-      (elem) => elem.cardId === itemCard.id
-    );
+    const sortCommentsCard = comments.filter((elem) => elem.cardId === id);
     return sortCommentsCard.length;
-  }, [commentsCard, itemCard.id]);
+  }, [comments, id]);
 
   return (
     <>
       <Root>
-        {checkEditTitleCard ? (
-          <div>
+        {isTitleCardEditEnable ? (
+          <>
             <StyledInput value={titleCard} onChange={handleChangeCardName} />
             <WrapButton>
               <Button text="Save" onClick={handelClickSaveTitleCard} />
               <Button text="Cancel" onClick={handelCliclCancelSaveTitleCard} />
             </WrapButton>
-          </div>
+          </>
         ) : (
           <>
             <ButtonPencil
               icon={<SvgPencil />}
-              onClick={() => setCheckEditTitleCard(true)}
+              onClick={() => setIsTitleCardEditEnable(true)}
             />
             <ButtonDelete
               icon={<SvgDelete />}
-              onClick={() => setCheckDelete(true)}
+              onClick={() => setIsConfirmDeleteVisible(true)}
             />
-            <WrapContentCard onClick={() => setCheckActiveCardModel(true)}>
+            <WrapContentCard onClick={() => setIsCardModalVisible(true)}>
               <TitleCard>{titleCard}</TitleCard>
+
               {!!countComments && (
                 <FlexBlock>
                   <SvgComment width={25} height={25} fill={COLORS.white} />
@@ -108,18 +109,20 @@ export const Card: FC<PropsCard> = ({
           </>
         )}
       </Root>
-      {checkDelete && (
+
+      {isConfirmDeleteVisible && (
         <CheckDelete
           question="Do you really want to delete the card?"
           onClickDelete={handelClickDeleteCard}
           onClickCancel={handelClickCancelCard}
         />
       )}
-      {checkActiveCardModel && (
+
+      {isCardModalVisible && (
         <CardModal
           columnName={columnName}
-          commentsCard={commentsCard}
-          itemCard={itemCard}
+          comments={comments}
+          card={card}
           onActiveCardModel={handleActiveCardModel}
           onSaveNewDescriptionCard={onSaveNewDescriptionCard}
           onClickSaveTitleCardModal={handelClickSaveTitleCardModal}

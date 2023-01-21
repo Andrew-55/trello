@@ -11,7 +11,7 @@ type Props = {
 
 export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
   const [valueInput, setValueInput] = useState("");
-  const [checkValueInput, setCheckValueInput] = useState(false);
+  const [isNotCorrectValueInput, setIsNotCorrectValueInput] = useState(false);
 
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValueInput(event.target.value);
@@ -25,9 +25,9 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
       valueInput.length <= 15
     ) {
       onUserNameChange(valueInput);
-      setCheckValueInput(false);
+      setIsNotCorrectValueInput(false);
     } else {
-      setCheckValueInput(true);
+      setIsNotCorrectValueInput(true);
     }
   };
 
@@ -42,7 +42,8 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
         placeholder="Please, enter your name"
         autoFocus
       />
-      {checkValueInput && (
+
+      {isNotCorrectValueInput && (
         <DescriptionError>
           Invalid name. Please check your name against the following parameters:
           <br />
@@ -50,6 +51,7 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
           at the beginning or end.
         </DescriptionError>
       )}
+
       <StyledButton type="submit" text="OK" />
     </Form>
   );

@@ -9,8 +9,8 @@ import { SvgCheckMark, SvgClose, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input, Textarea } from "ui";
 
 type Props = {
-  itemCard: CardInterface;
-  commentsCard: CommentInterface[];
+  card: CardInterface;
+  comments: CommentInterface[];
   columnName: string;
   onActiveCardModel: () => void;
   onSaveNewDescriptionCard: (cardId: string, newDescription: string) => void;
@@ -22,8 +22,8 @@ type Props = {
 
 export const CardModal: FC<Props> = ({
   onActiveCardModel,
-  itemCard,
-  commentsCard,
+  card,
+  comments,
   columnName,
   onSaveNewDescriptionCard,
   onClickSaveTitleCardModal,
@@ -31,12 +31,12 @@ export const CardModal: FC<Props> = ({
   onDeleteComments,
   onChangeTextComment,
 }) => {
-  const [titleCard, setTitleCard] = useState(itemCard.title);
-  const [checkEditTitleCard, setCheckEditTitleCard] = useState(false);
+  const [titleCard, setTitleCard] = useState(card.title);
+  const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
   const [newCommentCard, setNewCommentCard] = useState("");
 
   const handleSaveNewDescriptionCard = (newDescription: string) => {
-    onSaveNewDescriptionCard(itemCard.id, newDescription);
+    onSaveNewDescriptionCard(card.id, newDescription);
   };
 
   const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,12 +51,12 @@ export const CardModal: FC<Props> = ({
 
   const handelClickSaveTitleCard = () => {
     onClickSaveTitleCardModal(titleCard);
-    setCheckEditTitleCard(false);
+    setIsTitleCardEditEnable(false);
   };
 
   const handelClickSaveNewComment = () => {
     if (newCommentCard.trim().length) {
-      onAddNewComments(itemCard.id, newCommentCard);
+      onAddNewComments(card.id, newCommentCard);
       setNewCommentCard("");
     }
     setNewCommentCard("");
@@ -69,9 +69,10 @@ export const CardModal: FC<Props> = ({
   return (
     <Root>
       <CardModalBlock>
-        <NameAuthor>Create by: {itemCard.author}</NameAuthor>
+        <NameAuthor>Create by: {card.author}</NameAuthor>
         <NameAuthor>Status: {columnName}</NameAuthor>
-        {checkEditTitleCard ? (
+
+        {isTitleCardEditEnable ? (
           <FlexBlock>
             <StyledInput value={titleCard} onChange={handleChangeCardName} />
             <StyledButtonIcon
@@ -81,19 +82,20 @@ export const CardModal: FC<Props> = ({
           </FlexBlock>
         ) : (
           <FlexBlock>
-            <TitleBlock>{itemCard.title}</TitleBlock>
+            <TitleBlock>{card.title}</TitleBlock>
             <StyledButtonIcon
               icon={<SvgPencil />}
-              onClick={() => setCheckEditTitleCard(true)}
+              onClick={() => setIsTitleCardEditEnable(true)}
             />
           </FlexBlock>
         )}
+
         <StyledButtonIconClose
           icon={<SvgClose />}
           onClick={onActiveCardModel}
         />
         <Description
-          description={itemCard.description}
+          description={card.description}
           handleSaveNewDescriptionCard={handleSaveNewDescriptionCard}
         />
         <>
@@ -108,12 +110,12 @@ export const CardModal: FC<Props> = ({
             <StyledButton text="Cancel" onClick={handelClickCanselNewComment} />
           </WrapButton>
           <ContainerComments>
-            {commentsCard
-              .filter((elem) => elem.cardId === itemCard.id)
+            {comments
+              ?.filter((elem) => elem.cardId === card.id)
               .map((elem) => (
                 <Comment
                   key={elem.commentId}
-                  commentItem={elem}
+                  comment={elem}
                   onDeleteComments={onDeleteComments}
                   onChangeTextComment={onChangeTextComment}
                 />
@@ -175,7 +177,6 @@ const StyledButtonIcon = styled(ButtonIcon)`
 const CardModalBlock = styled.div`
   position: relative;
   width: 60%;
-  max-height: 80vh;
   padding: 30px;
   border-radius: 5px;
   background-color: ${COLORS.zambezi};

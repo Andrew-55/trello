@@ -36,13 +36,13 @@ export const Column: FC<Props> = ({
 }) => {
   const [valueColumnName, setValueColumnName] = useState(item.columnName);
   const [nameNewCard, setNameNewCard] = useState("");
-  const [checkAddNewCard, setCheckAddNewCard] = useState(false);
+  const [isColumnNameEditEnable, setIsColumnNameEditEnable] = useState(false);
   const [checkValueColumnName, setCheckValueColumnName] = useState(false);
 
   const handelClickSaveNewCard = () => {
     if (nameNewCard) {
       onSaveNewCard(item.columnId, nameNewCard);
-      setCheckAddNewCard(false);
+      setIsColumnNameEditEnable(false);
       setNameNewCard("");
     }
   };
@@ -53,7 +53,7 @@ export const Column: FC<Props> = ({
   };
 
   const closeNewCard = () => {
-    setCheckAddNewCard(false);
+    setIsColumnNameEditEnable(false);
     setNameNewCard("");
   };
 
@@ -95,7 +95,8 @@ export const Column: FC<Props> = ({
         ?.map((item) => (
           <Card
             key={item.id}
-            itemCard={item}
+            card={item}
+            comments={comments}
             columnName={valueColumnName}
             onSaveNewDescriptionCard={onSaveNewDescriptionCard}
             onSaveNewTitleCard={onSaveNewTitleCard}
@@ -103,10 +104,9 @@ export const Column: FC<Props> = ({
             onAddNewComments={onAddNewComments}
             onDeleteComments={onDeleteComments}
             onChangeTextComment={onChangeTextComment}
-            commentsCard={comments}
           />
         ))}
-      {checkAddNewCard ? (
+      {isColumnNameEditEnable ? (
         <>
           <InputNameNewCard
             value={nameNewCard}
@@ -123,7 +123,7 @@ export const Column: FC<Props> = ({
       ) : (
         <ButtonAddColumn
           text="Add a card"
-          onClick={() => setCheckAddNewCard(true)}
+          onClick={() => setIsColumnNameEditEnable(true)}
         />
       )}
     </Root>

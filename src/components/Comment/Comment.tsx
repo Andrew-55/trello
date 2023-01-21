@@ -8,26 +8,26 @@ import styled from "styled-components";
 import { Button, Textarea } from "ui";
 
 type PropsComment = {
-  commentItem: CommentInterface;
+  comment: CommentInterface;
   onDeleteComments: (commentId: string) => void;
   onChangeTextComment: (commentdId: string, newTextComment: string) => void;
 };
 
 export const Comment: FC<PropsComment> = ({
-  commentItem,
+  comment,
   onDeleteComments,
   onChangeTextComment,
 }) => {
-  const [textComment, setTextComment] = useState(commentItem.comment);
-  const [checkEdit, setCheckEdit] = useState(false);
-  const [checkDelete, setCheckDelete] = useState(false);
+  const [textComment, setTextComment] = useState(comment.comment);
+  const [isCommentEditEnable, setIsCommentEditEnable] = useState(false);
+  const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
 
   const handelClickDeleteComment = () => {
-    onDeleteComments(commentItem.commentId);
+    onDeleteComments(comment.commentId);
   };
 
   const handelClickCancelDeleteComment = () => {
-    setCheckDelete(false);
+    setIsConfirmDeleteVisible(false);
   };
 
   const handleChangeComment = (
@@ -37,19 +37,20 @@ export const Comment: FC<PropsComment> = ({
   };
 
   const handleClickEditSave = () => {
-    setCheckEdit(false);
-    onChangeTextComment(commentItem.commentId, textComment);
+    setIsCommentEditEnable(false);
+    onChangeTextComment(comment.commentId, textComment);
   };
 
   const handleClickEditCancel = () => {
-    setCheckEdit(false);
-    setTextComment(commentItem.comment);
+    setIsCommentEditEnable(false);
+    setTextComment(comment.comment);
   };
 
   return (
     <Root>
-      <AuthorComment>{commentItem.author}</AuthorComment>
-      {checkEdit ? (
+      <AuthorComment>{comment.author}</AuthorComment>
+
+      {isCommentEditEnable ? (
         <>
           <Textarea value={textComment} onChange={handleChangeComment} />
           <FlexBlock>
@@ -63,16 +64,17 @@ export const Comment: FC<PropsComment> = ({
           <FlexBlock>
             <ButtonCommentClick
               text="Edit"
-              onClick={() => setCheckEdit(true)}
+              onClick={() => setIsCommentEditEnable(true)}
             />
             <ButtonCommentClick
               text="Delete"
-              onClick={() => setCheckDelete(true)}
+              onClick={() => setIsConfirmDeleteVisible(true)}
             />
           </FlexBlock>
         </>
       )}
-      {checkDelete && (
+
+      {isConfirmDeleteVisible && (
         <CheckDelete
           question="Do you really want to delete the comment?"
           onClickDelete={handelClickDeleteComment}
