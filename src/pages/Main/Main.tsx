@@ -3,7 +3,7 @@ import { COLORS } from "constants/";
 import React, { useState, FC } from "react";
 
 import { Column } from "components";
-import { MOCK_COLUMNS, MOCK_CARDS, MOCK_COMMENTS } from "store";
+import { MOCK_CARDS, MOCK_COLUMNS, MOCK_COMMENTS } from "store";
 import styled from "styled-components";
 import {
   addComment,
@@ -22,66 +22,70 @@ type Props = {
 };
 
 export const Main: FC<Props> = ({ userName }) => {
-  const [cards, setCards] = useState(MOCK_CARDS);
-  const [columns, setColumns] = useState(MOCK_COLUMNS);
-  const [comments, setComments] = useState(MOCK_COMMENTS);
+  const [objectCards, setObjectCards] = useState(MOCK_CARDS);
+  const [objectColumns, setObjectColumns] = useState(MOCK_COLUMNS);
+  const [objectComments, setObjectComments] = useState(MOCK_COMMENTS);
 
   const handelSaveNewNameColumns = (columnId: string, newName: string) => {
-    const newColumns = changeColumnName(columns, columnId, newName);
-    setColumns(newColumns);
+    const newColumns = changeColumnName(objectColumns, columnId, newName);
+    setObjectColumns(newColumns);
   };
 
   const handelSaveNewTitleCard = (cardId: string, newTitleCard: string) => {
-    const newCards = changeCardName(cards, cardId, newTitleCard);
-    setCards(newCards);
+    const newCards = changeCardName(objectCards, cardId, newTitleCard);
+    setObjectCards(newCards);
   };
 
   const handelSaveNewCard = (columnId: string, newNameCard: string) => {
-    const newCards = addNewCard(cards, columnId, newNameCard, userName);
-    setCards(newCards);
+    const newCards = addNewCard(objectCards, columnId, newNameCard, userName);
+    setObjectCards(newCards);
   };
 
   const handelSaveNewDescriptionCard = (
     cardId: string,
     newDescription: string
   ) => {
-    const newCards = changeDescriptionCard(cards, cardId, newDescription);
-    setCards(newCards);
+    const newCards = changeDescriptionCard(objectCards, cardId, newDescription);
+    setObjectCards(newCards);
   };
 
   const handelDeleteCardState = (cardId: string) => {
-    const newCards = deleteCard(cards, cardId);
-    const newComments = deleteAllCommentByCardId(comments, cardId);
-    setCards(newCards);
-    setComments(newComments);
+    const newCards = deleteCard(objectCards, cardId);
+    const newComments = deleteAllCommentByCardId(objectComments, cardId);
+    setObjectCards(newCards);
+    setObjectComments(newComments);
   };
 
   const handelAddNewComments = (cardId: string, content: string) => {
-    const newComments = addComment(comments, cardId, userName, content);
-    setComments(newComments);
+    const newComments = addComment(objectComments, cardId, userName, content);
+    setObjectComments(newComments);
   };
 
   const handelChangeTextComment = (
     commentdId: string,
     newTextComment: string
   ) => {
-    const newComments = changeComment(comments, commentdId, newTextComment);
+    const newComments = changeComment(
+      objectComments,
+      commentdId,
+      newTextComment
+    );
     return newComments;
   };
 
   const handelDeleteComments = (commentId: string) => {
-    const newComments = deleteCommentById(comments, commentId);
-    setComments(newComments);
+    const newComments = deleteCommentById(objectComments, commentId);
+    setObjectComments(newComments);
   };
 
   return (
     <Root>
-      {columns?.map((item) => (
+      {Object.values(objectColumns)?.map((item) => (
         <Column
           key={item.columnId}
           item={item}
-          cards={cards}
-          comments={comments}
+          cards={Object.values(objectCards)}
+          comments={Object.values(objectComments)}
           onSaveNewCard={handelSaveNewCard}
           onSaveNewNameColumns={handelSaveNewNameColumns}
           onSaveNewDescriptionCard={handelSaveNewDescriptionCard}

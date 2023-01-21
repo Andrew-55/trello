@@ -1,116 +1,130 @@
-import { CardInterface, ColumnInterface, CommentInterface } from "interfaces";
+import { MockColumnsType, MockCardsType, MockCommentsType } from "interfaces";
 import { v4 as uuidv4 } from "uuid";
 
+const copyObjectColumn = (obj: MockColumnsType) => {
+  const strObject = JSON.stringify(obj);
+  const newObject: MockColumnsType = JSON.parse(strObject);
+  return newObject;
+};
+
+const copyObjectCard = (obj: MockCardsType) => {
+  const strObject = JSON.stringify(obj);
+  const newObject: MockCardsType = JSON.parse(strObject);
+  return newObject;
+};
+
+const copyObjectComments = (obj: MockCommentsType) => {
+  const strObject = JSON.stringify(obj);
+  const newObject: MockCommentsType = JSON.parse(strObject);
+  return newObject;
+};
+
 export const changeColumnName = (
-  columns: ColumnInterface[],
+  columns: MockColumnsType,
   columnId: string,
   newName: string
 ) => {
-  const arr = [...columns];
-  arr.forEach((elem) => {
-    if (elem.columnId === columnId) {
-      elem.columnName = newName;
-    }
-  });
-
-  return arr;
+  const copyColumns = copyObjectColumn(columns);
+  copyColumns[columnId].columnName = newName;
+  return copyColumns;
 };
 
 export const addNewCard = (
-  cards: CardInterface[],
+  cards: MockCardsType,
   columnId: string,
   newNameCard: string,
   author: string
 ) => {
+  const id = uuidv4();
   const newCard = {
-    id: uuidv4(),
+    id: id,
     title: newNameCard,
     description: "",
     columnId: columnId,
     comments: [],
     author: author,
   };
-  const arr = [...cards];
-  arr.push(newCard);
+  const copyCards = copyObjectCard(cards);
+  copyCards[id] = newCard;
 
-  return arr;
+  return copyCards;
 };
 
-export const deleteCard = (cards: CardInterface[], cardId: string) => {
-  const newCard = cards.filter((elem) => elem.id !== cardId);
-  return newCard;
+export const deleteCard = (cards: MockCardsType, cardId: string) => {
+  const copyCards = copyObjectCard(cards);
+  delete copyCards[cardId];
+  return copyCards;
 };
 
 export const changeCardName = (
-  cards: CardInterface[],
+  cards: MockCardsType,
   cardId: string,
   newCardName: string
 ) => {
-  const newCards = [...cards];
-  newCards.forEach((elem) => {
-    if (elem.id === cardId) {
-      elem.title = newCardName;
-    }
-  });
-  return newCards;
+  const copyCards = copyObjectCard(cards);
+  copyCards[cardId].title = newCardName;
+  return copyCards;
 };
 
 export const changeDescriptionCard = (
-  cards: CardInterface[],
+  cards: MockCardsType,
   cardId: string,
   newDescription: string
 ) => {
-  const newCards = [...cards];
-  newCards.forEach((elem) => {
-    if (elem.id === cardId) {
-      elem.description = newDescription;
-    }
-  });
-  return newCards;
+  const copyCards = copyObjectCard(cards);
+  copyCards[cardId].description = newDescription;
+  return copyCards;
 };
 
 export const addComment = (
-  comments: CommentInterface[],
+  comments: MockCommentsType,
   cardId: string,
   author: string,
   content: string
 ) => {
-  const newComments = [...comments];
-  newComments.unshift({
-    commentId: uuidv4(),
+  const copyComments = copyObjectComments(comments);
+  const commentId = uuidv4();
+  const newComments = {
+    commentId: commentId,
     cardId: cardId,
     author: author,
     content: content,
-  });
-  return newComments;
+  };
+  copyComments[commentId] = newComments;
+  return copyComments;
 };
 
 export const changeComment = (
-  comments: CommentInterface[],
+  comments: MockCommentsType,
   commentId: string,
   newTextComment: string
 ) => {
-  const newComments = [...comments];
-  newComments.forEach((elem) => {
-    if (elem.commentId === commentId) {
-      elem.content = newTextComment;
-    }
-  });
-  return newComments;
+  const copyComments = copyObjectComments(comments);
+  copyComments[commentId].content = newTextComment;
+  return copyComments;
 };
 
 export const deleteCommentById = (
-  comments: CommentInterface[],
+  comments: MockCommentsType,
   commentId: string
 ) => {
-  const newComments = comments.filter((elem) => elem.commentId !== commentId);
-  return newComments;
+  const copyComments = copyObjectComments(comments);
+  delete copyComments[commentId];
+
+  return copyComments;
 };
 
 export const deleteAllCommentByCardId = (
-  comments: CommentInterface[],
+  comments: MockCommentsType,
   cardId: string
 ) => {
-  const newComments = comments.filter((elem) => elem.cardId !== cardId);
-  return newComments;
+  const copyComments = copyObjectComments(comments);
+
+  Object.values(copyComments).forEach((elem) => {
+    if (elem.cardId === cardId) {
+      delete copyComments[elem.commentId];
+    }
+  });
+
+  return copyComments;
 };

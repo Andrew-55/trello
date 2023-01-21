@@ -17,3 +17,7 @@ export interface CommentInterface {
   author: string;
   content: string;
 }
+
+export type MockCardsType = Record<string, CardInterface>;
+export type MockColumnsType = Record<string, ColumnInterface>;
+export type MockCommentsType = Record<string, CommentInterface>;
