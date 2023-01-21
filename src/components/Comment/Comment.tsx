@@ -19,7 +19,6 @@ export const Comment: FC<PropsComment> = ({
   onChangeTextComment,
 }) => {
   const [textComment, setTextComment] = useState(commentItem.comment);
-  const [textNewComment, setTextNewComment] = useState(textComment);
   const [checkEdit, setCheckEdit] = useState(false);
   const [checkDelete, setCheckDelete] = useState(false);
 
@@ -34,18 +33,17 @@ export const Comment: FC<PropsComment> = ({
   const handleChangeComment = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setTextNewComment(event.target.value);
+    setTextComment(event.target.value);
   };
 
   const handleClickEditSave = () => {
     setCheckEdit(false);
-    setTextComment(textNewComment);
-    onChangeTextComment(commentItem.commentId, textNewComment);
+    onChangeTextComment(commentItem.commentId, textComment);
   };
 
   const handleClickEditCancel = () => {
     setCheckEdit(false);
-    setTextNewComment(textComment);
+    setTextComment(commentItem.comment);
   };
 
   return (
@@ -53,7 +51,7 @@ export const Comment: FC<PropsComment> = ({
       <AuthorComment>{commentItem.author}</AuthorComment>
       {checkEdit ? (
         <>
-          <Textarea value={textNewComment} onChange={handleChangeComment} />
+          <Textarea value={textComment} onChange={handleChangeComment} />
           <FlexBlock>
             <ButtonCommentClick text="Save" onClick={handleClickEditSave} />
             <ButtonCommentClick text="Cancel" onClick={handleClickEditCancel} />

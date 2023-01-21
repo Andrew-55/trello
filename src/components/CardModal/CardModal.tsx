@@ -32,7 +32,6 @@ export const CardModal: FC<Props> = ({
   onChangeTextComment,
 }) => {
   const [titleCard, setTitleCard] = useState(itemCard.title);
-  const [newTitleCard, setNewTitleCard] = useState(titleCard);
   const [checkEditTitleCard, setCheckEditTitleCard] = useState(false);
   const [newCommentCard, setNewCommentCard] = useState("");
 
@@ -41,7 +40,7 @@ export const CardModal: FC<Props> = ({
   };
 
   const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitleCard(event.target.value);
+    setTitleCard(event.target.value);
   };
 
   const handleChangeNewComment = (
@@ -51,8 +50,7 @@ export const CardModal: FC<Props> = ({
   };
 
   const handelClickSaveTitleCard = () => {
-    onClickSaveTitleCardModal(newTitleCard);
-    setTitleCard(newTitleCard);
+    onClickSaveTitleCardModal(titleCard);
     setCheckEditTitleCard(false);
   };
 
@@ -75,7 +73,7 @@ export const CardModal: FC<Props> = ({
         <NameAuthor>Status: {columnName}</NameAuthor>
         {checkEditTitleCard ? (
           <FlexBlock>
-            <StyledInput value={newTitleCard} onChange={handleChangeCardName} />
+            <StyledInput value={titleCard} onChange={handleChangeCardName} />
             <StyledButtonIcon
               icon={<SvgCheckMark />}
               onClick={handelClickSaveTitleCard}

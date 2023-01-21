@@ -16,31 +16,29 @@ export const Description: FC<Props> = ({
   handleSaveNewDescriptionCard,
 }) => {
   const [descriptionCard, setDescriptionCard] = useState(description);
-  const [newDescriptionCard, setnewDescriptionCard] = useState(descriptionCard);
   const [checkEdit, setCheckEdit] = useState(false);
   const [checkDelete, setCheckDelete] = useState(false);
 
   const handleChangeDescription = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setnewDescriptionCard(event.target.value);
+    setDescriptionCard(event.target.value);
   };
 
   const handelClickSaveDescription = () => {
-    handleSaveNewDescriptionCard(newDescriptionCard);
-    setDescriptionCard(newDescriptionCard);
+    handleSaveNewDescriptionCard(descriptionCard);
+    setDescriptionCard(descriptionCard);
     setCheckEdit(false);
   };
 
   const handelClickCanselSaveDescription = () => {
-    setnewDescriptionCard(descriptionCard);
+    setDescriptionCard(description);
     setCheckEdit(false);
   };
 
   const handelClickDeleteDescription = () => {
     handleSaveNewDescriptionCard("");
     setDescriptionCard("");
-    setnewDescriptionCard("");
     setCheckDelete(false);
   };
 
@@ -72,7 +70,7 @@ export const Description: FC<Props> = ({
       </FlexBlock>
       {checkEdit ? (
         <Textarea
-          value={newDescriptionCard}
+          value={descriptionCard}
           onChange={handleChangeDescription}
           placeholder="Write a description..."
         />

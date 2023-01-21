@@ -32,13 +32,12 @@ export const Card: FC<PropsCard> = ({
   onChangeTextComment,
 }) => {
   const [titleCard, setTitleCard] = useState(itemCard.title);
-  const [newTitleCard, setNewTitleCard] = useState(titleCard);
   const [checkEditTitleCard, setCheckEditTitleCard] = useState(false);
   const [checkActiveCardModel, setCheckActiveCardModel] = useState(false);
   const [checkDelete, setCheckDelete] = useState(false);
 
   const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitleCard(event.target.value);
+    setTitleCard(event.target.value);
   };
 
   const handleActiveCardModel = () => {
@@ -46,13 +45,12 @@ export const Card: FC<PropsCard> = ({
   };
 
   const handelClickSaveTitleCard = () => {
-    onSaveNewTitleCard(itemCard.id, newTitleCard);
-    setTitleCard(newTitleCard);
+    onSaveNewTitleCard(itemCard.id, titleCard);
     setCheckEditTitleCard(false);
   };
 
   const handelCliclCancelSaveTitleCard = () => {
-    setNewTitleCard(titleCard);
+    setTitleCard(itemCard.title);
     setCheckEditTitleCard(false);
   };
 
@@ -64,7 +62,6 @@ export const Card: FC<PropsCard> = ({
   const handelClickSaveTitleCardModal = (newTitleCard: string) => {
     onSaveNewTitleCard(itemCard.id, newTitleCard);
     setTitleCard(newTitleCard);
-    setNewTitleCard(newTitleCard);
   };
 
   const handelClickCancelCard = () => {
@@ -83,7 +80,7 @@ export const Card: FC<PropsCard> = ({
       <Root>
         {checkEditTitleCard ? (
           <div>
-            <StyledInput value={newTitleCard} onChange={handleChangeCardName} />
+            <StyledInput value={titleCard} onChange={handleChangeCardName} />
             <WrapButton>
               <Button text="Save" onClick={handelClickSaveTitleCard} />
               <Button text="Cancel" onClick={handelCliclCancelSaveTitleCard} />
