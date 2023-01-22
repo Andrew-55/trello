@@ -184,3 +184,11 @@ export const getArrayCommentsByColumnId = (
   });
   return commentsColumn;
 };
+
+export const checkInputName = (name: string) => {
+  const value = name.trim();
+  if (value.length >= 3 && value.length <= 15) {
+    return true;
+  }
+  return false;
+};
