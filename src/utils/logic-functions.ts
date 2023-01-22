@@ -6,11 +6,7 @@ import {
 } from "interfaces";
 import { v4 as uuidv4 } from "uuid";
 
-export const getStringLocalstorage = (keyString: string) =>
-  localStorage.getItem(keyString) ?? "";
-
-export const getObjectLocalstorage = (keyObject: string) =>
-  JSON.parse(localStorage.getItem(keyObject) ?? "{}");
+import { storageLocal } from "./data-current";
 
 export const checkObjectIsEmpty = (obj: Object) => JSON.stringify(obj) === "{}";
 
@@ -37,7 +33,7 @@ export const changeColumnName = (
   const copyColumns: MockColumnsType = copyObjectColumn(columns);
   copyColumns[columnId].columnName = newName;
 
-  localStorage.setItem("columns", JSON.stringify(copyColumns));
+  storageLocal.setObject("columns", columns);
 
   return copyColumns;
 };
@@ -61,7 +57,7 @@ export const addNewCard = (
   const copyCards = copyObjectCard(cards);
   copyCards[id] = newCard;
 
-  localStorage.setItem("cards", JSON.stringify(copyCards));
+  storageLocal.setObject("cards", copyCards);
 
   return copyCards;
 };
@@ -70,7 +66,7 @@ export const deleteCard = (cards: MockCardsType, cardId: string) => {
   const copyCards = copyObjectCard(cards);
   delete copyCards[cardId];
 
-  localStorage.setItem("cards", JSON.stringify(copyCards));
+  storageLocal.setObject("cards", copyCards);
 
   return copyCards;
 };
@@ -83,7 +79,7 @@ export const changeCardName = (
   const copyCards = copyObjectCard(cards);
   copyCards[cardId].title = newCardName;
 
-  localStorage.setItem("cards", JSON.stringify(copyCards));
+  storageLocal.setObject("cards", copyCards);
 
   return copyCards;
 };
@@ -96,7 +92,7 @@ export const changeDescriptionCard = (
   const copyCards = copyObjectCard(cards);
   copyCards[cardId].description = newDescription;
 
-  localStorage.setItem("cards", JSON.stringify(copyCards));
+  storageLocal.setObject("cards", copyCards);
 
   return copyCards;
 };
@@ -117,7 +113,7 @@ export const addComment = (
   };
   copyComments[commentId] = newComments;
 
-  localStorage.setItem("comments", JSON.stringify(copyComments));
+  storageLocal.setObject("comments", copyComments);
 
   return copyComments;
 };
@@ -130,7 +126,7 @@ export const changeComment = (
   const copyComments = copyObjectComments(comments);
   copyComments[commentId].content = newTextComment;
 
-  localStorage.setItem("comments", JSON.stringify(copyComments));
+  storageLocal.setObject("comments", copyComments);
 
   return copyComments;
 };
@@ -142,7 +138,7 @@ export const deleteCommentById = (
   const copyComments = copyObjectComments(comments);
   delete copyComments[commentId];
 
-  localStorage.setItem("comments", JSON.stringify(copyComments));
+  storageLocal.setObject("comments", copyComments);
 
   return copyComments;
 };
@@ -159,7 +155,7 @@ export const deleteAllCommentByCardId = (
     }
   });
 
-  localStorage.setItem("comments", JSON.stringify(copyComments));
+  storageLocal.setObject("comments", copyComments);
 
   return copyComments;
 };

@@ -3,9 +3,8 @@ import { COLORS } from "constants/";
 import React, { useState, FC } from "react";
 
 import { Column } from "components";
-import { MockCardsType, MockColumnsType, MockCommentsType } from "interfaces";
-import { MOCK_COLUMNS, MOCK_CARDS, MOCK_COMMENTS } from "store";
 import styled from "styled-components";
+import { getCards, getColumns, getComments } from "utils/data-current";
 import {
   addComment,
   addNewCard,
@@ -13,11 +12,9 @@ import {
   changeColumnName,
   changeComment,
   changeDescriptionCard,
-  checkObjectIsEmpty,
   deleteAllCommentByCardId,
   deleteCard,
   deleteCommentById,
-  getObjectLocalstorage,
   getArrayCartdsByColumnId,
   getArrayCommentsByColumnId,
 } from "utils/logic-functions";
@@ -27,34 +24,9 @@ type Props = {
 };
 
 export const Main: FC<Props> = ({ userName }) => {
-  const [isStart, setIstart] = useState(true);
-  const [cards, setCards] = useState({} as MockCardsType);
-  const [columns, setColumns] = useState({} as MockColumnsType);
-  const [comments, setComments] = useState({} as MockCommentsType);
-
-  if (isStart) {
-    const cards: MockCardsType = getObjectLocalstorage("cards");
-    const columns: MockColumnsType = getObjectLocalstorage("columns");
-    const comments: MockCommentsType = getObjectLocalstorage("comments");
-
-    if (!checkObjectIsEmpty(cards)) {
-      setCards(cards);
-    } else {
-      setCards(MOCK_CARDS);
-    }
-    if (!checkObjectIsEmpty(columns)) {
-      setColumns(columns);
-    } else {
-      setColumns(MOCK_COLUMNS);
-    }
-    if (!checkObjectIsEmpty(comments)) {
-      setComments(comments);
-    } else {
-      setComments(MOCK_COMMENTS);
-    }
-
-    setIstart(false);
-  }
+  const [cards, setCards] = useState(getCards());
+  const [columns, setColumns] = useState(getColumns());
+  const [comments, setComments] = useState(getComments());
 
   const handelSaveNewNameColumns = (columnId: string, newName: string) => {
     const newColumns = changeColumnName(columns, columnId, newName);

@@ -6,21 +6,14 @@ import { Header, WelcomePopUp } from "components";
 import { Main } from "pages";
 import styled from "styled-components";
 import GlobalStyles from "styles/global";
-import { getStringLocalstorage } from "utils/logic-functions";
+import { getUser, setUser } from "utils/data-current";
 
 export const App = () => {
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState(getUser());
   const handleUserNameChange = (userName: string) => {
     setUserName(userName);
-    localStorage.setItem("user", userName);
+    setUser(userName);
   };
-
-  if (!userName) {
-    const userName = getStringLocalstorage("user");
-    if (userName !== "") {
-      setUserName(userName);
-    }
-  }
 
   return (
     <>
