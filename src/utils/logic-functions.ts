@@ -1,4 +1,9 @@
-import { MockColumnsType, MockCardsType, MockCommentsType } from "interfaces";
+import {
+  MockColumnsType,
+  MockCardsType,
+  MockCommentsType,
+  CommentInterface,
+} from "interfaces";
 import { v4 as uuidv4 } from "uuid";
 
 export const getStringLocalstorage = (keyString: string) =>
@@ -10,20 +15,17 @@ export const getObjectLocalstorage = (keyObject: string) =>
 export const checkObjectIsEmpty = (obj: Object) => JSON.stringify(obj) === "{}";
 
 const copyObjectColumn = (obj: MockColumnsType) => {
-  const strObject = JSON.stringify(obj);
-  const newObject: MockColumnsType = JSON.parse(strObject);
+  const newObject: MockColumnsType = { ...obj };
   return newObject;
 };
 
 const copyObjectCard = (obj: MockCardsType) => {
-  const strObject = JSON.stringify(obj);
-  const newObject: MockCardsType = JSON.parse(strObject);
+  const newObject: MockCardsType = { ...obj };
   return newObject;
 };
 
 const copyObjectComments = (obj: MockCommentsType) => {
-  const strObject = JSON.stringify(obj);
-  const newObject: MockCommentsType = JSON.parse(strObject);
+  const newObject: MockCommentsType = { ...obj };
   return newObject;
 };
 
@@ -32,7 +34,7 @@ export const changeColumnName = (
   columnId: string,
   newName: string
 ) => {
-  const copyColumns = copyObjectColumn(columns);
+  const copyColumns: MockColumnsType = copyObjectColumn(columns);
   copyColumns[columnId].columnName = newName;
 
   localStorage.setItem("columns", JSON.stringify(copyColumns));
@@ -160,4 +162,29 @@ export const deleteAllCommentByCardId = (
   localStorage.setItem("comments", JSON.stringify(copyComments));
 
   return copyComments;
+};
+
+export const getArrayCartdsByColumnId = (
+  cards: MockCardsType,
+  columnId: string
+) => Object.values(cards).filter((elem) => elem.columnId === columnId);
+
+export const getArrayCommentsByCardId = (
+  comments: CommentInterface[],
+  cardId: string
+) => comments.filter((elem) => elem.cardId === cardId);
+
+export const getArrayCommentsByColumnId = (
+  cards: MockCardsType,
+  comments: MockCommentsType,
+  columnId: string
+) => {
+  const commentsColumn = Array<CommentInterface>();
+  const arrayComments = Object.values(comments);
+  const arrayCardFilter = getArrayCartdsByColumnId(cards, columnId);
+  arrayCardFilter.forEach((elem) => {
+    const commentsCard = getArrayCommentsByCardId(arrayComments, elem.id);
+    commentsColumn.push(...commentsCard);
+  });
+  return commentsColumn;
 };
