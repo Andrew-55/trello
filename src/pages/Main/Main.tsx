@@ -23,9 +23,9 @@ type Props = {
 };
 
 export const Main: FC<Props> = ({ userName }) => {
-  const [cards, setCards] = useState(getCards());
-  const [columns, setColumns] = useState(getColumns());
-  const [comments, setComments] = useState(getComments());
+  const [cards, setCards] = useState(() => getCards());
+  const [columns, setColumns] = useState(() => getColumns());
+  const [comments, setComments] = useState(() => getComments());
 
   const handelSaveNewNameColumns = (columnId: string, newName: string) => {
     const newColumns = changeColumnName(columns, columnId, newName);

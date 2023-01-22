@@ -1,28 +1,13 @@
 import { MockCardsType, MockColumnsType, MockCommentsType } from "interfaces";
 import { MOCK_CARDS, MOCK_COLUMNS, MOCK_COMMENTS } from "store";
 
-class StorageLocal {
-  getString(keyString: string) {
-    return localStorage.getItem(keyString) ?? "";
-  }
-  getObject(keyObject: string) {
-    return JSON.parse(localStorage.getItem(keyObject) ?? "{}");
-  }
-  setString(key: string, str: string) {
-    localStorage.setItem(key, str);
-  }
-  setObject(key: string, obj: Object) {
-    localStorage.setItem(key, JSON.stringify(obj));
-  }
-}
+import { StorageService } from "./StorageService";
 
-export const storageLocal = new StorageLocal();
-
-const checkObjectIsEmpty = (obj: Object) => JSON.stringify(obj) === "{}";
+export const storageLocal = new StorageService();
 
 export const getCards = () => {
-  const cards: MockCardsType = storageLocal.getObject("cards");
-  if (checkObjectIsEmpty(cards)) {
+  const cards: MockCardsType | null = storageLocal.getItem("cards");
+  if (cards === null) {
     return MOCK_CARDS;
   } else {
     return cards;
@@ -30,8 +15,8 @@ export const getCards = () => {
 };
 
 export const getColumns = () => {
-  const columns: MockColumnsType = storageLocal.getObject("columns");
-  if (checkObjectIsEmpty(columns)) {
+  const columns: MockColumnsType | null = storageLocal.getItem("columns");
+  if (columns === null) {
     return MOCK_COLUMNS;
   } else {
     return columns;
@@ -39,14 +24,25 @@ export const getColumns = () => {
 };
 
 export const getComments = () => {
-  const comments: MockCommentsType = storageLocal.getObject("comments");
-  if (checkObjectIsEmpty(comments)) {
+  const comments: MockCommentsType | null = storageLocal.getItem("comments");
+  if (comments === null) {
     return MOCK_COMMENTS;
   } else {
     return comments;
   }
 };
 
-export const getUser = () => storageLocal.getString("user");
-export const setUser = (username: string) =>
-  storageLocal.setString("user", username);
+export const getUser = () => {
+  const user: { username: string } | null = storageLocal.getItem("user");
+  if (user === null) {
+    return "";
+  } else {
+    return user.username;
+  }
+};
+export const setUser = (username: string) => {
+  const user = {
+    username,
+  };
+  storageLocal.setItem("user", user);
+};

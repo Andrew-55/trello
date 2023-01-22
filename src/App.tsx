@@ -9,7 +9,7 @@ import GlobalStyles from "styles/global";
 import { getUser, setUser } from "utils/data-current";
 
 export const App = () => {
-  const [userName, setUserName] = useState(getUser());
+  const [userName, setUserName] = useState(() => getUser());
   const handleUserNameChange = (userName: string) => {
     setUserName(userName);
     setUser(userName);
