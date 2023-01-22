@@ -3,37 +3,21 @@ import {
   MockCardsType,
   MockCommentsType,
   CommentInterface,
+  CardInterface,
 } from "interfaces";
 import { v4 as uuidv4 } from "uuid";
 
 import { storageLocal } from "./data-current";
-
-export const checkObjectIsEmpty = (obj: Object) => JSON.stringify(obj) === "{}";
-
-const copyObjectColumn = (obj: MockColumnsType) => {
-  const newObject: MockColumnsType = { ...obj };
-  return newObject;
-};
-
-const copyObjectCard = (obj: MockCardsType) => {
-  const newObject: MockCardsType = { ...obj };
-  return newObject;
-};
-
-const copyObjectComments = (obj: MockCommentsType) => {
-  const newObject: MockCommentsType = { ...obj };
-  return newObject;
-};
 
 export const changeColumnName = (
   columns: MockColumnsType,
   columnId: string,
   newName: string
 ) => {
-  const copyColumns: MockColumnsType = copyObjectColumn(columns);
+  const copyColumns: MockColumnsType = { ...columns };
   copyColumns[columnId].columnName = newName;
 
-  storageLocal.setObject("columns", columns);
+  storageLocal.setItem("columns", columns);
 
   return copyColumns;
 };
@@ -53,20 +37,19 @@ export const addNewCard = (
     comments: [],
     author: author,
   };
-
-  const copyCards = copyObjectCard(cards);
+  const copyCards: MockCardsType = { ...cards };
   copyCards[id] = newCard;
 
-  storageLocal.setObject("cards", copyCards);
+  storageLocal.setItem("cards", copyCards);
 
   return copyCards;
 };
 
 export const deleteCard = (cards: MockCardsType, cardId: string) => {
-  const copyCards = copyObjectCard(cards);
+  const copyCards: MockCardsType = { ...cards };
   delete copyCards[cardId];
 
-  storageLocal.setObject("cards", copyCards);
+  storageLocal.setItem("cards", copyCards);
 
   return copyCards;
 };
@@ -76,10 +59,10 @@ export const changeCardName = (
   cardId: string,
   newCardName: string
 ) => {
-  const copyCards = copyObjectCard(cards);
+  const copyCards: MockCardsType = { ...cards };
   copyCards[cardId].title = newCardName;
 
-  storageLocal.setObject("cards", copyCards);
+  storageLocal.setItem("cards", copyCards);
 
   return copyCards;
 };
@@ -89,10 +72,10 @@ export const changeDescriptionCard = (
   cardId: string,
   newDescription: string
 ) => {
-  const copyCards = copyObjectCard(cards);
+  const copyCards: MockCardsType = { ...cards };
   copyCards[cardId].description = newDescription;
 
-  storageLocal.setObject("cards", copyCards);
+  storageLocal.setItem("cards", copyCards);
 
   return copyCards;
 };
@@ -103,7 +86,7 @@ export const addComment = (
   author: string,
   content: string
 ) => {
-  const copyComments = copyObjectComments(comments);
+  const copyComments = { ...comments };
   const commentId = uuidv4();
   const newComments = {
     commentId: commentId,
@@ -113,7 +96,7 @@ export const addComment = (
   };
   copyComments[commentId] = newComments;
 
-  storageLocal.setObject("comments", copyComments);
+  storageLocal.setItem("comments", copyComments);
 
   return copyComments;
 };
@@ -123,10 +106,10 @@ export const changeComment = (
   commentId: string,
   newTextComment: string
 ) => {
-  const copyComments = copyObjectComments(comments);
+  const copyComments = { ...comments };
   copyComments[commentId].content = newTextComment;
 
-  storageLocal.setObject("comments", copyComments);
+  storageLocal.setItem("comments", copyComments);
 
   return copyComments;
 };
@@ -135,10 +118,10 @@ export const deleteCommentById = (
   comments: MockCommentsType,
   commentId: string
 ) => {
-  const copyComments = copyObjectComments(comments);
+  const copyComments = { ...comments };
   delete copyComments[commentId];
 
-  storageLocal.setObject("comments", copyComments);
+  storageLocal.setItem("comments", copyComments);
 
   return copyComments;
 };
@@ -147,39 +130,35 @@ export const deleteAllCommentByCardId = (
   comments: MockCommentsType,
   cardId: string
 ) => {
-  const copyComments = copyObjectComments(comments);
+  const copyComments = { ...comments };
 
-  Object.values(copyComments).forEach((elem) => {
-    if (elem.cardId === cardId) {
-      delete copyComments[elem.commentId];
+  Object.values(copyComments).forEach((comment) => {
+    if (comment.cardId === cardId) {
+      delete copyComments[comment.commentId];
     }
   });
 
-  storageLocal.setObject("comments", copyComments);
+  storageLocal.setItem("comments", copyComments);
 
   return copyComments;
 };
 
-export const getArrayCartdsByColumnId = (
-  cards: MockCardsType,
-  columnId: string
-) => Object.values(cards).filter((elem) => elem.columnId === columnId);
+export const getCartdsByColumnId = (cards: MockCardsType, columnId: string) =>
+  Object.values(cards).filter((card) => card.columnId === columnId);
 
-export const getArrayCommentsByCardId = (
-  comments: CommentInterface[],
-  cardId: string
-) => comments.filter((elem) => elem.cardId === cardId);
-
-export const getArrayCommentsByColumnId = (
+export const getCommentsByColumnId = (
   cards: MockCardsType,
   comments: MockCommentsType,
   columnId: string
 ) => {
-  const commentsColumn = Array<CommentInterface>();
-  const arrayComments = Object.values(comments);
-  const arrayCardFilter = getArrayCartdsByColumnId(cards, columnId);
-  arrayCardFilter.forEach((elem) => {
-    const commentsCard = getArrayCommentsByCardId(arrayComments, elem.id);
+  const commentsColumn: CommentInterface[] = [];
+  const valueComments = Object.values(comments);
+  const filteredCards = getCartdsByColumnId(cards, columnId);
+  filteredCards.forEach((card) => {
+    const commentsCard = valueComments.filter(
+      (comment) => comment.cardId === card.id
+    );
+
     commentsColumn.push(...commentsCard);
   });
   return commentsColumn;
@@ -191,4 +170,33 @@ export const checkInputName = (name: string) => {
     return true;
   }
   return false;
+};
+
+export const getSortDataColumn = (
+  columns: MockColumnsType,
+  cards: MockCardsType,
+  comments: MockCommentsType
+) => {
+  const sortData = {} as Record<string, [CardInterface[], CommentInterface[]]>;
+  const valueColumns = Object.values(columns);
+  valueColumns.forEach((column) => {
+    sortData[column.columnId] = [
+      getCartdsByColumnId(cards, column.columnId),
+      getCommentsByColumnId(cards, comments, column.columnId),
+    ];
+  });
+  return sortData;
+};
+
+export const getSortDataCard = (
+  cards: CardInterface[],
+  comments: CommentInterface[]
+) => {
+  const sortData = {} as Record<string, CommentInterface[]>;
+  cards.forEach((card) => {
+    sortData[card.id] = comments.filter(
+      (comment) => comment.cardId === card.id
+    );
+  });
+  return sortData;
 };

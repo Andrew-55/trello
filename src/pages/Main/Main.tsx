@@ -1,6 +1,6 @@
 import { COLORS } from "constants/";
 
-import React, { useState, FC } from "react";
+import React, { useState, FC, useMemo } from "react";
 
 import { Column } from "components";
 import styled from "styled-components";
@@ -15,8 +15,7 @@ import {
   deleteAllCommentByCardId,
   deleteCard,
   deleteCommentById,
-  getArrayCartdsByColumnId,
-  getArrayCommentsByColumnId,
+  getSortDataColumn,
 } from "utils/logic-functions";
 
 type Props = {
@@ -24,9 +23,9 @@ type Props = {
 };
 
 export const Main: FC<Props> = ({ userName }) => {
-  const [cards, setCards] = useState(getCards());
-  const [columns, setColumns] = useState(getColumns());
-  const [comments, setComments] = useState(getComments());
+  const [cards, setCards] = useState(() => getCards());
+  const [columns, setColumns] = useState(() => getColumns());
+  const [comments, setComments] = useState(() => getComments());
 
   const handelSaveNewNameColumns = (columnId: string, newName: string) => {
     const newColumns = changeColumnName(columns, columnId, newName);
@@ -76,14 +75,18 @@ export const Main: FC<Props> = ({ userName }) => {
     setComments(newComments);
   };
 
+  const contentColumn = useMemo(() => {
+    return getSortDataColumn(columns, cards, comments);
+  }, [columns, cards, comments]);
+
   return (
     <Root>
-      {Object.values(columns)?.map((item) => (
+      {Object.values(columns)?.map((column) => (
         <Column
-          key={item.columnId}
-          item={item}
-          cards={getArrayCartdsByColumnId(cards, item.columnId)}
-          comments={getArrayCommentsByColumnId(cards, comments, item.columnId)}
+          key={column.columnId}
+          item={column}
+          cards={contentColumn[column.columnId][0]}
+          comments={contentColumn[column.columnId][1]}
           onSaveNewCard={handelSaveNewCard}
           onSaveNewNameColumns={handelSaveNewNameColumns}
           onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
