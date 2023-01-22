@@ -7,7 +7,6 @@ import { CardInterface, CommentInterface } from "interfaces";
 import styled from "styled-components";
 import { SvgComment, SvgDelete, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input } from "ui";
-import { getArrayCommentsByCardId } from "utils/logic-functions";
 
 type PropsCard = {
   card: CardInterface;
@@ -72,9 +71,8 @@ export const Card: FC<PropsCard> = ({
   };
 
   let countComments = useMemo(() => {
-    const sortCommentsCard = getArrayCommentsByCardId(comments, id);
-    return sortCommentsCard.length;
-  }, [comments, id]);
+    return comments.length;
+  }, [comments]);
 
   return (
     <>

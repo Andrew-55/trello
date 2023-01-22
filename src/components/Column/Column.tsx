@@ -1,11 +1,12 @@
 import { COLORS } from "constants/COLORS";
 
-import React, { useState, FC } from "react";
+import React, { useState, FC, useMemo } from "react";
 
 import { Card } from "components";
 import { CardInterface, CommentInterface } from "interfaces";
 import styled, { css } from "styled-components";
 import { Button, Input } from "ui";
+import { getSortDataCard } from "utils/logic-functions";
 
 type Props = {
   item: { columnId: string; columnName: string };
@@ -67,6 +68,10 @@ export const Column: FC<Props> = ({
     setNameNewCard(event.target.value);
   };
 
+  const commentsCard = useMemo(() => {
+    return getSortDataCard(cards, comments);
+  }, [cards, comments]);
+
   return (
     <Root>
       {checkValueColumnName ? (
@@ -90,22 +95,20 @@ export const Column: FC<Props> = ({
           onClick={() => setCheckValueColumnName(!checkValueColumnName)}
         />
       )}
-      {cards
-        .filter((elem) => elem.columnId === item.columnId)
-        ?.map((item) => (
-          <Card
-            key={item.id}
-            card={item}
-            comments={comments}
-            columnName={valueColumnName}
-            onSaveNewDescriptionCard={onSaveNewDescriptionCard}
-            onSaveNewTitleCard={onSaveNewTitleCard}
-            onDeleteCardState={onDeleteCardState}
-            onAddNewComments={onAddNewComments}
-            onDeleteComments={onDeleteComments}
-            onChangeTextComment={onChangeTextComment}
-          />
-        ))}
+      {cards?.map((card) => (
+        <Card
+          key={card.id}
+          card={card}
+          comments={commentsCard[card.id]}
+          columnName={valueColumnName}
+          onSaveNewDescriptionCard={onSaveNewDescriptionCard}
+          onSaveNewTitleCard={onSaveNewTitleCard}
+          onDeleteCardState={onDeleteCardState}
+          onAddNewComments={onAddNewComments}
+          onDeleteComments={onDeleteComments}
+          onChangeTextComment={onChangeTextComment}
+        />
+      ))}
       {isColumnNameEditEnable ? (
         <>
           <InputNameNewCard
