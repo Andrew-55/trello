@@ -93,6 +93,7 @@ const Root = styled.div`
 
 const AuthorComment = styled.p`
   margin-bottom: 5px;
+  overflow-wrap: break-word;
 `;
 
 const TextComment = styled.p`
@@ -101,6 +102,7 @@ const TextComment = styled.p`
   color: ${COLORS.black};
   background-color: ${COLORS.white_smoke};
   border-radius: 5px;
+  overflow-wrap: break-word;
 `;
 
 const ButtonCommentClick = styled(Button)`

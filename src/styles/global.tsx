@@ -10,4 +10,9 @@ export default createGlobalStyle`
   body {
     background-color: ${COLORS.black};
   }
+
+  ul, li {
+    list-style: none;
+    padding: 0;
+  }
 `;

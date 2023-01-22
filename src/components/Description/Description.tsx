@@ -124,5 +124,7 @@ const TitleDescription = styled.h2`
 `;
 
 const TextDescription = styled.p`
+  width: 95%;
   margin-left: 20px;
+  overflow-wrap: break-word;
 `;

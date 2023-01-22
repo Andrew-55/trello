@@ -82,27 +82,27 @@ export const Main: FC<Props> = ({ userName }) => {
   return (
     <Root>
       {Object.values(columns)?.map((column) => (
-        <Column
-          key={column.columnId}
-          item={column}
-          cards={contentColumn[column.columnId][0]}
-          comments={contentColumn[column.columnId][1]}
-          onSaveNewCard={handelSaveNewCard}
-          onSaveNewNameColumns={handelSaveNewNameColumns}
-          onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
-          onSaveNewTitleCard={handelSaveNewTitleCard}
-          onDeleteCardState={handelDeleteCardState}
-          onAddNewComments={handelAddNewComments}
-          onDeleteComments={handelDeleteComments}
-          onChangeTextComment={handelChangeTextComment}
-        />
+        <StyledLi key={column.columnId}>
+          <Column
+            item={column}
+            cards={contentColumn[column.columnId][0]}
+            comments={contentColumn[column.columnId][1]}
+            onSaveNewCard={handelSaveNewCard}
+            onSaveNewNameColumns={handelSaveNewNameColumns}
+            onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
+            onSaveNewTitleCard={handelSaveNewTitleCard}
+            onDeleteCardState={handelDeleteCardState}
+            onAddNewComments={handelAddNewComments}
+            onDeleteComments={handelDeleteComments}
+            onChangeTextComment={handelChangeTextComment}
+          />
+        </StyledLi>
       ))}
     </Root>
   );
 };
 
-const Root = styled.div`
-  width: 100%;
+const Root = styled.ul`
   min-height: 80vh;
   padding: 20px 20px;
   color: ${COLORS.white};
@@ -111,4 +111,8 @@ const Root = styled.div`
   column-gap: 50px;
   align-items: flex-start;
   overflow-x: auto;
+`;
+
+const StyledLi = styled.li`
+  width: 20%;
 `;
