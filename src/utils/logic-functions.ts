@@ -1,4 +1,4 @@
-import { CardInterface, ColumnInterface, CommentInterface } from "interfaces";
+import { MockColumnsType, MockCardsType, MockCommentsType } from "interfaces";
 import { v4 as uuidv4 } from "uuid";
 
 export const getStringLocalstorage = (keyString: string) =>
@@ -9,139 +9,155 @@ export const getObjectLocalstorage = (keyObject: string) =>
 
 export const checkObjectIsEmpty = (obj: Object) => JSON.stringify(obj) === "{}";
 
+const copyObjectColumn = (obj: MockColumnsType) => {
+  const strObject = JSON.stringify(obj);
+  const newObject: MockColumnsType = JSON.parse(strObject);
+  return newObject;
+};
+
+const copyObjectCard = (obj: MockCardsType) => {
+  const strObject = JSON.stringify(obj);
+  const newObject: MockCardsType = JSON.parse(strObject);
+  return newObject;
+};
+
+const copyObjectComments = (obj: MockCommentsType) => {
+  const strObject = JSON.stringify(obj);
+  const newObject: MockCommentsType = JSON.parse(strObject);
+  return newObject;
+};
+
 export const changeColumnName = (
-  columns: ColumnInterface[],
+  columns: MockColumnsType,
   columnId: string,
   newName: string
 ) => {
-  const arr = [...columns];
-  arr.forEach((elem) => {
-    if (elem.columnId === columnId) {
-      elem.columnName = newName;
-    }
-  });
+  const copyColumns = copyObjectColumn(columns);
+  copyColumns[columnId].columnName = newName;
 
-  localStorage.setItem("columns", JSON.stringify(arr));
+  localStorage.setItem("columns", JSON.stringify(copyColumns));
 
-  return arr;
+  return copyColumns;
 };
 
 export const addNewCard = (
-  cards: CardInterface[],
+  cards: MockCardsType,
   columnId: string,
   newNameCard: string,
   author: string
 ) => {
+  const id = uuidv4();
   const newCard = {
-    id: uuidv4(),
+    id: id,
     title: newNameCard,
     description: "",
     columnId: columnId,
     comments: [],
     author: author,
   };
-  const arr = [...cards];
-  arr.push(newCard);
 
-  localStorage.setItem("cards", JSON.stringify(arr));
+  const copyCards = copyObjectCard(cards);
+  copyCards[id] = newCard;
 
-  return arr;
+  localStorage.setItem("cards", JSON.stringify(copyCards));
+
+  return copyCards;
 };
 
-export const deleteCard = (cards: CardInterface[], cardId: string) => {
-  const newCards = cards.filter((elem) => elem.id !== cardId);
-  localStorage.setItem("cards", JSON.stringify(newCards));
-  return newCards;
+export const deleteCard = (cards: MockCardsType, cardId: string) => {
+  const copyCards = copyObjectCard(cards);
+  delete copyCards[cardId];
+
+  localStorage.setItem("cards", JSON.stringify(copyCards));
+
+  return copyCards;
 };
 
 export const changeCardName = (
-  cards: CardInterface[],
+  cards: MockCardsType,
   cardId: string,
   newCardName: string
 ) => {
-  const newCards = [...cards];
-  newCards.forEach((elem) => {
-    if (elem.id === cardId) {
-      elem.title = newCardName;
-    }
-  });
+  const copyCards = copyObjectCard(cards);
+  copyCards[cardId].title = newCardName;
 
-  localStorage.setItem("cards", JSON.stringify(newCards));
+  localStorage.setItem("cards", JSON.stringify(copyCards));
 
-  return newCards;
+  return copyCards;
 };
 
 export const changeDescriptionCard = (
-  cards: CardInterface[],
+  cards: MockCardsType,
   cardId: string,
   newDescription: string
 ) => {
-  const newCards = [...cards];
-  newCards.forEach((elem) => {
-    if (elem.id === cardId) {
-      elem.description = newDescription;
-    }
-  });
+  const copyCards = copyObjectCard(cards);
+  copyCards[cardId].description = newDescription;
 
-  localStorage.setItem("cards", JSON.stringify(newCards));
+  localStorage.setItem("cards", JSON.stringify(copyCards));
 
-  return newCards;
+  return copyCards;
 };
 
 export const addComment = (
-  comments: CommentInterface[],
+  comments: MockCommentsType,
   cardId: string,
   author: string,
-  comment: string
+  content: string
 ) => {
-  const newComments = [...comments];
-  newComments.unshift({
-    commentId: uuidv4(),
+  const copyComments = copyObjectComments(comments);
+  const commentId = uuidv4();
+  const newComments = {
+    commentId: commentId,
     cardId: cardId,
     author: author,
-    comment: comment,
-  });
+    content: content,
+  };
+  copyComments[commentId] = newComments;
 
-  localStorage.setItem("comments", JSON.stringify(newComments));
+  localStorage.setItem("comments", JSON.stringify(copyComments));
 
-  return newComments;
+  return copyComments;
 };
 
 export const changeComment = (
-  comments: CommentInterface[],
+  comments: MockCommentsType,
   commentId: string,
   newTextComment: string
 ) => {
-  const newComments = [...comments];
-  newComments.forEach((elem) => {
-    if (elem.commentId === commentId) {
-      elem.comment = newTextComment;
-    }
-  });
+  const copyComments = copyObjectComments(comments);
+  copyComments[commentId].content = newTextComment;
 
-  localStorage.setItem("comments", JSON.stringify(newComments));
+  localStorage.setItem("comments", JSON.stringify(copyComments));
 
-  return newComments;
+  return copyComments;
 };
 
 export const deleteCommentById = (
-  comments: CommentInterface[],
+  comments: MockCommentsType,
   commentId: string
 ) => {
-  const newComments = comments.filter((elem) => elem.commentId !== commentId);
+  const copyComments = copyObjectComments(comments);
+  delete copyComments[commentId];
 
-  localStorage.setItem("comments", JSON.stringify(newComments));
+  localStorage.setItem("comments", JSON.stringify(copyComments));
 
-  return newComments;
+  return copyComments;
 };
 
 export const deleteAllCommentByCardId = (
-  comments: CommentInterface[],
+  comments: MockCommentsType,
   cardId: string
 ) => {
-  const newComments = comments.filter((elem) => elem.cardId !== cardId);
+  const copyComments = copyObjectComments(comments);
 
-  localStorage.setItem("comments", JSON.stringify(newComments));
+  Object.values(copyComments).forEach((elem) => {
+    if (elem.cardId === cardId) {
+      delete copyComments[elem.commentId];
+    }
+  });
 
-  return newComments;
+  localStorage.setItem("comments", JSON.stringify(copyComments));
+
+  return copyComments;
 };
