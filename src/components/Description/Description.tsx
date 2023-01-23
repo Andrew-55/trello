@@ -84,6 +84,7 @@ export const Description: FC<Props> = ({
           value={descriptionCard}
           onChange={handleChangeDescription}
           placeholder="Write a description..."
+          autoFocus
         />
       ) : (
         <TextDescription>{descriptionCard}</TextDescription>

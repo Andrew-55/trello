@@ -86,21 +86,20 @@ export const Main: FC<Props> = ({ userName }) => {
           column.columnId
         );
         return (
-          <StyledLi key={column.columnId}>
-            <Column
-              item={column}
-              cards={columnCards}
-              comments={columnColumns}
-              onSaveNewCard={handelSaveNewCard}
-              onSaveNewNameColumns={handelSaveNewNameColumns}
-              onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
-              onSaveNewTitleCard={handelSaveNewTitleCard}
-              onDeleteCardState={handelDeleteCardState}
-              onAddNewComments={handelAddNewComments}
-              onDeleteComments={handelDeleteComments}
-              onChangeTextComment={handelChangeTextComment}
-            />
-          </StyledLi>
+          <Column
+            key={column.columnId}
+            item={column}
+            cards={columnCards}
+            comments={columnColumns}
+            onSaveNewCard={handelSaveNewCard}
+            onSaveNewNameColumns={handelSaveNewNameColumns}
+            onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
+            onSaveNewTitleCard={handelSaveNewTitleCard}
+            onDeleteCardState={handelDeleteCardState}
+            onAddNewComments={handelAddNewComments}
+            onDeleteComments={handelDeleteComments}
+            onChangeTextComment={handelChangeTextComment}
+          />
         );
       })}
     </Root>
@@ -116,8 +115,4 @@ const Root = styled.ul`
   column-gap: 50px;
   align-items: flex-start;
   overflow-x: auto;
-`;
-
-const StyledLi = styled.li`
-  width: 20%;
 `;

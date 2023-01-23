@@ -82,11 +82,7 @@ export const Column: FC<Props> = ({
             value={valueColumnName}
             onChange={handleChangeColumnName}
             autoFocus
-          />
-          <StyledButton
-            type="button"
-            onClick={handleClickButtonChangeName}
-            text="Ok"
+            onBlur={handleClickButtonChangeName}
           />
         </FlexBlock>
       ) : (
@@ -137,8 +133,9 @@ export const Column: FC<Props> = ({
   );
 };
 
-const Root = styled.div`
+const Root = styled.li`
   padding: 10px 20px;
+  width: 20%;
   min-width: 250px;
   font-size: 20px;
   font-weight: 500;
@@ -179,13 +176,6 @@ const ButtonAddColumn = styled(Button)`
 
 const ButtonColumn = styled(Button)`
   ${ButtonColumnStyles}
-`;
-
-const StyledButton = styled(Button)`
-  font-size: 20px;
-  width: fit-content;
-  height: min-content;
-  background-color: ${COLORS.silver};
 `;
 
 const FlexBlock = styled.div`

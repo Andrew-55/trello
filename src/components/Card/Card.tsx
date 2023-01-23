@@ -79,7 +79,11 @@ export const Card: FC<PropsCard> = ({
       <Root>
         {isTitleCardEditEnable ? (
           <>
-            <StyledInput value={titleCard} onChange={handleChangeCardName} />
+            <StyledInput
+              value={titleCard}
+              onChange={handleChangeCardName}
+              autoFocus
+            />
             <WrapButton>
               <Button text="Save" onClick={handelClickSaveTitleCard} />
               <Button text="Cancel" onClick={handelCliclCancelSaveTitleCard} />
