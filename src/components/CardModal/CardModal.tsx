@@ -78,6 +78,7 @@ export const CardModal: FC<Props> = ({
 
   return (
     <Root>
+      <CloseBlock onClick={onActiveCardModel} />
       <CardModalBlock>
         <NameAuthor>Create by: {card.author}</NameAuthor>
         <NameAuthor>Status: {columnName}</NameAuthor>
@@ -153,6 +154,14 @@ const Root = styled.div`
   align-items: center;
   background-color: ${COLORS.black1};
   z-index: ${Z_INDEX.carsModal};
+`;
+
+const CloseBlock = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 `;
 
 const CardModalBlock = styled.div`
