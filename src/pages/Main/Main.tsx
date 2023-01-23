@@ -3,8 +3,8 @@ import { COLORS } from "constants/";
 import React, { useState, FC } from "react";
 
 import { Column } from "components";
-import { MOCK_CARDS, MOCK_COLUMNS, MOCK_COMMENTS } from "store";
 import styled from "styled-components";
+import { getCards, getColumns, getComments } from "utils/data-current";
 import {
   addComment,
   addNewCard,
@@ -24,9 +24,9 @@ type Props = {
 };
 
 export const Main: FC<Props> = ({ userName }) => {
-  const [cards, setCards] = useState(MOCK_CARDS);
-  const [columns, setColumns] = useState(MOCK_COLUMNS);
-  const [comments, setComments] = useState(MOCK_COMMENTS);
+  const [cards, setCards] = useState(() => getCards());
+  const [columns, setColumns] = useState(() => getColumns());
+  const [comments, setComments] = useState(() => getComments());
 
   const handelSaveNewNameColumns = (columnId: string, newName: string) => {
     const newColumns = changeColumnName(columns, columnId, newName);
