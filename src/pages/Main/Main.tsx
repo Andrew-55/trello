@@ -3,7 +3,7 @@ import { COLORS } from "constants/";
 import React, { useState, FC } from "react";
 
 import { Column } from "components";
-import { MOCK_COLUMNS, MOCK_CARDS, MOCK_COMMENTS } from "store";
+import { MOCK_CARDS, MOCK_COLUMNS, MOCK_COMMENTS } from "store";
 import styled from "styled-components";
 import {
   addComment,
@@ -15,6 +15,8 @@ import {
   deleteAllCommentByCardId,
   deleteCard,
   deleteCommentById,
+  getCartdsByColumnId,
+  getCommentsByColumnId,
 } from "utils/logic-functions";
 
 type Props = {
@@ -76,22 +78,30 @@ export const Main: FC<Props> = ({ userName }) => {
 
   return (
     <Root>
-      {columns?.map((item) => (
-        <Column
-          key={item.columnId}
-          item={item}
-          cards={cards}
-          comments={comments}
-          onSaveNewCard={handelSaveNewCard}
-          onSaveNewNameColumns={handelSaveNewNameColumns}
-          onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
-          onSaveNewTitleCard={handelSaveNewTitleCard}
-          onDeleteCardState={handelDeleteCardState}
-          onAddNewComments={handelAddNewComments}
-          onDeleteComments={handelDeleteComments}
-          onChangeTextComment={handelChangeTextComment}
-        />
-      ))}
+      {Object.values(columns)?.map((column) => {
+        const columnCards = getCartdsByColumnId(cards, column.columnId);
+        const columnColumns = getCommentsByColumnId(
+          cards,
+          comments,
+          column.columnId
+        );
+        return (
+          <Column
+            key={column.columnId}
+            item={column}
+            cards={columnCards}
+            comments={columnColumns}
+            onSaveNewCard={handelSaveNewCard}
+            onSaveNewNameColumns={handelSaveNewNameColumns}
+            onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
+            onSaveNewTitleCard={handelSaveNewTitleCard}
+            onDeleteCardState={handelDeleteCardState}
+            onAddNewComments={handelAddNewComments}
+            onDeleteComments={handelDeleteComments}
+            onChangeTextComment={handelChangeTextComment}
+          />
+        );
+      })}
     </Root>
   );
 };

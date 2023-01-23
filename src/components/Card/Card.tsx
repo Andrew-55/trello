@@ -71,9 +71,8 @@ export const Card: FC<PropsCard> = ({
   };
 
   let countComments = useMemo(() => {
-    const sortCommentsCard = comments.filter((elem) => elem.cardId === id);
-    return sortCommentsCard.length;
-  }, [comments, id]);
+    return comments.length;
+  }, [comments]);
 
   return (
     <>
