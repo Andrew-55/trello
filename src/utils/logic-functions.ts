@@ -164,31 +164,7 @@ export const getCommentsByColumnId = (
   return commentsColumn;
 };
 
-export const checkInputName = (name: string) => {
-  const value = name.trim();
-  if (value.length >= 3 && value.length <= 15) {
-    return true;
-  }
-  return false;
-};
-
-export const getSortDataColumn = (
-  columns: MockColumnsType,
-  cards: MockCardsType,
-  comments: MockCommentsType
-) => {
-  const sortData = {} as Record<string, [CardInterface[], CommentInterface[]]>;
-  const valueColumns = Object.values(columns);
-  valueColumns.forEach((column) => {
-    sortData[column.columnId] = [
-      getCartdsByColumnId(cards, column.columnId),
-      getCommentsByColumnId(cards, comments, column.columnId),
-    ];
-  });
-  return sortData;
-};
-
-export const getSortDataCard = (
+export const getCommentsCards = (
   cards: CardInterface[],
   comments: CommentInterface[]
 ) => {
@@ -199,4 +175,9 @@ export const getSortDataCard = (
     );
   });
   return sortData;
+};
+
+export const checkInputName = (name: string) => {
+  const value = name.trim();
+  return value.length >= 3 && value.length <= 15 ? true : false;
 };

@@ -7,39 +7,24 @@ export const storageLocal = new StorageService();
 
 export const getCards = () => {
   const cards: MockCardsType | null = storageLocal.getItem("cards");
-  if (cards === null) {
-    return MOCK_CARDS;
-  } else {
-    return cards;
-  }
+  return cards ? cards : MOCK_CARDS;
 };
 
 export const getColumns = () => {
   const columns: MockColumnsType | null = storageLocal.getItem("columns");
-  if (columns === null) {
-    return MOCK_COLUMNS;
-  } else {
-    return columns;
-  }
+  return columns ? columns : MOCK_COLUMNS;
 };
 
 export const getComments = () => {
   const comments: MockCommentsType | null = storageLocal.getItem("comments");
-  if (comments === null) {
-    return MOCK_COMMENTS;
-  } else {
-    return comments;
-  }
+  return comments ? comments : MOCK_COMMENTS;
 };
 
 export const getUser = () => {
   const user: { username: string } | null = storageLocal.getItem("user");
-  if (user === null) {
-    return "";
-  } else {
-    return user.username;
-  }
+  return user ? user.username : "";
 };
+
 export const setUser = (username: string) => {
   const user = {
     username,
