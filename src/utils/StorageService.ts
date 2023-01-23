@@ -1,11 +1,7 @@
 export class StorageService {
   getItem(key: string) {
     const result = localStorage.getItem(key);
-    if (typeof result === "string") {
-      return JSON.parse(result);
-    } else {
-      return null;
-    }
+    return result ? JSON.parse(result) : null;
   }
 
   setItem(key: string, value: any) {
