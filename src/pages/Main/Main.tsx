@@ -1,6 +1,6 @@
 import { COLORS } from "constants/";
 
-import React, { useState, FC, useMemo } from "react";
+import React, { useState, FC } from "react";
 
 import { Column } from "components";
 import { MOCK_CARDS, MOCK_COLUMNS, MOCK_COMMENTS } from "store";
@@ -15,7 +15,8 @@ import {
   deleteAllCommentByCardId,
   deleteCard,
   deleteCommentById,
-  getSortDataColumn,
+  getCartdsByColumnId,
+  getCommentsByColumnId,
 } from "utils/logic-functions";
 
 type Props = {
@@ -75,28 +76,32 @@ export const Main: FC<Props> = ({ userName }) => {
     setComments(newComments);
   };
 
-  const contentColumn = useMemo(() => {
-    return getSortDataColumn(columns, cards, comments);
-  }, [columns, cards, comments]);
-
   return (
     <Root>
-      {Object.values(columns)?.map((column) => (
-        <Column
-          key={column.columnId}
-          item={column}
-          cards={contentColumn[column.columnId][0]}
-          comments={contentColumn[column.columnId][1]}
-          onSaveNewCard={handelSaveNewCard}
-          onSaveNewNameColumns={handelSaveNewNameColumns}
-          onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
-          onSaveNewTitleCard={handelSaveNewTitleCard}
-          onDeleteCardState={handelDeleteCardState}
-          onAddNewComments={handelAddNewComments}
-          onDeleteComments={handelDeleteComments}
-          onChangeTextComment={handelChangeTextComment}
-        />
-      ))}
+      {Object.values(columns)?.map((column) => {
+        const columnCards = getCartdsByColumnId(cards, column.columnId);
+        const columnColumns = getCommentsByColumnId(
+          cards,
+          comments,
+          column.columnId
+        );
+        return (
+          <Column
+            key={column.columnId}
+            item={column}
+            cards={columnCards}
+            comments={columnColumns}
+            onSaveNewCard={handelSaveNewCard}
+            onSaveNewNameColumns={handelSaveNewNameColumns}
+            onSaveNewDescriptionCard={handelSaveNewDescriptionCard}
+            onSaveNewTitleCard={handelSaveNewTitleCard}
+            onDeleteCardState={handelDeleteCardState}
+            onAddNewComments={handelAddNewComments}
+            onDeleteComments={handelDeleteComments}
+            onChangeTextComment={handelChangeTextComment}
+          />
+        );
+      })}
     </Root>
   );
 };

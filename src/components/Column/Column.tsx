@@ -6,7 +6,7 @@ import { Card } from "components";
 import { CardInterface, CommentInterface } from "interfaces";
 import styled, { css } from "styled-components";
 import { Button, Input } from "ui";
-import { getSortDataCard } from "utils/logic-functions";
+import { getCommentsCards } from "utils/logic-functions";
 
 type Props = {
   item: { columnId: string; columnName: string };
@@ -69,7 +69,7 @@ export const Column: FC<Props> = ({
   };
 
   const commentsCard = useMemo(() => {
-    return getSortDataCard(cards, comments);
+    return getCommentsCards(cards, comments);
   }, [cards, comments]);
 
   return (
