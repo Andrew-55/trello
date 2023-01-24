@@ -106,8 +106,7 @@ export const Main: FC<Props> = ({ userName }) => {
   );
 };
 
-const Root = styled.div`
-  width: 100%;
+const Root = styled.ul`
   min-height: 80vh;
   padding: 20px 20px;
   color: ${COLORS.white};

@@ -1,6 +1,6 @@
 import { COLORS, Z_INDEX } from "constants/";
 
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 import { Comment, Description } from "components";
 import { CardInterface, CommentInterface } from "interfaces";
@@ -35,6 +35,16 @@ export const CardModal: FC<Props> = ({
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
   const [newCommentCard, setNewCommentCard] = useState("");
 
+  useEffect(() => {
+    const handelPushEsc = (e: any) => {
+      if (e.keyCode === 27) {
+        onActiveCardModel();
+      }
+    };
+    document.body.addEventListener("keydown", handelPushEsc);
+    return () => document.body.removeEventListener("keydown", handelPushEsc);
+  });
+
   const handleSaveNewDescriptionCard = (newDescription: string) => {
     onSaveNewDescriptionCard(card.id, newDescription);
   };
@@ -68,6 +78,7 @@ export const CardModal: FC<Props> = ({
 
   return (
     <Root>
+      <CloseBlock onClick={onActiveCardModel} />
       <CardModalBlock>
         <NameAuthor>Create by: {card.author}</NameAuthor>
         <NameAuthor>Status: {columnName}</NameAuthor>
@@ -110,16 +121,19 @@ export const CardModal: FC<Props> = ({
             <StyledButton text="Cancel" onClick={handelClickCanselNewComment} />
           </WrapButton>
           <ContainerComments>
-            {comments
-              ?.filter((elem) => elem.cardId === card.id)
-              .map((elem) => (
-                <Comment
-                  key={elem.commentId}
-                  comment={elem}
-                  onDeleteComments={onDeleteComments}
-                  onChangeTextComment={onChangeTextComment}
-                />
-              ))}
+            <ul>
+              {comments
+                ?.filter((elem) => elem.cardId === card.id)
+                .map((elem) => (
+                  <li key={elem.commentId}>
+                    <Comment
+                      comment={elem}
+                      onDeleteComments={onDeleteComments}
+                      onChangeTextComment={onChangeTextComment}
+                    />
+                  </li>
+                ))}
+            </ul>
           </ContainerComments>
         </>
       </CardModalBlock>
@@ -128,7 +142,7 @@ export const CardModal: FC<Props> = ({
 };
 
 const Root = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
@@ -140,6 +154,23 @@ const Root = styled.div`
   align-items: center;
   background-color: ${COLORS.black1};
   z-index: ${Z_INDEX.carsModal};
+`;
+
+const CloseBlock = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+`;
+
+const CardModalBlock = styled.div`
+  position: relative;
+  width: 60%;
+  min-width: 500px;
+  padding: 30px;
+  border-radius: 5px;
+  background-color: ${COLORS.zambezi};
 `;
 
 const FlexBlock = styled.div`
@@ -174,14 +205,6 @@ const StyledButtonIcon = styled(ButtonIcon)`
   }
 `;
 
-const CardModalBlock = styled.div`
-  position: relative;
-  width: 60%;
-  padding: 30px;
-  border-radius: 5px;
-  background-color: ${COLORS.zambezi};
-`;
-
 const StyledTextArea = styled(Textarea)`
   margin-left: 20px;
   width: 95%;
@@ -192,7 +215,7 @@ const TitleBlock = styled.h1`
   color: ${COLORS.white_smoke};
   font-size: 32px;
   text-transform: uppercase;
-  user-select: none;
+  word-break: break-word;
 `;
 
 const TitleComment = styled.h2`
@@ -214,6 +237,7 @@ const StyledInput = styled(Input)`
 `;
 
 const NameAuthor = styled.p`
+  max-width: 90%;
   margin-bottom: 20px;
 `;
 

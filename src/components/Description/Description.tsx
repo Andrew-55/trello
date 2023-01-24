@@ -84,6 +84,7 @@ export const Description: FC<Props> = ({
           value={descriptionCard}
           onChange={handleChangeDescription}
           placeholder="Write a description..."
+          autoFocus
         />
       ) : (
         <TextDescription>{descriptionCard}</TextDescription>
@@ -124,5 +125,7 @@ const TitleDescription = styled.h2`
 `;
 
 const TextDescription = styled.p`
+  width: 95%;
   margin-left: 20px;
+  overflow-wrap: break-word;
 `;

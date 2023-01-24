@@ -33,6 +33,5 @@ export const App = () => {
 const Container = styled.div`
   color: ${COLORS.white};
   height: 100vh;
-  width: 100vw;
-  min-width: fit-content;
+  min-width: min-content;
 `;

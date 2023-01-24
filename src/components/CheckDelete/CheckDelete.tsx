@@ -28,11 +28,11 @@ export const CheckDelete: FC<Props> = ({
 };
 
 const Root = styled.div`
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
-  max-width: 300px;
+  position: fixed;
+  top: 30%;
+  left: 25%;
+  right: 25%;
+  min-width: 200px;
   padding: 20px 30px;
   background-color: ${COLORS.gray};
   border-radius: 15px;

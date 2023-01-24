@@ -79,7 +79,11 @@ export const Card: FC<PropsCard> = ({
       <Root>
         {isTitleCardEditEnable ? (
           <>
-            <StyledInput value={titleCard} onChange={handleChangeCardName} />
+            <StyledInput
+              value={titleCard}
+              onChange={handleChangeCardName}
+              autoFocus
+            />
             <WrapButton>
               <Button text="Save" onClick={handelClickSaveTitleCard} />
               <Button text="Cancel" onClick={handelCliclCancelSaveTitleCard} />
@@ -137,7 +141,6 @@ export const Card: FC<PropsCard> = ({
 const Root = styled.div`
   position: relative;
   color: ${COLORS.white};
-  width: 100%;
   min-height: 100px;
   cursor: pointer;
   padding: 10px 20px;
@@ -191,6 +194,8 @@ const WrapButton = styled.div`
 
 const TitleCard = styled.h3`
   margin-bottom: 25px;
+  max-width: 85%;
+  overflow-wrap: break-word;
 `;
 
 const StyledInput = styled(Input)`

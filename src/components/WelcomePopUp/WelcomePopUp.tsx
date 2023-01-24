@@ -4,6 +4,7 @@ import React, { useState, FC } from "react";
 
 import styled from "styled-components";
 import { Button, Input } from "ui";
+import { checkInputName } from "utils/logic-functions";
 
 type Props = {
   onUserNameChange: (userName: string) => void;
@@ -19,12 +20,9 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (
-      valueInput === valueInput.trim() &&
-      valueInput.length >= 3 &&
-      valueInput.length <= 15
-    ) {
-      onUserNameChange(valueInput);
+    const value = valueInput.trim();
+    if (checkInputName(value)) {
+      onUserNameChange(value);
       setIsNotCorrectValueInput(false);
     } else {
       setIsNotCorrectValueInput(true);
@@ -47,8 +45,7 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
         <DescriptionError>
           Invalid name. Please check your name against the following parameters:
           <br />
-          Name has length min 3 max 15 characters, and it doesn't contain spaces
-          at the beginning or end.
+          Name has length min 3 max 15 characters.
         </DescriptionError>
       )}
 
@@ -61,7 +58,8 @@ const Form = styled.form`
   margin: auto;
   margin-top: 10%;
   padding: 30px;
-  width: 600px;
+  max-width: 600px;
+  width: 100%;
   background-color: ${COLORS.white_smoke};
   display: flex;
   align-items: center;

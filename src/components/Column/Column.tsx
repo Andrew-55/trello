@@ -82,11 +82,7 @@ export const Column: FC<Props> = ({
             value={valueColumnName}
             onChange={handleChangeColumnName}
             autoFocus
-          />
-          <StyledButton
-            type="button"
-            onClick={handleClickButtonChangeName}
-            text="Ok"
+            onBlur={handleClickButtonChangeName}
           />
         </FlexBlock>
       ) : (
@@ -95,20 +91,24 @@ export const Column: FC<Props> = ({
           onClick={() => setCheckValueColumnName(!checkValueColumnName)}
         />
       )}
-      {cards?.map((card) => (
-        <Card
-          key={card.id}
-          card={card}
-          comments={commentsCard[card.id]}
-          columnName={valueColumnName}
-          onSaveNewDescriptionCard={onSaveNewDescriptionCard}
-          onSaveNewTitleCard={onSaveNewTitleCard}
-          onDeleteCardState={onDeleteCardState}
-          onAddNewComments={onAddNewComments}
-          onDeleteComments={onDeleteComments}
-          onChangeTextComment={onChangeTextComment}
-        />
-      ))}
+      <ul>
+        {cards?.map((card) => (
+          <li key={card.id}>
+            <Card
+              card={card}
+              comments={commentsCard[card.id]}
+              columnName={valueColumnName}
+              onSaveNewDescriptionCard={onSaveNewDescriptionCard}
+              onSaveNewTitleCard={onSaveNewTitleCard}
+              onDeleteCardState={onDeleteCardState}
+              onAddNewComments={onAddNewComments}
+              onDeleteComments={onDeleteComments}
+              onChangeTextComment={onChangeTextComment}
+            />
+          </li>
+        ))}
+      </ul>
+
       {isColumnNameEditEnable ? (
         <>
           <InputNameNewCard
@@ -116,7 +116,7 @@ export const Column: FC<Props> = ({
             type="text"
             autoFocus
             onChange={handleChangeCardName}
-            placeholder="Enter a title for this card..."
+            placeholder="Enter a title card..."
           />
           <FlexBlock>
             <ButtonColumn text="Save" onClick={handelClickSaveNewCard} />
@@ -133,7 +133,7 @@ export const Column: FC<Props> = ({
   );
 };
 
-const Root = styled.div`
+const Root = styled.li`
   padding: 10px 20px;
   width: 20%;
   min-width: 250px;
@@ -165,6 +165,7 @@ const ButtonTitleColumn = styled(Button)`
   width: 100%;
   text-align: start;
   margin-bottom: 25px;
+  overflow-wrap: break-word;
 `;
 
 const ButtonAddColumn = styled(Button)`
@@ -175,13 +176,6 @@ const ButtonAddColumn = styled(Button)`
 
 const ButtonColumn = styled(Button)`
   ${ButtonColumnStyles}
-`;
-
-const StyledButton = styled(Button)`
-  font-size: 20px;
-  width: fit-content;
-  height: min-content;
-  background-color: ${COLORS.silver};
 `;
 
 const FlexBlock = styled.div`
