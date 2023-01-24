@@ -1,14 +1,12 @@
 import { COLORS } from "constants/";
 
-import React, { FC } from "react";
+import React from "react";
 
+import { useAppSelector } from "redux/hooks";
 import styled from "styled-components";
 
-type Props = {
-  userName: string;
-};
-
-export const Header: FC<Props> = ({ userName }) => {
+export const Header = () => {
+  const userName = useAppSelector((state) => state.user.username);
   return (
     <Root>
       <Logo>Trello</Logo>

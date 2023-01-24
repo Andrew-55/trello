@@ -3,38 +3,29 @@ import { COLORS } from "constants/";
 import React, { FC, useMemo, useState } from "react";
 
 import { CardModal, CheckDelete } from "components";
-import { CardInterface, CommentInterface } from "interfaces";
+import { CardInterface } from "interfaces";
+import { deleteCard, changeNameCard } from "redux/card/slice";
+import { deleteAllCommentByCardId } from "redux/comment/slice";
+import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { SvgComment, SvgDelete, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input } from "ui";
+import { getCommentsByCardId } from "utils/logic-functions";
 
 type PropsCard = {
   card: CardInterface;
-  comments: CommentInterface[];
   columnName: string;
-  onSaveNewDescriptionCard: (cardId: string, newDescription: string) => void;
-  onSaveNewTitleCard: (cardId: string, newTitle: string) => void;
-  onDeleteCardState: (cardId: string) => void;
-  onAddNewComments: (cardId: string, comment: string) => void;
-  onDeleteComments: (commentId: string) => void;
-  onChangeTextComment: (commentdId: string, newTextComment: string) => void;
 };
 
-export const Card: FC<PropsCard> = ({
-  card,
-  comments,
-  columnName,
-  onSaveNewDescriptionCard,
-  onSaveNewTitleCard,
-  onDeleteCardState,
-  onAddNewComments,
-  onDeleteComments,
-  onChangeTextComment,
-}) => {
+export const Card: FC<PropsCard> = ({ card, columnName }) => {
+  const comments = useAppSelector((state) => state.comments.comments);
+
   const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
   const [isCardModalVisible, setIsCardModalVisible] = useState(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
+
+  const dispatch = useAppDispatch();
 
   const { id } = card ?? {};
 
@@ -46,8 +37,13 @@ export const Card: FC<PropsCard> = ({
     setIsCardModalVisible((prevState) => !prevState);
   };
 
+  const handleClickEditTitleCard = () => {
+    setTitleCard(card.title);
+    setIsTitleCardEditEnable(true);
+  };
+
   const handelClickSaveTitleCard = () => {
-    onSaveNewTitleCard(id, titleCard);
+    dispatch(changeNameCard({ id, titleCard }));
     setIsTitleCardEditEnable(false);
   };
 
@@ -57,13 +53,9 @@ export const Card: FC<PropsCard> = ({
   };
 
   const handelClickDeleteCard = () => {
-    onDeleteCardState(id);
+    dispatch(deleteCard(id));
+    dispatch(deleteAllCommentByCardId(id));
     setIsConfirmDeleteVisible(false);
-  };
-
-  const handelClickSaveTitleCardModal = (newTitleCard: string) => {
-    onSaveNewTitleCard(id, newTitleCard);
-    setTitleCard(newTitleCard);
   };
 
   const handelClickCancelCard = () => {
@@ -71,8 +63,9 @@ export const Card: FC<PropsCard> = ({
   };
 
   let countComments = useMemo(() => {
-    return comments.length;
-  }, [comments]);
+    const commentsCart = getCommentsByCardId(comments, id);
+    return commentsCart.length;
+  }, [comments, id]);
 
   return (
     <>
@@ -93,14 +86,14 @@ export const Card: FC<PropsCard> = ({
           <>
             <ButtonPencil
               icon={<SvgPencil />}
-              onClick={() => setIsTitleCardEditEnable(true)}
+              onClick={handleClickEditTitleCard}
             />
             <ButtonDelete
               icon={<SvgDelete />}
               onClick={() => setIsConfirmDeleteVisible(true)}
             />
             <WrapContentCard onClick={() => setIsCardModalVisible(true)}>
-              <TitleCard>{titleCard}</TitleCard>
+              <TitleCard>{card.title}</TitleCard>
 
               {!!countComments && (
                 <FlexBlock>
@@ -124,14 +117,8 @@ export const Card: FC<PropsCard> = ({
       {isCardModalVisible && (
         <CardModal
           columnName={columnName}
-          comments={comments}
           card={card}
           onActiveCardModel={handleActiveCardModel}
-          onSaveNewDescriptionCard={onSaveNewDescriptionCard}
-          onClickSaveTitleCardModal={handelClickSaveTitleCardModal}
-          onAddNewComments={onAddNewComments}
-          onDeleteComments={onDeleteComments}
-          onChangeTextComment={onChangeTextComment}
         />
       )}
     </>

@@ -3,54 +3,44 @@ import { COLORS } from "constants/COLORS";
 import React, { useState, FC, useMemo } from "react";
 
 import { Card } from "components";
-import { CardInterface, CommentInterface } from "interfaces";
+import { addCard } from "redux/card/slice";
+import { changeColumnName } from "redux/column/slice";
+import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled, { css } from "styled-components";
 import { Button, Input } from "ui";
-import { getCommentsCards } from "utils/logic-functions";
+import { getCartdsByColumnId } from "utils/logic-functions";
 
 type Props = {
   item: { columnId: string; columnName: string };
-  cards: CardInterface[];
-  comments: CommentInterface[];
-  onSaveNewNameColumns: (columnId: string, newName: string) => void;
-  onSaveNewCard: (columnId: string, newNameCard: string) => void;
-  onSaveNewDescriptionCard: (cardId: string, newDescription: string) => void;
-  onSaveNewTitleCard: (cardId: string, newTitle: string) => void;
-  onDeleteCardState: (cardId: string) => void;
-  onAddNewComments: (cardId: string, comment: string) => void;
-  onDeleteComments: (commentId: string) => void;
-  onChangeTextComment: (commentdId: string, newTextComment: string) => void;
 };
 
-export const Column: FC<Props> = ({
-  item,
-  cards,
-  comments,
-  onSaveNewNameColumns,
-  onSaveNewCard,
-  onSaveNewDescriptionCard,
-  onSaveNewTitleCard,
-  onDeleteCardState,
-  onAddNewComments,
-  onDeleteComments,
-  onChangeTextComment,
-}) => {
+export const Column: FC<Props> = ({ item }) => {
+  const cards = useAppSelector((store) => store.cards.cards);
+  const username = useAppSelector((store) => store.user.username);
   const [valueColumnName, setValueColumnName] = useState(item.columnName);
   const [nameNewCard, setNameNewCard] = useState("");
   const [isColumnNameEditEnable, setIsColumnNameEditEnable] = useState(false);
   const [checkValueColumnName, setCheckValueColumnName] = useState(false);
 
+  const dispactch = useAppDispatch();
+  const { columnId } = item;
+
+  const handelSaveNewNameColumns = () => {
+    const newName = valueColumnName;
+    dispactch(changeColumnName({ columnId, newName }));
+  };
+
   const handelClickSaveNewCard = () => {
     if (nameNewCard) {
-      onSaveNewCard(item.columnId, nameNewCard);
+      dispactch(addCard({ columnId, nameNewCard, username }));
       setIsColumnNameEditEnable(false);
       setNameNewCard("");
     }
   };
 
   const handleClickButtonChangeName = () => {
-    setCheckValueColumnName(!checkValueColumnName);
-    onSaveNewNameColumns(item.columnId, valueColumnName);
+    setCheckValueColumnName((prev) => !prev);
+    handelSaveNewNameColumns();
   };
 
   const closeNewCard = () => {
@@ -68,9 +58,9 @@ export const Column: FC<Props> = ({
     setNameNewCard(event.target.value);
   };
 
-  const commentsCard = useMemo(() => {
-    return getCommentsCards(cards, comments);
-  }, [cards, comments]);
+  const cardsColumn = useMemo(() => {
+    return getCartdsByColumnId(cards, columnId);
+  }, [cards, columnId]);
 
   return (
     <Root>
@@ -88,23 +78,13 @@ export const Column: FC<Props> = ({
       ) : (
         <ButtonTitleColumn
           text={valueColumnName}
-          onClick={() => setCheckValueColumnName(!checkValueColumnName)}
+          onClick={() => setCheckValueColumnName((prevState) => !prevState)}
         />
       )}
       <ul>
-        {cards?.map((card) => (
+        {cardsColumn.map((card) => (
           <li key={card.id}>
-            <Card
-              card={card}
-              comments={commentsCard[card.id]}
-              columnName={valueColumnName}
-              onSaveNewDescriptionCard={onSaveNewDescriptionCard}
-              onSaveNewTitleCard={onSaveNewTitleCard}
-              onDeleteCardState={onDeleteCardState}
-              onAddNewComments={onAddNewComments}
-              onDeleteComments={onDeleteComments}
-              onChangeTextComment={onChangeTextComment}
-            />
+            <Card card={card} columnName={valueColumnName} />
           </li>
         ))}
       </ul>
@@ -184,7 +164,7 @@ const FlexBlock = styled.div`
 `;
 
 const InputColumnName = styled(Input)`
-  color: black;
+  color: ${COLORS.black};
   width: 100%;
   font-size: 20px;
   margin-bottom: 20px;

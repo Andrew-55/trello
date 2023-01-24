@@ -1,18 +1,21 @@
 import { COLORS } from "constants/";
 
-import React, { useState } from "react";
+import React from "react";
 
 import { Header, WelcomePopUp } from "components";
 import { Main } from "pages";
+import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import GlobalStyles from "styles/global";
-import { getUser, setUser } from "utils/data-current";
+
+import { setUser } from "./redux/user/slice";
 
 export const App = () => {
-  const [userName, setUserName] = useState(() => getUser());
+  const userName = useAppSelector((state) => state.user.username);
+  const dispatch = useAppDispatch();
+
   const handleUserNameChange = (userName: string) => {
-    setUserName(userName);
-    setUser(userName);
+    dispatch(setUser(userName));
   };
 
   return (
@@ -20,8 +23,8 @@ export const App = () => {
       <GlobalStyles />
       {userName ? (
         <Container>
-          <Header userName={userName} />
-          <Main userName={userName} />
+          <Header />
+          <Main />
         </Container>
       ) : (
         <WelcomePopUp onUserNameChange={handleUserNameChange} />
