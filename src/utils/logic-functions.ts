@@ -1,4 +1,4 @@
-import { MockCardsType, MockCommentsType } from "interfaces";
+import { MockCardsType, MockColumnsType, MockCommentsType } from "interfaces";
 
 export const getCartdsByColumnId = (cards: MockCardsType, columnId: string) =>
   Object.values(cards).filter((card) => card.columnId === columnId);
@@ -9,6 +9,11 @@ export const getCommentsByCardId = (
 ) => {
   return Object.values(comments).filter((comment) => comment.cardId === cardId);
 };
+
+export const getColumnNameByColumnId = (
+  columns: MockColumnsType,
+  columnId: string
+) => columns[columnId].columnName;
 
 export const checkInputName = (name: string) => {
   const value = name.trim();

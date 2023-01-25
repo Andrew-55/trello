@@ -10,27 +10,28 @@ import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { SvgCheckMark, SvgClose, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input, Textarea } from "ui";
-import { getCommentsByCardId } from "utils/logic-functions";
+import {
+  getColumnNameByColumnId,
+  getCommentsByCardId,
+} from "utils/logic-functions";
 
 type Props = {
   card: CardInterface;
-  columnName: string;
   onActiveCardModel: () => void;
 };
 
-export const CardModal: FC<Props> = ({
-  onActiveCardModel,
-  card,
-  columnName,
-}) => {
+export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
   const comments = useAppSelector((state) => state.comments.comments);
   const username = useAppSelector((state) => state.user.username);
+  const columns = useAppSelector((state) => state.columns.columns);
+
   const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
   const [newCommentCard, setNewCommentCard] = useState("");
 
   const dispatch = useAppDispatch();
   const { id } = card;
+  const columnName = getColumnNameByColumnId(columns, card.columnId);
 
   useEffect(() => {
     const handelPushEsc = (e: any) => {

@@ -84,7 +84,7 @@ export const Column: FC<Props> = ({ item }) => {
       <ul>
         {cardsColumn.map((card) => (
           <li key={card.id}>
-            <Card card={card} columnName={valueColumnName} />
+            <Card card={card} />
           </li>
         ))}
       </ul>

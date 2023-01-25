@@ -14,10 +14,9 @@ import { getCommentsByCardId } from "utils/logic-functions";
 
 type PropsCard = {
   card: CardInterface;
-  columnName: string;
 };
 
-export const Card: FC<PropsCard> = ({ card, columnName }) => {
+export const Card: FC<PropsCard> = ({ card }) => {
   const comments = useAppSelector((state) => state.comments.comments);
 
   const [titleCard, setTitleCard] = useState(card.title);
@@ -115,11 +114,7 @@ export const Card: FC<PropsCard> = ({ card, columnName }) => {
       )}
 
       {isCardModalVisible && (
-        <CardModal
-          columnName={columnName}
-          card={card}
-          onActiveCardModel={handleActiveCardModel}
-        />
+        <CardModal card={card} onActiveCardModel={handleActiveCardModel} />
       )}
     </>
   );
