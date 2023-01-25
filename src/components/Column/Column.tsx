@@ -1,60 +1,47 @@
 import { COLORS } from "constants/COLORS";
 
-import React, { useState, FC, useMemo } from "react";
+import React, { useState, FC } from "react";
 
 import { Card } from "components";
-import { CardInterface, CommentInterface } from "interfaces";
+import { addCard, getCardsByColumnId } from "redux/card";
+import { changeColumnName } from "redux/column";
+import { useAppSelector, useAppDispatch } from "redux/hooks";
+import { getUsername } from "redux/user";
 import styled, { css } from "styled-components";
 import { Button, Input } from "ui";
-import { getCommentsCards } from "utils/logic-functions";
 
 type Props = {
   item: { columnId: string; columnName: string };
-  cards: CardInterface[];
-  comments: CommentInterface[];
-  onSaveNewNameColumns: (columnId: string, newName: string) => void;
-  onSaveNewCard: (columnId: string, newNameCard: string) => void;
-  onSaveNewDescriptionCard: (cardId: string, newDescription: string) => void;
-  onSaveNewTitleCard: (cardId: string, newTitle: string) => void;
-  onDeleteCardState: (cardId: string) => void;
-  onAddNewComments: (cardId: string, comment: string) => void;
-  onDeleteComments: (commentId: string) => void;
-  onChangeTextComment: (commentdId: string, newTextComment: string) => void;
 };
 
-export const Column: FC<Props> = ({
-  item,
-  cards,
-  comments,
-  onSaveNewNameColumns,
-  onSaveNewCard,
-  onSaveNewDescriptionCard,
-  onSaveNewTitleCard,
-  onDeleteCardState,
-  onAddNewComments,
-  onDeleteComments,
-  onChangeTextComment,
-}) => {
-  const [valueColumnName, setValueColumnName] = useState(item.columnName);
+export const Column: FC<Props> = ({ item }) => {
+  const { columnId } = item;
+
+  const username = useAppSelector(getUsername);
+  const cardsColumn = useAppSelector(getCardsByColumnId(columnId));
+
+  const [columnName, setValueColumnName] = useState(item.columnName);
   const [nameNewCard, setNameNewCard] = useState("");
   const [isColumnNameEditEnable, setIsColumnNameEditEnable] = useState(false);
-  const [checkValueColumnName, setCheckValueColumnName] = useState(false);
+  const [isAddNewCard, setIsAddNewCard] = useState(false);
+
+  const dispactch = useAppDispatch();
 
   const handelClickSaveNewCard = () => {
     if (nameNewCard) {
-      onSaveNewCard(item.columnId, nameNewCard);
-      setIsColumnNameEditEnable(false);
+      dispactch(addCard({ columnId, nameNewCard, username }));
+      setIsAddNewCard(false);
       setNameNewCard("");
     }
   };
 
   const handleClickButtonChangeName = () => {
-    setCheckValueColumnName(!checkValueColumnName);
-    onSaveNewNameColumns(item.columnId, valueColumnName);
+    setIsColumnNameEditEnable((prev) => !prev);
+    dispactch(changeColumnName({ columnId, columnName }));
   };
 
-  const closeNewCard = () => {
-    setIsColumnNameEditEnable(false);
+  const handelcloseNewCard = () => {
+    setIsAddNewCard(false);
     setNameNewCard("");
   };
 
@@ -68,18 +55,14 @@ export const Column: FC<Props> = ({
     setNameNewCard(event.target.value);
   };
 
-  const commentsCard = useMemo(() => {
-    return getCommentsCards(cards, comments);
-  }, [cards, comments]);
-
   return (
     <Root>
-      {checkValueColumnName ? (
+      {isColumnNameEditEnable ? (
         <FlexBlock>
           <InputColumnName
             className="inputColumnName"
             type="text"
-            value={valueColumnName}
+            value={columnName}
             onChange={handleChangeColumnName}
             autoFocus
             onBlur={handleClickButtonChangeName}
@@ -87,29 +70,19 @@ export const Column: FC<Props> = ({
         </FlexBlock>
       ) : (
         <ButtonTitleColumn
-          text={valueColumnName}
-          onClick={() => setCheckValueColumnName(!checkValueColumnName)}
+          text={columnName}
+          onClick={() => setIsColumnNameEditEnable(true)}
         />
       )}
       <ul>
-        {cards?.map((card) => (
+        {cardsColumn.map((card) => (
           <li key={card.id}>
-            <Card
-              card={card}
-              comments={commentsCard[card.id]}
-              columnName={valueColumnName}
-              onSaveNewDescriptionCard={onSaveNewDescriptionCard}
-              onSaveNewTitleCard={onSaveNewTitleCard}
-              onDeleteCardState={onDeleteCardState}
-              onAddNewComments={onAddNewComments}
-              onDeleteComments={onDeleteComments}
-              onChangeTextComment={onChangeTextComment}
-            />
+            <Card card={card} />
           </li>
         ))}
       </ul>
 
-      {isColumnNameEditEnable ? (
+      {isAddNewCard ? (
         <>
           <InputNameNewCard
             value={nameNewCard}
@@ -120,13 +93,13 @@ export const Column: FC<Props> = ({
           />
           <FlexBlock>
             <ButtonColumn text="Save" onClick={handelClickSaveNewCard} />
-            <ButtonColumn text="Close" onClick={closeNewCard} />
+            <ButtonColumn text="Close" onClick={handelcloseNewCard} />
           </FlexBlock>
         </>
       ) : (
         <ButtonAddColumn
           text="Add a card"
-          onClick={() => setIsColumnNameEditEnable(true)}
+          onClick={() => setIsAddNewCard(true)}
         />
       )}
     </Root>
@@ -184,7 +157,7 @@ const FlexBlock = styled.div`
 `;
 
 const InputColumnName = styled(Input)`
-  color: black;
+  color: ${COLORS.black};
   width: 100%;
   font-size: 20px;
   margin-bottom: 20px;

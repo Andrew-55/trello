@@ -8,12 +8,12 @@ import { Button, Textarea } from "ui";
 
 type Props = {
   description: string;
-  handleSaveNewDescriptionCard: (newDescription: string) => void;
+  onSaveNewDescriptionCard: (newDescription: string) => void;
 };
 
 export const Description: FC<Props> = ({
   description,
-  handleSaveNewDescriptionCard,
+  onSaveNewDescriptionCard,
 }) => {
   const [descriptionCard, setDescriptionCard] = useState(description);
   const [isDescriptionEditEnable, setIsDescriptionEditEnable] = useState(false);
@@ -26,7 +26,7 @@ export const Description: FC<Props> = ({
   };
 
   const handelClickSaveDescription = () => {
-    handleSaveNewDescriptionCard(descriptionCard);
+    onSaveNewDescriptionCard(descriptionCard);
     setDescriptionCard(descriptionCard);
     setIsDescriptionEditEnable(false);
   };
@@ -37,7 +37,7 @@ export const Description: FC<Props> = ({
   };
 
   const handelClickDeleteDescription = () => {
-    handleSaveNewDescriptionCard("");
+    onSaveNewDescriptionCard("");
     setDescriptionCard("");
     setIsConfirmDeleteVisible(false);
   };

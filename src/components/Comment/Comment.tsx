@@ -3,27 +3,26 @@ import { COLORS } from "constants/";
 import React, { FC, useState } from "react";
 
 import { CheckDelete } from "components/CheckDelete";
-import { CommentInterface } from "interfaces";
+import { CommentInterface } from "redux/comment";
+import { changeComment, deleteComment } from "redux/comment";
+import { useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { Button, Textarea } from "ui";
 
 type PropsComment = {
   comment: CommentInterface;
-  onDeleteComments: (commentId: string) => void;
-  onChangeTextComment: (commentdId: string, newTextComment: string) => void;
 };
 
-export const Comment: FC<PropsComment> = ({
-  comment,
-  onDeleteComments,
-  onChangeTextComment,
-}) => {
+export const Comment: FC<PropsComment> = ({ comment }) => {
   const [textComment, setTextComment] = useState(comment.content);
   const [isCommentEditEnable, setIsCommentEditEnable] = useState(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const { commentId } = comment;
 
   const handelClickDeleteComment = () => {
-    onDeleteComments(comment.commentId);
+    dispatch(deleteComment(commentId));
   };
 
   const handelClickCancelDeleteComment = () => {
@@ -38,7 +37,7 @@ export const Comment: FC<PropsComment> = ({
 
   const handleClickEditSave = () => {
     setIsCommentEditEnable(false);
-    onChangeTextComment(comment.commentId, textComment);
+    dispatch(changeComment({ commentId, textComment }));
   };
 
   const handleClickEditCancel = () => {

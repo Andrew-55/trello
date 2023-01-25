@@ -3,37 +3,32 @@ import { COLORS, Z_INDEX } from "constants/";
 import React, { FC, useEffect, useState } from "react";
 
 import { Comment, Description } from "components";
-import { CardInterface, CommentInterface } from "interfaces";
+import { CardInterface } from "redux/card";
+import { changeNameCard, changeDescriptionCard } from "redux/card";
+import { getColumnNameByColumnId } from "redux/column";
+import { addComment, getCommentsByCardId } from "redux/comment";
+import { useAppSelector, useAppDispatch } from "redux/hooks";
+import { getUsername } from "redux/user";
 import styled from "styled-components";
 import { SvgCheckMark, SvgClose, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input, Textarea } from "ui";
 
 type Props = {
   card: CardInterface;
-  comments: CommentInterface[];
-  columnName: string;
   onActiveCardModel: () => void;
-  onSaveNewDescriptionCard: (cardId: string, newDescription: string) => void;
-  onClickSaveTitleCardModal: (newTitleCard: string) => void;
-  onAddNewComments: (cardId: string, comment: string) => void;
-  onDeleteComments: (commentId: string) => void;
-  onChangeTextComment: (commentdId: string, newTextComment: string) => void;
 };
 
-export const CardModal: FC<Props> = ({
-  onActiveCardModel,
-  card,
-  comments,
-  columnName,
-  onSaveNewDescriptionCard,
-  onClickSaveTitleCardModal,
-  onAddNewComments,
-  onDeleteComments,
-  onChangeTextComment,
-}) => {
+export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
+  const commentsCard = useAppSelector(getCommentsByCardId(card.id));
+  const username = useAppSelector(getUsername);
+  const columnName = useAppSelector(getColumnNameByColumnId(card.columnId));
+
   const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
   const [newCommentCard, setNewCommentCard] = useState("");
+
+  const dispatch = useAppDispatch();
+  const { id } = card;
 
   useEffect(() => {
     const handelPushEsc = (e: any) => {
@@ -46,7 +41,7 @@ export const CardModal: FC<Props> = ({
   });
 
   const handleSaveNewDescriptionCard = (newDescription: string) => {
-    onSaveNewDescriptionCard(card.id, newDescription);
+    dispatch(changeDescriptionCard({ id, newDescription }));
   };
 
   const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,13 +55,13 @@ export const CardModal: FC<Props> = ({
   };
 
   const handelClickSaveTitleCard = () => {
-    onClickSaveTitleCardModal(titleCard);
+    dispatch(changeNameCard({ id, titleCard }));
     setIsTitleCardEditEnable(false);
   };
 
   const handelClickSaveNewComment = () => {
     if (newCommentCard.trim().length) {
-      onAddNewComments(card.id, newCommentCard);
+      dispatch(addComment({ id, username, newCommentCard }));
       setNewCommentCard("");
     }
     setNewCommentCard("");
@@ -107,7 +102,7 @@ export const CardModal: FC<Props> = ({
         />
         <Description
           description={card.description}
-          handleSaveNewDescriptionCard={handleSaveNewDescriptionCard}
+          onSaveNewDescriptionCard={handleSaveNewDescriptionCard}
         />
         <>
           <TitleComment>Comments</TitleComment>
@@ -122,17 +117,11 @@ export const CardModal: FC<Props> = ({
           </WrapButton>
           <ContainerComments>
             <ul>
-              {comments
-                ?.filter((elem) => elem.cardId === card.id)
-                .map((elem) => (
-                  <li key={elem.commentId}>
-                    <Comment
-                      comment={elem}
-                      onDeleteComments={onDeleteComments}
-                      onChangeTextComment={onChangeTextComment}
-                    />
-                  </li>
-                ))}
+              {commentsCard.map((elem) => (
+                <li key={elem.commentId}>
+                  <Comment comment={elem} />
+                </li>
+              ))}
             </ul>
           </ContainerComments>
         </>
