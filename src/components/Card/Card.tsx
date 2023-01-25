@@ -1,23 +1,26 @@
 import { COLORS } from "constants/";
 
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useState } from "react";
 
 import { CardModal, CheckDelete } from "components";
 import { CardInterface } from "interfaces";
-import { deleteCard, changeNameCard } from "redux/card/slice";
-import { deleteAllCommentByCardId } from "redux/comment/slice";
+import { deleteCard, changeNameCard } from "redux/card";
+import {
+  selectorCountCommentsByCardId,
+  deleteAllCommentByCardId,
+} from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { SvgComment, SvgDelete, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input } from "ui";
-import { getCommentsByCardId } from "utils/logic-functions";
 
 type PropsCard = {
   card: CardInterface;
 };
 
 export const Card: FC<PropsCard> = ({ card }) => {
-  const comments = useAppSelector((state) => state.comments.comments);
+  const { id } = card ?? {};
+  const countComments = useAppSelector(selectorCountCommentsByCardId(id));
 
   const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
@@ -25,8 +28,6 @@ export const Card: FC<PropsCard> = ({ card }) => {
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
 
   const dispatch = useAppDispatch();
-
-  const { id } = card ?? {};
 
   const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleCard(event.target.value);
@@ -60,11 +61,6 @@ export const Card: FC<PropsCard> = ({ card }) => {
   const handelClickCancelCard = () => {
     setIsConfirmDeleteVisible(false);
   };
-
-  let countComments = useMemo(() => {
-    const commentsCart = getCommentsByCardId(comments, id);
-    return commentsCart.length;
-  }, [comments, id]);
 
   return (
     <>

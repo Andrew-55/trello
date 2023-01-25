@@ -1,50 +1,47 @@
 import { COLORS } from "constants/COLORS";
 
-import React, { useState, FC, useMemo } from "react";
+import React, { useState, FC } from "react";
 
 import { Card } from "components";
-import { addCard } from "redux/card/slice";
-import { changeColumnName } from "redux/column/slice";
+import { addCard, selectorCartdsByColumnId } from "redux/card";
+import { changeColumnName } from "redux/column";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
+import { selectorUsername } from "redux/user";
 import styled, { css } from "styled-components";
 import { Button, Input } from "ui";
-import { getCartdsByColumnId } from "utils/logic-functions";
 
 type Props = {
   item: { columnId: string; columnName: string };
 };
 
 export const Column: FC<Props> = ({ item }) => {
-  const cards = useAppSelector((store) => store.cards.cards);
-  const username = useAppSelector((store) => store.user.username);
-  const [valueColumnName, setValueColumnName] = useState(item.columnName);
-  const [nameNewCard, setNameNewCard] = useState("");
-  const [isColumnNameEditEnable, setIsColumnNameEditEnable] = useState(false);
-  const [checkValueColumnName, setCheckValueColumnName] = useState(false);
-
-  const dispactch = useAppDispatch();
   const { columnId } = item;
 
-  const handelSaveNewNameColumns = () => {
-    const newName = valueColumnName;
-    dispactch(changeColumnName({ columnId, newName }));
-  };
+  const username = useAppSelector(selectorUsername);
+  const cardsColumn = useAppSelector(selectorCartdsByColumnId(columnId));
+
+  const [columnName, setValueColumnName] = useState(item.columnName);
+  const [nameNewCard, setNameNewCard] = useState("");
+  const [isColumnNameEditEnable, setIsColumnNameEditEnable] = useState(false);
+  const [isAddNewCard, setIsAddNewCard] = useState(false);
+
+  const dispactch = useAppDispatch();
 
   const handelClickSaveNewCard = () => {
     if (nameNewCard) {
       dispactch(addCard({ columnId, nameNewCard, username }));
-      setIsColumnNameEditEnable(false);
+      setIsAddNewCard(false);
       setNameNewCard("");
     }
   };
 
   const handleClickButtonChangeName = () => {
-    setCheckValueColumnName((prev) => !prev);
-    handelSaveNewNameColumns();
+    setIsColumnNameEditEnable((prev) => !prev);
+    dispactch(changeColumnName({ columnId, columnName }));
   };
 
-  const closeNewCard = () => {
-    setIsColumnNameEditEnable(false);
+  const handelcloseNewCard = () => {
+    setIsAddNewCard(false);
     setNameNewCard("");
   };
 
@@ -58,18 +55,14 @@ export const Column: FC<Props> = ({ item }) => {
     setNameNewCard(event.target.value);
   };
 
-  const cardsColumn = useMemo(() => {
-    return getCartdsByColumnId(cards, columnId);
-  }, [cards, columnId]);
-
   return (
     <Root>
-      {checkValueColumnName ? (
+      {isColumnNameEditEnable ? (
         <FlexBlock>
           <InputColumnName
             className="inputColumnName"
             type="text"
-            value={valueColumnName}
+            value={columnName}
             onChange={handleChangeColumnName}
             autoFocus
             onBlur={handleClickButtonChangeName}
@@ -77,8 +70,8 @@ export const Column: FC<Props> = ({ item }) => {
         </FlexBlock>
       ) : (
         <ButtonTitleColumn
-          text={valueColumnName}
-          onClick={() => setCheckValueColumnName((prevState) => !prevState)}
+          text={columnName}
+          onClick={() => setIsColumnNameEditEnable(true)}
         />
       )}
       <ul>
@@ -89,7 +82,7 @@ export const Column: FC<Props> = ({ item }) => {
         ))}
       </ul>
 
-      {isColumnNameEditEnable ? (
+      {isAddNewCard ? (
         <>
           <InputNameNewCard
             value={nameNewCard}
@@ -100,13 +93,13 @@ export const Column: FC<Props> = ({ item }) => {
           />
           <FlexBlock>
             <ButtonColumn text="Save" onClick={handelClickSaveNewCard} />
-            <ButtonColumn text="Close" onClick={closeNewCard} />
+            <ButtonColumn text="Close" onClick={handelcloseNewCard} />
           </FlexBlock>
         </>
       ) : (
         <ButtonAddColumn
           text="Add a card"
-          onClick={() => setIsColumnNameEditEnable(true)}
+          onClick={() => setIsAddNewCard(true)}
         />
       )}
     </Root>

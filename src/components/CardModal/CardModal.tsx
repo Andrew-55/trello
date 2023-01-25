@@ -1,19 +1,17 @@
 import { COLORS, Z_INDEX } from "constants/";
 
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 import { Comment, Description } from "components";
 import { CardInterface } from "interfaces";
-import { changeNameCard, changeDescriptionCard } from "redux/card/slice";
-import { addComment } from "redux/comment/slice";
+import { changeNameCard, changeDescriptionCard } from "redux/card";
+import { selectorColumnNameByColumnId } from "redux/column";
+import { addComment, selectorCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
+import { selectorUsername } from "redux/user";
 import styled from "styled-components";
 import { SvgCheckMark, SvgClose, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input, Textarea } from "ui";
-import {
-  getColumnNameByColumnId,
-  getCommentsByCardId,
-} from "utils/logic-functions";
 
 type Props = {
   card: CardInterface;
@@ -21,9 +19,11 @@ type Props = {
 };
 
 export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
-  const comments = useAppSelector((state) => state.comments.comments);
-  const username = useAppSelector((state) => state.user.username);
-  const columns = useAppSelector((state) => state.columns.columns);
+  const commentsCard = useAppSelector(selectorCommentsByCardId(card.id));
+  const username = useAppSelector(selectorUsername);
+  const columnName = useAppSelector(
+    selectorColumnNameByColumnId(card.columnId)
+  );
 
   const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
@@ -31,7 +31,6 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
 
   const dispatch = useAppDispatch();
   const { id } = card;
-  const columnName = getColumnNameByColumnId(columns, card.columnId);
 
   useEffect(() => {
     const handelPushEsc = (e: any) => {
@@ -73,10 +72,6 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
   const handelClickCanselNewComment = () => {
     setNewCommentCard("");
   };
-
-  const commentsCard = useMemo(() => {
-    return getCommentsByCardId(comments, card.id);
-  }, [comments, card.id]);
 
   return (
     <Root>

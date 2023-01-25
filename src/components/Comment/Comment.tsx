@@ -4,7 +4,7 @@ import React, { FC, useState } from "react";
 
 import { CheckDelete } from "components/CheckDelete";
 import { CommentInterface } from "interfaces";
-import { changeComment, deleteComment } from "redux/comment/slice";
+import { changeComment, deleteComment } from "redux/comment";
 import { useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { Button, Textarea } from "ui";

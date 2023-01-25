@@ -11,16 +11,16 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import cardsReducer from "./card/slice";
-import columnsReducer from "./column/slice";
-import commentsReducer from "./comment/slice";
-import userReducer from "./user/slice";
+import { cardReducer } from "./card";
+import { columnsReducer } from "./column";
+import { commentsReducer } from "./comment";
+import { userReducer } from "./user";
 
 const rootReducer = combineReducers({
   user: userReducer,
   columns: columnsReducer,
   comments: commentsReducer,
-  cards: cardsReducer,
+  cards: cardReducer,
 });
 
 const persistConfig = {
