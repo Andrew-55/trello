@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MockColumnsType } from "interfaces";
+import { ColumnNewName, ColumnsState } from "redux/column";
 import { MOCK_COLUMNS } from "store";
-
-import { ColumnNewName, ColumnsState } from "./types";
 
 const initialState: ColumnsState = {
   columns: MOCK_COLUMNS,
@@ -13,7 +11,7 @@ export const columnsSlice = createSlice({
   initialState,
   reducers: {
     changeColumnName(state, { payload }: PayloadAction<ColumnNewName>) {
-      const copyColumns: MockColumnsType = { ...state.columns };
+      const copyColumns = { ...state.columns };
       copyColumns[payload.columnId].columnName = payload.columnName;
       state.columns = copyColumns;
     },

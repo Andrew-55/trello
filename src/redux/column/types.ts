@@ -1,7 +1,12 @@
-import { MockColumnsType } from "interfaces";
+export interface ColumnInterface {
+  columnId: string;
+  columnName: string;
+}
+
+export type InitialColumnsState = Record<string, ColumnInterface>;
 
 export interface ColumnsState {
-  columns: MockColumnsType;
+  columns: InitialColumnsState;
 }
 
 export interface ColumnNewName {

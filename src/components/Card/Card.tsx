@@ -3,12 +3,9 @@ import { COLORS } from "constants/";
 import React, { FC, useState } from "react";
 
 import { CardModal, CheckDelete } from "components";
-import { CardInterface } from "interfaces";
+import { CardInterface } from "redux/card";
 import { deleteCard, changeNameCard } from "redux/card";
-import {
-  selectorCountCommentsByCardId,
-  deleteAllCommentByCardId,
-} from "redux/comment";
+import { getCountCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { SvgComment, SvgDelete, SvgPencil } from "svg";
@@ -20,7 +17,7 @@ type PropsCard = {
 
 export const Card: FC<PropsCard> = ({ card }) => {
   const { id } = card ?? {};
-  const countComments = useAppSelector(selectorCountCommentsByCardId(id));
+  const countComments = useAppSelector(getCountCommentsByCardId(id));
 
   const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
@@ -54,7 +51,6 @@ export const Card: FC<PropsCard> = ({ card }) => {
 
   const handelClickDeleteCard = () => {
     dispatch(deleteCard(id));
-    dispatch(deleteAllCommentByCardId(id));
     setIsConfirmDeleteVisible(false);
   };
 

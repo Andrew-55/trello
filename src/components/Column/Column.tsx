@@ -3,10 +3,10 @@ import { COLORS } from "constants/COLORS";
 import React, { useState, FC } from "react";
 
 import { Card } from "components";
-import { addCard, selectorCartdsByColumnId } from "redux/card";
+import { addCard, getCardsByColumnId } from "redux/card";
 import { changeColumnName } from "redux/column";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
-import { selectorUsername } from "redux/user";
+import { getUsername } from "redux/user";
 import styled, { css } from "styled-components";
 import { Button, Input } from "ui";
 
@@ -17,8 +17,8 @@ type Props = {
 export const Column: FC<Props> = ({ item }) => {
   const { columnId } = item;
 
-  const username = useAppSelector(selectorUsername);
-  const cardsColumn = useAppSelector(selectorCartdsByColumnId(columnId));
+  const username = useAppSelector(getUsername);
+  const cardsColumn = useAppSelector(getCardsByColumnId(columnId));
 
   const [columnName, setValueColumnName] = useState(item.columnName);
   const [nameNewCard, setNameNewCard] = useState("");

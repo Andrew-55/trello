@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MockCardsType } from "interfaces";
 import { MOCK_CARDS } from "store";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,7 +18,7 @@ export const cardSlice = createSlice({
   initialState,
   reducers: {
     addCard(state, { payload }: PayloadAction<CardAdd>) {
-      const copyCards: MockCardsType = { ...state.cards };
+      const copyCards = { ...state.cards };
       const id = uuidv4();
       const { columnId, nameNewCard, username } = payload;
       const newCard = {
@@ -33,12 +32,12 @@ export const cardSlice = createSlice({
       state.cards = copyCards;
     },
     changeNameCard(state, { payload }: PayloadAction<CardChangeName>) {
-      const copyCards: MockCardsType = { ...state.cards };
+      const copyCards = { ...state.cards };
       copyCards[payload.id].title = payload.titleCard;
       state.cards = copyCards;
     },
     deleteCard(state, { payload }: PayloadAction<string>) {
-      const copyCards: MockCardsType = { ...state.cards };
+      const copyCards = { ...state.cards };
       delete copyCards[payload];
       state.cards = copyCards;
     },
@@ -46,7 +45,7 @@ export const cardSlice = createSlice({
       state,
       { payload }: PayloadAction<CardChangeDescription>
     ) {
-      const copyCards: MockCardsType = { ...state.cards };
+      const copyCards = { ...state.cards };
       copyCards[payload.id].description = payload.newDescription;
       state.cards = copyCards;
     },

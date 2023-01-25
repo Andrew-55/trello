@@ -1,7 +1,15 @@
-import { MockCardsType } from "interfaces";
+export interface CardInterface {
+  id: string;
+  title: string;
+  description: string;
+  columnId: string;
+  author: string;
+}
+
+export type InitialCardsState = Record<string, CardInterface>;
 
 export interface CardState {
-  cards: MockCardsType;
+  cards: InitialCardsState;
 }
 
 export interface CardAdd {

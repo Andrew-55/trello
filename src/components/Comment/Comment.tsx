@@ -3,7 +3,7 @@ import { COLORS } from "constants/";
 import React, { FC, useState } from "react";
 
 import { CheckDelete } from "components/CheckDelete";
-import { CommentInterface } from "interfaces";
+import { CommentInterface } from "redux/comment";
 import { changeComment, deleteComment } from "redux/comment";
 import { useAppDispatch } from "redux/hooks";
 import styled from "styled-components";

@@ -3,12 +3,12 @@ import { COLORS, Z_INDEX } from "constants/";
 import React, { FC, useEffect, useState } from "react";
 
 import { Comment, Description } from "components";
-import { CardInterface } from "interfaces";
+import { CardInterface } from "redux/card";
 import { changeNameCard, changeDescriptionCard } from "redux/card";
-import { selectorColumnNameByColumnId } from "redux/column";
-import { addComment, selectorCommentsByCardId } from "redux/comment";
+import { getColumnNameByColumnId } from "redux/column";
+import { addComment, getCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
-import { selectorUsername } from "redux/user";
+import { getUsername } from "redux/user";
 import styled from "styled-components";
 import { SvgCheckMark, SvgClose, SvgPencil } from "svg";
 import { Button, ButtonIcon, Input, Textarea } from "ui";
@@ -19,11 +19,9 @@ type Props = {
 };
 
 export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
-  const commentsCard = useAppSelector(selectorCommentsByCardId(card.id));
-  const username = useAppSelector(selectorUsername);
-  const columnName = useAppSelector(
-    selectorColumnNameByColumnId(card.columnId)
-  );
+  const commentsCard = useAppSelector(getCommentsByCardId(card.id));
+  const username = useAppSelector(getUsername);
+  const columnName = useAppSelector(getColumnNameByColumnId(card.columnId));
 
   const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);

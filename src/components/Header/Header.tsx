@@ -3,11 +3,11 @@ import { COLORS } from "constants/";
 import React from "react";
 
 import { useAppSelector } from "redux/hooks";
-import { selectorUsername } from "redux/user";
+import { getUsername } from "redux/user";
 import styled from "styled-components";
 
 export const Header = () => {
-  const userName = useAppSelector(selectorUsername);
+  const userName = useAppSelector(getUsername);
   return (
     <Root>
       <Logo>Trello</Logo>

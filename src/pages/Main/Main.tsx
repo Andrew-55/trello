@@ -3,15 +3,16 @@ import { COLORS } from "constants/";
 import React from "react";
 
 import { Column } from "components";
+import { getColumns } from "redux/column";
 import { useAppSelector } from "redux/hooks";
 import styled from "styled-components";
 
 export const Main = () => {
-  const columns = useAppSelector((state) => state.columns.columns);
+  const columns = useAppSelector(getColumns);
 
   return (
     <Root>
-      {Object.values(columns)?.map((column) => {
+      {columns?.map((column) => {
         return <Column key={column.columnId} item={column} />;
       })}
     </Root>

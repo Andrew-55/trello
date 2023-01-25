@@ -1,9 +1,10 @@
 import { RootState } from "../store";
 
-export const selectorColumns = (state: RootState) => state.columns.columns;
+export const getColumns = (state: RootState) => {
+  return Object.values(state.columns.columns);
+};
 
-export const selectorColumnNameByColumnId =
+export const getColumnNameByColumnId =
   (columnId: string) => (state: RootState) => {
-    const columns = { ...state.columns.columns };
-    return columns[columnId].columnName;
+    return state.columns.columns[columnId].columnName;
   };

@@ -1,6 +1,8 @@
-import { MockColumnsType, MockCommentsType, MockCardsType } from "interfaces";
+import { InitialCardsState } from "redux/card";
+import { InitialColumnsState } from "redux/column";
+import { InitialCommitsState } from "redux/comment";
 
-export const MOCK_CARDS: MockCardsType = {
+export const MOCK_CARDS: InitialCardsState = {
   c01: {
     id: "c01",
     title: "Test card one",
@@ -31,7 +33,7 @@ export const MOCK_CARDS: MockCardsType = {
   },
 };
 
-export const MOCK_COLUMNS: MockColumnsType = {
+export const MOCK_COLUMNS: InitialColumnsState = {
   col01: {
     columnId: "col01",
     columnName: "TODO",
@@ -47,7 +49,7 @@ export const MOCK_COLUMNS: MockColumnsType = {
   col04: { columnId: "col04", columnName: "Done" },
 };
 
-export const MOCK_COMMENTS: MockCommentsType = {
+export const MOCK_COMMENTS: InitialCommitsState = {
   com01: {
     commentId: "com01",
     cardId: "c01",

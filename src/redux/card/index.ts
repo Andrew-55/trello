@@ -7,4 +7,12 @@ export {
   changeDescriptionCard,
 } from "./slice";
 
-export { selectorCards, selectorCartdsByColumnId } from "./selector";
+export { getCardsByColumnId } from "./selector";
+
+export type {
+  CardInterface,
+  InitialCardsState,
+  CardState,
+  CardChangeName,
+  CardChangeDescription,
+} from "./types";
