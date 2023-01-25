@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ColumnNewName, ColumnsState } from "redux/column";
-import { MOCK_COLUMNS } from "store";
+
+import { MOCK_COLUMNS } from "./initialState";
 
 const initialState: ColumnsState = {
   columns: MOCK_COLUMNS,

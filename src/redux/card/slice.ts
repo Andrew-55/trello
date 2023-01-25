@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MOCK_CARDS } from "store";
 import { v4 as uuidv4 } from "uuid";
 
+import { MOCK_CARDS } from "./initialState";
 import {
   CardState,
   CardAdd,

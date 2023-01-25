@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { deleteCard } from "redux/card";
 import { CommentEdit, CommentsAdd, CommentsState } from "redux/comment";
-import { MOCK_COMMENTS } from "store";
 import { v4 as uuidv4 } from "uuid";
+
+import { MOCK_COMMENTS } from "./initialState";
 
 const initialState: CommentsState = {
   comments: MOCK_COMMENTS,
