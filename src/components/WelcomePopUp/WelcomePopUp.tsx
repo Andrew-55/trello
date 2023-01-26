@@ -1,7 +1,8 @@
 import { COLORS } from "constants/";
 
-import React, { useState, FC } from "react";
+import React, { FC } from "react";
 
+import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { Button, Input } from "ui";
 import { checkInputName } from "utils/logic-functions";
@@ -10,43 +11,61 @@ type Props = {
   onUserNameChange: (userName: string) => void;
 };
 
-export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
-  const [valueInput, setValueInput] = useState("");
-  const [isNotCorrectValueInput, setIsNotCorrectValueInput] = useState(false);
+type Inputs = {
+  username: string;
+};
 
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValueInput(event.target.value);
+export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    mode: "onBlur",
+    defaultValues: {
+      username: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = ({ username }: Inputs) => {
+    onUserNameChange(username);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const value = valueInput.trim();
-    if (checkInputName(value)) {
-      onUserNameChange(value);
-      setIsNotCorrectValueInput(false);
-    } else {
-      setIsNotCorrectValueInput(true);
-    }
+  const handelUsernameValidation = (username: string) => {
+    return checkInputName(username);
   };
 
   return (
-    <Form onSubmit={(e) => handleSubmit(e)}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <TitleBlock>Welcome to board</TitleBlock>
       <StyledInput
-        value={valueInput}
-        onChange={handleChangeName}
+        register={register("username", {
+          required: "Name not entered",
+          minLength: {
+            value: 3,
+            message: "Name has length  min 3 characters",
+          },
+          maxLength: {
+            value: 15,
+            message: "Name has length  max 15 characters",
+          },
+          validate: {
+            value: (value) => {
+              return (
+                handelUsernameValidation(value) ||
+                "Name has length min 3 characters. Spaces at the beginning and end are not counted."
+              );
+            },
+          },
+        })}
         type="text"
         maxLength={15}
         placeholder="Please, enter your name"
         autoFocus
       />
 
-      {isNotCorrectValueInput && (
-        <DescriptionError>
-          Invalid name. Please check your name against the following parameters:
-          <br />
-          Name has length min 3 max 15 characters.
-        </DescriptionError>
+      {errors.username && (
+        <DescriptionError>{errors.username.message}</DescriptionError>
       )}
 
       <StyledButton type="submit" text="OK" />
