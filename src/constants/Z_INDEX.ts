@@ -1,4 +1,6 @@
 export const Z_INDEX = {
-  carsModal: 10,
+  cardModal: 10,
   checkDelete: 11,
+  cardFormClose: 30,
+  cardForm: 31,
 };

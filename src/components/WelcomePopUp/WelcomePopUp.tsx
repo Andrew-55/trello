@@ -2,16 +2,17 @@ import { COLORS } from "constants/";
 
 import React, { FC } from "react";
 
+import { ErrorMessage } from "components/ErrorMessage";
 import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { Button, Input } from "ui";
-import { checkInputName } from "utils/logic-functions";
+import { checkUsernameValidation } from "utils/logic-functions";
 
 type Props = {
   onUserNameChange: (userName: string) => void;
 };
 
-type Inputs = {
+type WelcomePopUpFormValues = {
   username: string;
 };
 
@@ -20,19 +21,17 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<WelcomePopUpFormValues>({
     mode: "onBlur",
     defaultValues: {
       username: "",
     },
   });
 
-  const onSubmit: SubmitHandler<Inputs> = ({ username }: Inputs) => {
+  const onSubmit: SubmitHandler<WelcomePopUpFormValues> = ({
+    username,
+  }: WelcomePopUpFormValues) => {
     onUserNameChange(username);
-  };
-
-  const handelUsernameValidation = (username: string) => {
-    return checkInputName(username);
   };
 
   return (
@@ -45,18 +44,7 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
             value: 3,
             message: "Name has length  min 3 characters",
           },
-          maxLength: {
-            value: 15,
-            message: "Name has length  max 15 characters",
-          },
-          validate: {
-            value: (value) => {
-              return (
-                handelUsernameValidation(value) ||
-                "Name has length min 3 characters. Spaces at the beginning and end are not counted."
-              );
-            },
-          },
+          validate: checkUsernameValidation,
         })}
         type="text"
         maxLength={15}
@@ -64,9 +52,7 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
         autoFocus
       />
 
-      {errors.username && (
-        <DescriptionError>{errors.username.message}</DescriptionError>
-      )}
+      {errors.username && <ErrorMessage message={errors.username.message} />}
 
       <StyledButton type="submit" text="OK" />
     </Form>
@@ -93,12 +79,6 @@ const TitleBlock = styled.h1`
   font-size: 32px;
   text-transform: uppercase;
   user-select: none;
-  margin-bottom: 30px;
-`;
-
-const DescriptionError = styled.p`
-  font-size: 15px;
-  color: ${COLORS.red};
   margin-bottom: 30px;
 `;
 

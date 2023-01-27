@@ -3,71 +3,105 @@ import { COLORS } from "constants/";
 import React, { FC, useState } from "react";
 
 import { CheckDelete } from "components";
+import { ErrorMessage } from "components/ErrorMessage";
+import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { Button, Textarea } from "ui";
+import { checkStringIsEmpty } from "utils/logic-functions";
 
 type Props = {
   description: string;
   onSaveNewDescriptionCard: (newDescription: string) => void;
 };
 
+type DescriptionFormValues = {
+  description: string;
+};
+
 export const Description: FC<Props> = ({
   description,
   onSaveNewDescriptionCard,
 }) => {
-  const [descriptionCard, setDescriptionCard] = useState(description);
   const [isDescriptionEditEnable, setIsDescriptionEditEnable] = useState(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
 
-  const handleChangeDescription = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setDescriptionCard(event.target.value);
-  };
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      description: description,
+    },
+  });
 
-  const handelClickSaveDescription = () => {
-    onSaveNewDescriptionCard(descriptionCard);
-    setDescriptionCard(descriptionCard);
+  const handleClickCancelSaveDescription = () => {
     setIsDescriptionEditEnable(false);
+    reset();
   };
 
-  const handelClickCanselSaveDescription = () => {
-    setDescriptionCard(description);
-    setIsDescriptionEditEnable(false);
-  };
-
-  const handelClickDeleteDescription = () => {
+  const handleClickDeleteDescription = () => {
     onSaveNewDescriptionCard("");
-    setDescriptionCard("");
+    setValue("description", "");
     setIsConfirmDeleteVisible(false);
   };
 
-  const handelClickCancelDescription = () => {
+  const handleClickCancelDescription = () => {
     setIsConfirmDeleteVisible(false);
+  };
+
+  const onSubmitDescription: SubmitHandler<DescriptionFormValues> = ({
+    description,
+  }: DescriptionFormValues) => {
+    onSaveNewDescriptionCard(description);
+    setIsDescriptionEditEnable(false);
   };
 
   return (
     <Root>
-      <FlexBlock>
-        <TitleDescription>Description</TitleDescription>
-
-        {isDescriptionEditEnable ? (
-          <WrapButton>
-            <Button text="Save" onClick={handelClickSaveDescription} />
-            <Button text="Cancel" onClick={handelClickCanselSaveDescription} />
-          </WrapButton>
-        ) : (
-          <WrapButton>
-            {descriptionCard ? (
+      {isDescriptionEditEnable ? (
+        <form onSubmit={handleSubmit(onSubmitDescription)}>
+          <WrapDescriptionTitle>
+            <TitleDescription>Description</TitleDescription>
+            <WrapButton>
+              <Button text="Save" type="submit" />
+              <Button
+                text="Cancel"
+                onClick={handleClickCancelSaveDescription}
+              />
+            </WrapButton>
+          </WrapDescriptionTitle>
+          <Textarea
+            register={register("description", {
+              validate: checkStringIsEmpty,
+            })}
+            placeholder="Write a description..."
+            autoFocus
+          />
+          {errors.description && (
+            <ErrorMessage message={errors.description.message} />
+          )}
+        </form>
+      ) : (
+        <>
+          <WrapDescriptionTitle>
+            <TitleDescription>Description</TitleDescription>
+            {description ? (
               <>
-                <Button
-                  text="Edit"
-                  onClick={() => setIsDescriptionEditEnable(true)}
-                />
-                <Button
-                  text="Delete"
-                  onClick={() => setIsConfirmDeleteVisible(true)}
-                />
+                <WrapButton>
+                  <Button
+                    text="Edit"
+                    onClick={() => {
+                      setIsDescriptionEditEnable(true);
+                    }}
+                  />
+                  <Button
+                    text="Delete"
+                    onClick={() => setIsConfirmDeleteVisible(true)}
+                  />
+                </WrapButton>
               </>
             ) : (
               <Button
@@ -75,26 +109,16 @@ export const Description: FC<Props> = ({
                 onClick={() => setIsDescriptionEditEnable(true)}
               />
             )}
-          </WrapButton>
-        )}
-      </FlexBlock>
-
-      {isDescriptionEditEnable ? (
-        <Textarea
-          value={descriptionCard}
-          onChange={handleChangeDescription}
-          placeholder="Write a description..."
-          autoFocus
-        />
-      ) : (
-        <TextDescription>{descriptionCard}</TextDescription>
+          </WrapDescriptionTitle>
+          <TextDescription>{description}</TextDescription>
+        </>
       )}
 
       {isConfirmDeleteVisible && (
         <CheckDelete
           question="Do you really want to delete the description?"
-          onClickDelete={handelClickDeleteDescription}
-          onClickCancel={handelClickCancelDescription}
+          onClickDelete={handleClickDeleteDescription}
+          onClickCancel={handleClickCancelDescription}
         />
       )}
     </Root>
@@ -106,7 +130,7 @@ const Root = styled.div`
   margin-bottom: 50px;
 `;
 
-const FlexBlock = styled.div`
+const WrapDescriptionTitle = styled.div`
   display: flex;
   column-gap: 10px;
   align-items: center;

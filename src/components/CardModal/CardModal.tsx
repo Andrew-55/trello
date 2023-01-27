@@ -3,6 +3,9 @@ import { COLORS, Z_INDEX } from "constants/";
 import React, { FC, useEffect, useState } from "react";
 
 import { Comment, Description } from "components";
+import { FormCardModalGetTitleCard } from "components/CardModal";
+import { ErrorMessage } from "components/ErrorMessage";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { CardInterface } from "redux/card";
 import { changeNameCard, changeDescriptionCard } from "redux/card";
 import { getColumnNameByColumnId } from "redux/column";
@@ -10,12 +13,17 @@ import { addComment, getCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import { getUsername } from "redux/user";
 import styled from "styled-components";
-import { SvgCheckMark, SvgClose, SvgPencil } from "svg";
-import { Button, ButtonIcon, Input, Textarea } from "ui";
+import { SvgClose, SvgPencil } from "svg";
+import { Button, ButtonIcon, Textarea } from "ui";
+import { checkStringIsEmpty } from "utils/logic-functions";
 
 type Props = {
   card: CardInterface;
   onActiveCardModel: () => void;
+};
+
+type CommentFormValues = {
+  newCommentCard: string;
 };
 
 export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
@@ -23,9 +31,20 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
   const username = useAppSelector(getUsername);
   const columnName = useAppSelector(getColumnNameByColumnId(card.columnId));
 
-  const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
-  const [newCommentCard, setNewCommentCard] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    reset,
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      newCommentCard: "",
+    },
+  });
 
   const dispatch = useAppDispatch();
   const { id } = card;
@@ -44,31 +63,20 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
     dispatch(changeDescriptionCard({ id, newDescription }));
   };
 
-  const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleCard(event.target.value);
-  };
-
-  const handleChangeNewComment = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setNewCommentCard(event.target.value);
-  };
-
-  const handelClickSaveTitleCard = () => {
+  const handleGetCartNameForm = (titleCard: string) => {
     dispatch(changeNameCard({ id, titleCard }));
     setIsTitleCardEditEnable(false);
   };
 
-  const handelClickSaveNewComment = () => {
-    if (newCommentCard.trim().length) {
-      dispatch(addComment({ id, username, newCommentCard }));
-      setNewCommentCard("");
-    }
-    setNewCommentCard("");
+  const handleCloseTitleCardEdit = () => {
+    setIsTitleCardEditEnable(false);
   };
 
-  const handelClickCanselNewComment = () => {
-    setNewCommentCard("");
+  const onSubmit: SubmitHandler<CommentFormValues> = ({
+    newCommentCard,
+  }: CommentFormValues) => {
+    dispatch(addComment({ id, username, newCommentCard }));
+    setValue("newCommentCard", "");
   };
 
   return (
@@ -79,13 +87,11 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
         <NameAuthor>Status: {columnName}</NameAuthor>
 
         {isTitleCardEditEnable ? (
-          <FlexBlock>
-            <StyledInput value={titleCard} onChange={handleChangeCardName} />
-            <StyledButtonIcon
-              icon={<SvgCheckMark />}
-              onClick={handelClickSaveTitleCard}
-            />
-          </FlexBlock>
+          <FormCardModalGetTitleCard
+            title={card.title}
+            onGetCartNameForm={handleGetCartNameForm}
+            onCloseTitleCardEdit={handleCloseTitleCardEdit}
+          />
         ) : (
           <FlexBlock>
             <TitleBlock>{card.title}</TitleBlock>
@@ -106,20 +112,34 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
         />
         <>
           <TitleComment>Comments</TitleComment>
-          <StyledTextArea
-            value={newCommentCard}
-            onChange={handleChangeNewComment}
-            placeholder="Write a comment ...."
-          />
-          <WrapButton>
-            <StyledButton text="Add" onClick={handelClickSaveNewComment} />
-            <StyledButton text="Cancel" onClick={handelClickCanselNewComment} />
-          </WrapButton>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <StyledTextArea
+              register={register("newCommentCard", {
+                validate: checkStringIsEmpty,
+              })}
+              placeholder="Write a comment ...."
+              autoFocus
+            />
+
+            {errors.newCommentCard && (
+              <ErrorMessage message={errors.newCommentCard.message} />
+            )}
+
+            <WrapButton>
+              <StyledButton text="Add" type="submit" />
+              <StyledButton
+                text="Cancel"
+                type="button"
+                onClick={() => reset()}
+              />
+            </WrapButton>
+          </form>
+
           <ContainerComments>
             <ul>
-              {commentsCard.map((elem) => (
-                <li key={elem.commentId}>
-                  <Comment comment={elem} />
+              {commentsCard.map((comment) => (
+                <li key={comment.commentId}>
+                  <Comment comment={comment} />
                 </li>
               ))}
             </ul>
@@ -142,7 +162,7 @@ const Root = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${COLORS.black1};
-  z-index: ${Z_INDEX.carsModal};
+  z-index: ${Z_INDEX.cardModal};
 `;
 
 const CloseBlock = styled.div`
@@ -217,12 +237,6 @@ const ContainerComments = styled.div`
   max-height: 300px;
   overflow: hidden;
   overflow-y: auto;
-`;
-
-const StyledInput = styled(Input)`
-  font-size: 15px;
-  width: 50%;
-  margin-bottom: 20px;
 `;
 
 const NameAuthor = styled.p`

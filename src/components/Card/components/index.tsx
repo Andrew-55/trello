@@ -1,0 +1,1 @@
+export { FormGetTitleCard } from "./FormGetTitleCard";

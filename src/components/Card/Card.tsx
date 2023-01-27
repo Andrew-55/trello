@@ -3,49 +3,43 @@ import { COLORS } from "constants/";
 import React, { FC, useState } from "react";
 
 import { CardModal, CheckDelete } from "components";
+import { FormGetTitleCard } from "components/Card";
 import { CardInterface } from "redux/card";
 import { deleteCard, changeNameCard } from "redux/card";
 import { getCountCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { SvgComment, SvgDelete, SvgPencil } from "svg";
-import { Button, ButtonIcon, Input } from "ui";
+import { ButtonIcon } from "ui";
 
 type PropsCard = {
   card: CardInterface;
 };
 
+export type CardNameFormValues = {
+  titleCard: string;
+};
+
 export const Card: FC<PropsCard> = ({ card }) => {
-  const { id } = card ?? {};
+  const { id, title } = card ?? {};
   const countComments = useAppSelector(getCountCommentsByCardId(id));
 
-  const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
   const [isCardModalVisible, setIsCardModalVisible] = useState(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
 
   const dispatch = useAppDispatch();
 
-  const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleCard(event.target.value);
-  };
-
   const handleActiveCardModel = () => {
     setIsCardModalVisible((prevState) => !prevState);
   };
 
-  const handleClickEditTitleCard = () => {
-    setTitleCard(card.title);
-    setIsTitleCardEditEnable(true);
-  };
-
-  const handelClickSaveTitleCard = () => {
-    dispatch(changeNameCard({ id, titleCard }));
+  const handleCloseTitleCardEdit = () => {
     setIsTitleCardEditEnable(false);
   };
 
-  const handelCliclCancelSaveTitleCard = () => {
-    setTitleCard(card.title);
+  const handleGetCartNameForm = (titleCard: string) => {
+    dispatch(changeNameCard({ id, titleCard }));
     setIsTitleCardEditEnable(false);
   };
 
@@ -54,7 +48,7 @@ export const Card: FC<PropsCard> = ({ card }) => {
     setIsConfirmDeleteVisible(false);
   };
 
-  const handelClickCancelCard = () => {
+  const handleClickCancelDeleteCard = () => {
     setIsConfirmDeleteVisible(false);
   };
 
@@ -62,29 +56,23 @@ export const Card: FC<PropsCard> = ({ card }) => {
     <>
       <Root>
         {isTitleCardEditEnable ? (
-          <>
-            <StyledInput
-              value={titleCard}
-              onChange={handleChangeCardName}
-              autoFocus
-            />
-            <WrapButton>
-              <Button text="Save" onClick={handelClickSaveTitleCard} />
-              <Button text="Cancel" onClick={handelCliclCancelSaveTitleCard} />
-            </WrapButton>
-          </>
+          <FormGetTitleCard
+            title={card.title}
+            onCloseTitleCardEdit={handleCloseTitleCardEdit}
+            onGetCartNameForm={handleGetCartNameForm}
+          />
         ) : (
           <>
             <ButtonPencil
               icon={<SvgPencil />}
-              onClick={handleClickEditTitleCard}
+              onClick={() => setIsTitleCardEditEnable(true)}
             />
             <ButtonDelete
               icon={<SvgDelete />}
               onClick={() => setIsConfirmDeleteVisible(true)}
             />
             <WrapContentCard onClick={() => setIsCardModalVisible(true)}>
-              <TitleCard>{card.title}</TitleCard>
+              <TitleCard>{title}</TitleCard>
 
               {!!countComments && (
                 <FlexBlock>
@@ -101,7 +89,7 @@ export const Card: FC<PropsCard> = ({ card }) => {
         <CheckDelete
           question="Do you really want to delete the card?"
           onClickDelete={handelClickDeleteCard}
-          onClickCancel={handelClickCancelCard}
+          onClickCancel={handleClickCancelDeleteCard}
         />
       )}
 
@@ -160,20 +148,8 @@ const ButtonDelete = styled(ButtonIcon)`
   }
 `;
 
-const WrapButton = styled.div`
-  display: flex;
-  column-gap: 15px;
-  justify-content: center;
-`;
-
 const TitleCard = styled.h3`
   margin-bottom: 25px;
   max-width: 85%;
   overflow-wrap: break-word;
-`;
-
-const StyledInput = styled(Input)`
-  font-size: 15px;
-  width: 100%;
-  margin-bottom: 20px;
 `;
