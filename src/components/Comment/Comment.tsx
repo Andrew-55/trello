@@ -39,20 +39,20 @@ export const Comment: FC<PropsComment> = ({ comment }) => {
     },
   });
 
-  const handleClickDeleteComment = () => {
+  const handleDeleteClick = () => {
     dispatch(deleteComment(commentId));
   };
 
-  const handleClickCancelDeleteComment = () => {
+  const handleCancelClick = () => {
     setIsConfirmDeleteVisible(false);
   };
 
-  const handleClickCancelCommentEdit = () => {
+  const handleCancelEdit = () => {
     setIsCommentEditEnable(false);
     reset();
   };
 
-  const onSubmitComment: SubmitHandler<CommentFormValues> = ({
+  const onSubmit: SubmitHandler<CommentFormValues> = ({
     textComment,
   }: CommentFormValues) => {
     dispatch(changeComment({ commentId, textComment }));
@@ -64,7 +64,7 @@ export const Comment: FC<PropsComment> = ({ comment }) => {
       <AuthorComment>{comment.author}</AuthorComment>
 
       {isCommentEditEnable ? (
-        <form onSubmit={handleSubmit(onSubmitComment)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Textarea
             register={register("textComment", {
               validate: checkStringIsEmpty,
@@ -74,22 +74,19 @@ export const Comment: FC<PropsComment> = ({ comment }) => {
             <ErrorMessage message={errors.textComment.message} />
           )}
           <WrapButton>
-            <ButtonCommentClick text="Save" type="submit" />
-            <ButtonCommentClick
-              text="Cancel"
-              onClick={handleClickCancelCommentEdit}
-            />
+            <StyledButton text="Save" type="submit" />
+            <StyledButton text="Cancel" onClick={handleCancelEdit} />
           </WrapButton>
         </form>
       ) : (
         <>
           <TextComment>{comment.content}</TextComment>
           <WrapButton>
-            <ButtonCommentClick
+            <StyledButton
               text="Edit"
               onClick={() => setIsCommentEditEnable(true)}
             />
-            <ButtonCommentClick
+            <StyledButton
               text="Delete"
               onClick={() => setIsConfirmDeleteVisible(true)}
             />
@@ -100,8 +97,8 @@ export const Comment: FC<PropsComment> = ({ comment }) => {
       {isConfirmDeleteVisible && (
         <CheckDelete
           question="Do you really want to delete the comment?"
-          onClickDelete={handleClickDeleteComment}
-          onClickCancel={handleClickCancelDeleteComment}
+          onDeleteClick={handleDeleteClick}
+          onCancelClick={handleCancelClick}
         />
       )}
     </Root>
@@ -128,7 +125,7 @@ const TextComment = styled.p`
   overflow-wrap: break-word;
 `;
 
-const ButtonCommentClick = styled(Button)`
+const StyledButton = styled(Button)`
   color: ${COLORS.gray};
   padding: 0 10px;
   text-decoration: underline;

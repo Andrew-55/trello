@@ -3,27 +3,21 @@ import { COLORS, Z_INDEX } from "constants/";
 import React, { FC, useEffect, useState } from "react";
 
 import { Comment, Description } from "components";
-import { FormCardModalGetTitleCard } from "components/CardModal";
-import { ErrorMessage } from "components/ErrorMessage";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { EditTitleCard } from "components/Card/";
+import { AddCommentForm, CardModalCardTitleForm } from "components/CardModal";
 import { CardInterface } from "redux/card";
-import { changeNameCard, changeDescriptionCard } from "redux/card";
+import { changeDescriptionCard } from "redux/card";
 import { getColumnNameByColumnId } from "redux/column";
 import { addComment, getCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import { getUsername } from "redux/user";
 import styled from "styled-components";
 import { SvgClose, SvgPencil } from "svg";
-import { Button, ButtonIcon, Textarea } from "ui";
-import { checkStringIsEmpty } from "utils/logic-functions";
+import { ButtonIcon } from "ui";
 
 type Props = {
   card: CardInterface;
   onActiveCardModel: () => void;
-};
-
-type CommentFormValues = {
-  newCommentCard: string;
 };
 
 export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
@@ -33,50 +27,29 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
 
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    reset,
-  } = useForm({
-    mode: "onSubmit",
-    defaultValues: {
-      newCommentCard: "",
-    },
-  });
-
   const dispatch = useAppDispatch();
   const { id } = card;
 
   useEffect(() => {
-    const handelPushEsc = (e: any) => {
+    const handlePushEsc = (e: any) => {
       if (e.keyCode === 27) {
         onActiveCardModel();
       }
     };
-    document.body.addEventListener("keydown", handelPushEsc);
-    return () => document.body.removeEventListener("keydown", handelPushEsc);
+    document.body.addEventListener("keydown", handlePushEsc);
+    return () => document.body.removeEventListener("keydown", handlePushEsc);
   });
 
-  const handleSaveNewDescriptionCard = (newDescription: string) => {
+  const handleSaveDescriptionCard = (newDescription: string) => {
     dispatch(changeDescriptionCard({ id, newDescription }));
-  };
-
-  const handleGetCartNameForm = (titleCard: string) => {
-    dispatch(changeNameCard({ id, titleCard }));
-    setIsTitleCardEditEnable(false);
   };
 
   const handleCloseTitleCardEdit = () => {
     setIsTitleCardEditEnable(false);
   };
 
-  const onSubmit: SubmitHandler<CommentFormValues> = ({
-    newCommentCard,
-  }: CommentFormValues) => {
+  const handleSaveNewComment = (newCommentCard: string) => {
     dispatch(addComment({ id, username, newCommentCard }));
-    setValue("newCommentCard", "");
   };
 
   return (
@@ -87,10 +60,10 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
         <NameAuthor>Status: {columnName}</NameAuthor>
 
         {isTitleCardEditEnable ? (
-          <FormCardModalGetTitleCard
-            title={card.title}
-            onGetCartNameForm={handleGetCartNameForm}
-            onCloseTitleCardEdit={handleCloseTitleCardEdit}
+          <EditTitleCard
+            card={card}
+            onClose={handleCloseTitleCardEdit}
+            Form={CardModalCardTitleForm}
           />
         ) : (
           <FlexBlock>
@@ -108,33 +81,11 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
         />
         <Description
           description={card.description}
-          onSaveNewDescriptionCard={handleSaveNewDescriptionCard}
+          onSaveDescriptionCard={handleSaveDescriptionCard}
         />
         <>
           <TitleComment>Comments</TitleComment>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <StyledTextArea
-              register={register("newCommentCard", {
-                validate: checkStringIsEmpty,
-              })}
-              placeholder="Write a comment ...."
-              autoFocus
-            />
-
-            {errors.newCommentCard && (
-              <ErrorMessage message={errors.newCommentCard.message} />
-            )}
-
-            <WrapButton>
-              <StyledButton text="Add" type="submit" />
-              <StyledButton
-                text="Cancel"
-                type="button"
-                onClick={() => reset()}
-              />
-            </WrapButton>
-          </form>
-
+          <AddCommentForm onConfirm={handleSaveNewComment} />
           <ContainerComments>
             <ul>
               {commentsCard.map((comment) => (
@@ -165,12 +116,14 @@ const Root = styled.div`
   z-index: ${Z_INDEX.cardModal};
 `;
 
-const CloseBlock = styled.div`
+const CloseBlock = styled.button`
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
+  background: none;
+  border: none;
 `;
 
 const CardModalBlock = styled.div`
@@ -214,12 +167,6 @@ const StyledButtonIcon = styled(ButtonIcon)`
   }
 `;
 
-const StyledTextArea = styled(Textarea)`
-  margin-left: 20px;
-  width: 95%;
-  margin-bottom: 10px;
-`;
-
 const TitleBlock = styled.h1`
   color: ${COLORS.white_smoke};
   font-size: 32px;
@@ -241,16 +188,5 @@ const ContainerComments = styled.div`
 
 const NameAuthor = styled.p`
   max-width: 90%;
-  margin-bottom: 20px;
-`;
-
-const StyledButton = styled(Button)`
-  min-width: 80px;
-`;
-
-const WrapButton = styled.div`
-  display: flex;
-  column-gap: 15px;
-  justify-content: center;
   margin-bottom: 20px;
 `;

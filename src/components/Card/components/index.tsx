@@ -1,1 +1,2 @@
-export { FormGetTitleCard } from "./FormGetTitleCard";
+export { CardTitleForm } from "./CardTitleForm";
+export { EditTitleCard } from "./EditTitleCard";

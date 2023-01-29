@@ -15,4 +15,8 @@ export default createGlobalStyle`
     list-style: none;
     padding: 0;
   }
+  
+  input, textarea {
+    outline: 0;
+  }
 `;

@@ -11,18 +11,18 @@ import { checkStringIsEmpty } from "utils/logic-functions";
 
 type Props = {
   title: string;
-  onCloseTitleCardEdit: () => void;
-  onGetCartNameForm: (titleCard: string) => void;
+  onClose: () => void;
+  onConfirm: (titleCard: string) => void;
 };
 
 export type CardNameFormValues = {
   titleCard: string;
 };
 
-export const FormCardModalGetTitleCard: FC<Props> = ({
+export const CardModalCardTitleForm: FC<Props> = ({
   title,
-  onCloseTitleCardEdit,
-  onGetCartNameForm,
+  onClose,
+  onConfirm,
 }) => {
   const {
     register,
@@ -36,20 +36,20 @@ export const FormCardModalGetTitleCard: FC<Props> = ({
     },
   });
 
-  const handleClickCancelSaveTitleCard = () => {
-    onCloseTitleCardEdit();
+  const handleSaveCancel = () => {
+    onClose();
     reset();
   };
 
   const onSubmit: SubmitHandler<CardNameFormValues> = ({
     titleCard,
   }: CardNameFormValues) => {
-    onGetCartNameForm(titleCard);
+    onConfirm(titleCard);
   };
 
   return (
     <>
-      <CloseForm onClick={handleClickCancelSaveTitleCard} />
+      <CloseForm onClick={handleSaveCancel} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <WrapInputBlock>
           <StyledInput
@@ -74,12 +74,14 @@ export const FormCardModalGetTitleCard: FC<Props> = ({
   );
 };
 
-const CloseForm = styled.div`
+const CloseForm = styled.button`
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
+  background: none;
+  border: none;
 `;
 
 const WrapInputBlock = styled.div`

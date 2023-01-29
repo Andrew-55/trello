@@ -1,2 +1,2 @@
 export { CardModal } from "./CardModal";
-export { FormCardModalGetTitleCard } from "./components";
+export { CardModalCardTitleForm, AddCommentForm } from "./components";

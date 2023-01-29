@@ -10,19 +10,15 @@ import { checkStringIsEmpty } from "utils/logic-functions";
 
 type Props = {
   title: string;
-  onCloseTitleCardEdit: () => void;
-  onGetCartNameForm: (titleCard: string) => void;
+  onClose: () => void;
+  onConfirm: (titleCard: string) => void;
 };
 
 export type CardNameFormValues = {
   titleCard: string;
 };
 
-export const FormGetTitleCard: FC<Props> = ({
-  title,
-  onCloseTitleCardEdit,
-  onGetCartNameForm,
-}) => {
+export const CardTitleForm: FC<Props> = ({ title, onClose, onConfirm }) => {
   const {
     register,
     handleSubmit,
@@ -35,20 +31,20 @@ export const FormGetTitleCard: FC<Props> = ({
     },
   });
 
-  const handleClickCancelSaveTitleCard = () => {
-    onCloseTitleCardEdit();
+  const handleSaveCancel = () => {
+    onClose();
     reset();
   };
 
   const onSubmit: SubmitHandler<CardNameFormValues> = ({
     titleCard,
   }: CardNameFormValues) => {
-    onGetCartNameForm(titleCard);
+    onConfirm(titleCard);
   };
 
   return (
     <>
-      <CloseForm onClick={handleClickCancelSaveTitleCard} />
+      <CloseForm onClick={handleSaveCancel} />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <StyledLegend>Title Card:</StyledLegend>
         <StyledInput
@@ -68,24 +64,22 @@ export const FormGetTitleCard: FC<Props> = ({
         )}
         <WrapButton>
           <Button text="Save" type="submit" />
-          <Button
-            text="Cancel"
-            type="button"
-            onClick={handleClickCancelSaveTitleCard}
-          />
+          <Button text="Cancel" type="button" onClick={handleSaveCancel} />
         </WrapButton>
       </Form>
     </>
   );
 };
 
-const CloseForm = styled.div`
+const CloseForm = styled.button`
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   z-index: ${Z_INDEX.cardFormClose};
+  background: none;
+  border: none;
 `;
 
 const Form = styled.form`

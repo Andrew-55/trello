@@ -3,7 +3,7 @@ import { COLORS } from "constants/COLORS";
 import React, { useState, FC } from "react";
 
 import { Card } from "components";
-import { FormGetTitleCard } from "components/Card/";
+import { CardTitleForm } from "components/Card/";
 import { ErrorMessage } from "components/ErrorMessage";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { addCard, getCardsByColumnId } from "redux/card";
@@ -44,11 +44,11 @@ export const Column: FC<Props> = ({ item }) => {
 
   const dispactch = useAppDispatch();
 
-  const handleCloseAddTitleCard = () => {
+  const handleCloseAddCard = () => {
     setIsAddNewCard(false);
   };
 
-  const handleGetCartNameForm = (titleCard: string) => {
+  const handleGetCardName = (titleCard: string) => {
     dispactch(addCard({ columnId, nameNewCard: titleCard, username }));
     setIsAddNewCard(false);
   };
@@ -76,6 +76,7 @@ export const Column: FC<Props> = ({ item }) => {
             autoFocus
             onBlur={handleSubmit(onSubmit)}
           />
+          <InputSubmit type="submit" />
 
           {errors.columnName && (
             <ErrorMessage message={errors.columnName.message} />
@@ -97,10 +98,10 @@ export const Column: FC<Props> = ({ item }) => {
       </ul>
 
       {isAddNewCard ? (
-        <FormGetTitleCard
+        <CardTitleForm
           title=""
-          onCloseTitleCardEdit={handleCloseAddTitleCard}
-          onGetCartNameForm={handleGetCartNameForm}
+          onClose={handleCloseAddCard}
+          onConfirm={handleGetCardName}
         />
       ) : (
         <ButtonAddColumn
@@ -164,4 +165,10 @@ const InputColumnName = styled(Input)`
   font-size: 20px;
   margin-bottom: 20px;
   margin-right: 10px;
+`;
+
+const InputSubmit = styled.input`
+  width: 0;
+  height: 0;
+  opacity: 0;
 `;

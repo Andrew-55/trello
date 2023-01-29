@@ -1,2 +1,2 @@
 export { Card } from "./Card";
-export { FormGetTitleCard } from "./components/FormGetTitleCard";
+export { CardTitleForm, EditTitleCard } from "./components/";

@@ -7,21 +7,21 @@ import { Button } from "ui";
 
 type Props = {
   question: string;
-  onClickDelete: () => void;
-  onClickCancel: () => void;
+  onDeleteClick: () => void;
+  onCancelClick: () => void;
 };
 
 export const CheckDelete: FC<Props> = ({
   question,
-  onClickDelete,
-  onClickCancel,
+  onDeleteClick,
+  onCancelClick,
 }) => {
   return (
     <Root>
       <TitleCheckDelete>{question}</TitleCheckDelete>
       <WrapButton>
-        <Button text="Yes" onClick={onClickDelete} />
-        <Button text="Cancel" onClick={onClickCancel} />
+        <Button text="Yes" onClick={onDeleteClick} />
+        <Button text="Cancel" onClick={onCancelClick} />
       </WrapButton>
     </Root>
   );

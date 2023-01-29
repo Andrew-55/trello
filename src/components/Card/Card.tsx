@@ -3,28 +3,24 @@ import { COLORS } from "constants/";
 import React, { FC, useState } from "react";
 
 import { CardModal, CheckDelete } from "components";
-import { FormGetTitleCard } from "components/Card";
+import { EditTitleCard, CardTitleForm } from "components/Card";
 import { CardInterface } from "redux/card";
-import { deleteCard, changeNameCard } from "redux/card";
+import { deleteCard } from "redux/card";
 import { getCountCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { SvgComment, SvgDelete, SvgPencil } from "svg";
 import { ButtonIcon } from "ui";
 
-type PropsCard = {
+type Props = {
   card: CardInterface;
 };
 
-export type CardNameFormValues = {
-  titleCard: string;
-};
-
-export const Card: FC<PropsCard> = ({ card }) => {
+export const Card: FC<Props> = ({ card }) => {
   const { id, title } = card ?? {};
   const countComments = useAppSelector(getCountCommentsByCardId(id));
 
-  const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
+  const [isTitleEditEnable, setIsTitleEditEnable] = useState(false);
   const [isCardModalVisible, setIsCardModalVisible] = useState(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
 
@@ -34,38 +30,33 @@ export const Card: FC<PropsCard> = ({ card }) => {
     setIsCardModalVisible((prevState) => !prevState);
   };
 
-  const handleCloseTitleCardEdit = () => {
-    setIsTitleCardEditEnable(false);
+  const handleCloseTitleEdit = () => {
+    setIsTitleEditEnable(false);
   };
 
-  const handleGetCartNameForm = (titleCard: string) => {
-    dispatch(changeNameCard({ id, titleCard }));
-    setIsTitleCardEditEnable(false);
-  };
-
-  const handelClickDeleteCard = () => {
+  const handleDeleteClick = () => {
     dispatch(deleteCard(id));
     setIsConfirmDeleteVisible(false);
   };
 
-  const handleClickCancelDeleteCard = () => {
+  const handleCancelClick = () => {
     setIsConfirmDeleteVisible(false);
   };
 
   return (
     <>
       <Root>
-        {isTitleCardEditEnable ? (
-          <FormGetTitleCard
-            title={card.title}
-            onCloseTitleCardEdit={handleCloseTitleCardEdit}
-            onGetCartNameForm={handleGetCartNameForm}
+        {isTitleEditEnable ? (
+          <EditTitleCard
+            card={card}
+            onClose={handleCloseTitleEdit}
+            Form={CardTitleForm}
           />
         ) : (
           <>
             <ButtonPencil
               icon={<SvgPencil />}
-              onClick={() => setIsTitleCardEditEnable(true)}
+              onClick={() => setIsTitleEditEnable(true)}
             />
             <ButtonDelete
               icon={<SvgDelete />}
@@ -88,8 +79,8 @@ export const Card: FC<PropsCard> = ({ card }) => {
       {isConfirmDeleteVisible && (
         <CheckDelete
           question="Do you really want to delete the card?"
-          onClickDelete={handelClickDeleteCard}
-          onClickCancel={handleClickCancelDeleteCard}
+          onDeleteClick={handleDeleteClick}
+          onCancelClick={handleCancelClick}
         />
       )}
 

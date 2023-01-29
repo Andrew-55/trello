@@ -11,7 +11,7 @@ import { checkStringIsEmpty } from "utils/logic-functions";
 
 type Props = {
   description: string;
-  onSaveNewDescriptionCard: (newDescription: string) => void;
+  onSaveDescriptionCard: (newDescription: string) => void;
 };
 
 type DescriptionFormValues = {
@@ -20,7 +20,7 @@ type DescriptionFormValues = {
 
 export const Description: FC<Props> = ({
   description,
-  onSaveNewDescriptionCard,
+  onSaveDescriptionCard,
 }) => {
   const [isDescriptionEditEnable, setIsDescriptionEditEnable] = useState(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
@@ -37,40 +37,37 @@ export const Description: FC<Props> = ({
     },
   });
 
-  const handleClickCancelSaveDescription = () => {
+  const handleSaveCancel = () => {
     setIsDescriptionEditEnable(false);
     reset();
   };
 
-  const handleClickDeleteDescription = () => {
-    onSaveNewDescriptionCard("");
+  const handleDeleteClick = () => {
+    onSaveDescriptionCard("");
     setValue("description", "");
     setIsConfirmDeleteVisible(false);
   };
 
-  const handleClickCancelDescription = () => {
+  const handleCancelClick = () => {
     setIsConfirmDeleteVisible(false);
   };
 
-  const onSubmitDescription: SubmitHandler<DescriptionFormValues> = ({
+  const onSubmit: SubmitHandler<DescriptionFormValues> = ({
     description,
   }: DescriptionFormValues) => {
-    onSaveNewDescriptionCard(description);
+    onSaveDescriptionCard(description);
     setIsDescriptionEditEnable(false);
   };
 
   return (
     <Root>
       {isDescriptionEditEnable ? (
-        <form onSubmit={handleSubmit(onSubmitDescription)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <WrapDescriptionTitle>
             <TitleDescription>Description</TitleDescription>
             <WrapButton>
               <Button text="Save" type="submit" />
-              <Button
-                text="Cancel"
-                onClick={handleClickCancelSaveDescription}
-              />
+              <Button text="Cancel" onClick={handleSaveCancel} />
             </WrapButton>
           </WrapDescriptionTitle>
           <Textarea
@@ -117,8 +114,8 @@ export const Description: FC<Props> = ({
       {isConfirmDeleteVisible && (
         <CheckDelete
           question="Do you really want to delete the description?"
-          onClickDelete={handleClickDeleteDescription}
-          onClickCancel={handleClickCancelDescription}
+          onDeleteClick={handleDeleteClick}
+          onCancelClick={handleCancelClick}
         />
       )}
     </Root>
