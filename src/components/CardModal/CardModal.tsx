@@ -31,13 +31,14 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
   const { id } = card;
 
   useEffect(() => {
-    const handlePushEsc = (event: KeyboardEvent) => {
+    const handleEscapePress = (event: KeyboardEvent) => {
       if (event.code === "Escape") {
         onActiveCardModel();
       }
     };
-    document.body.addEventListener("keydown", handlePushEsc);
-    return () => document.body.removeEventListener("keydown", handlePushEsc);
+    document.body.addEventListener("keydown", handleEscapePress);
+    return () =>
+      document.body.removeEventListener("keydown", handleEscapePress);
   });
 
   const handleSaveDescriptionCard = (newDescription: string) => {

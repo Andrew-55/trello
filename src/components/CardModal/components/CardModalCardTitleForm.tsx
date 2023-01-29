@@ -2,6 +2,7 @@ import { COLORS } from "constants/";
 
 import React, { FC } from "react";
 
+import { CardTitleFormProps } from "components/Card";
 import { ErrorMessage } from "components/ErrorMessage";
 import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
@@ -9,18 +10,12 @@ import { SvgCheckMark } from "svg";
 import { ButtonIcon, Input } from "ui";
 import { checkStringIsEmpty } from "utils/logic-functions";
 
-type Props = {
-  title: string;
-  onClose: () => void;
-  onConfirm: (titleCard: string) => void;
-};
-
 export type CardNameFormValues = {
   titleCard: string;
 };
 
-export const CardModalCardTitleForm: FC<Props> = ({
-  title,
+export const CardModalCardTitleForm: FC<CardTitleFormProps> = ({
+  initialValues,
   onClose,
   onConfirm,
 }) => {
@@ -32,7 +27,7 @@ export const CardModalCardTitleForm: FC<Props> = ({
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
-      titleCard: title,
+      titleCard: initialValues,
     },
   });
 

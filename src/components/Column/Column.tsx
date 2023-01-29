@@ -81,9 +81,7 @@ export const Column: FC<Props> = ({ item }) => {
             type="text"
             autoFocus
             onBlur={handleSubmit(onSubmit)}
-            onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) =>
-              handleKeyDown(event)
-            }
+            onKeyDown={handleKeyDown}
           />
 
           {errors.columnName && (
@@ -107,7 +105,7 @@ export const Column: FC<Props> = ({ item }) => {
 
       {isAddNewCard ? (
         <CardTitleForm
-          title=""
+          initialValues=""
           onClose={handleCloseAddCard}
           onConfirm={handleGetCardName}
         />

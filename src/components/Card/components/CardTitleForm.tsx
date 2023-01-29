@@ -2,23 +2,22 @@ import { Z_INDEX } from "constants/";
 
 import React, { FC } from "react";
 
+import { CardTitleFormProps } from "components/Card";
 import { ErrorMessage } from "components/ErrorMessage";
 import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { Button, Input } from "ui";
 import { checkStringIsEmpty } from "utils/logic-functions";
 
-type Props = {
-  title: string;
-  onClose: () => void;
-  onConfirm: (titleCard: string) => void;
-};
-
 export type CardNameFormValues = {
   titleCard: string;
 };
 
-export const CardTitleForm: FC<Props> = ({ title, onClose, onConfirm }) => {
+export const CardTitleForm: FC<CardTitleFormProps> = ({
+  initialValues,
+  onClose,
+  onConfirm,
+}) => {
   const {
     register,
     handleSubmit,
@@ -27,7 +26,7 @@ export const CardTitleForm: FC<Props> = ({ title, onClose, onConfirm }) => {
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
-      titleCard: title,
+      titleCard: initialValues,
     },
   });
 

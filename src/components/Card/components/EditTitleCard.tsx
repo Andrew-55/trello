@@ -4,15 +4,11 @@ import { CardInterface } from "redux/card";
 import { changeNameCard } from "redux/card";
 import { useAppDispatch } from "redux/hooks";
 
-type FormFCProps = {
-  title: string;
-  onClose: () => void;
-  onConfirm: (titleCard: string) => void;
-};
+import { CardTitleFormProps } from "../types";
 
 type Props = {
   card: CardInterface;
-  Form: React.FC<FormFCProps>;
+  Form: React.FC<CardTitleFormProps>;
   onClose: () => void;
 };
 
@@ -26,5 +22,11 @@ export const EditTitleCard: FC<Props> = ({ card, Form, onClose }) => {
     onClose();
   };
 
-  return <Form title={title} onClose={onClose} onConfirm={handleChangeTitle} />;
+  return (
+    <Form
+      initialValues={title}
+      onClose={onClose}
+      onConfirm={handleChangeTitle}
+    />
+  );
 };
