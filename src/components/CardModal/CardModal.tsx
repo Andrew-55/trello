@@ -31,8 +31,8 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
   const { id } = card;
 
   useEffect(() => {
-    const handlePushEsc = (e: any) => {
-      if (e.keyCode === 27) {
+    const handlePushEsc = (event: KeyboardEvent) => {
+      if (event.code === "Escape") {
         onActiveCardModel();
       }
     };

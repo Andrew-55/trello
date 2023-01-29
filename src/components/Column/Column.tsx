@@ -53,6 +53,12 @@ export const Column: FC<Props> = ({ item }) => {
     setIsAddNewCard(false);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSubmit(onSubmit);
+    }
+  };
+
   const onSubmit: SubmitHandler<ColumnNameFormValues> = ({
     columnName,
   }: ColumnNameFormValues) => {
@@ -75,8 +81,10 @@ export const Column: FC<Props> = ({ item }) => {
             type="text"
             autoFocus
             onBlur={handleSubmit(onSubmit)}
+            onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) =>
+              handleKeyDown(event)
+            }
           />
-          <InputSubmit type="submit" />
 
           {errors.columnName && (
             <ErrorMessage message={errors.columnName.message} />
@@ -165,10 +173,4 @@ const InputColumnName = styled(Input)`
   font-size: 20px;
   margin-bottom: 20px;
   margin-right: 10px;
-`;
-
-const InputSubmit = styled.input`
-  width: 0;
-  height: 0;
-  opacity: 0;
 `;
