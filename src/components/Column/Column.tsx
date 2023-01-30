@@ -51,7 +51,7 @@ export const Column: FC<Props> = ({ item }) => {
 
   const ref = React.useRef<HTMLDivElement>(null);
 
-  useOnClickOutside(ref, handleCloseAddCard);
+  useOnClickOutside(ref, handleCloseAddCard, isAddNewCard);
 
   const handleGetCardName = (titleCard: string) => {
     dispactch(addCard({ columnId, nameNewCard: titleCard, username }));
