@@ -1,5 +1,5 @@
 export type CardTitleFormProps = {
   initialValues: string;
-  onClose: () => void;
+  onCancel?: () => void;
   onConfirm: (titleCard: string) => void;
 };

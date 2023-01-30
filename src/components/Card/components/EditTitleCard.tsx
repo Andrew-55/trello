@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 
+import { useOnClickOutside } from "hoc";
 import { CardInterface } from "redux/card";
 import { changeNameCard } from "redux/card";
 import { useAppDispatch } from "redux/hooks";
@@ -22,11 +23,17 @@ export const EditTitleCard: FC<Props> = ({ card, Form, onClose }) => {
     onClose();
   };
 
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(ref, onClose);
+
   return (
-    <Form
-      initialValues={title}
-      onClose={onClose}
-      onConfirm={handleChangeTitle}
-    />
+    <div ref={ref}>
+      <Form
+        initialValues={title}
+        onCancel={onClose}
+        onConfirm={handleChangeTitle}
+      />
+    </div>
   );
 };

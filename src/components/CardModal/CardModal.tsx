@@ -5,6 +5,7 @@ import React, { FC, useEffect, useState } from "react";
 import { Comment, Description } from "components";
 import { EditTitleCard } from "components/Card/";
 import { AddCommentForm, CardModalCardTitleForm } from "components/CardModal";
+import { useOnClickOutside } from "hoc";
 import { CardInterface } from "redux/card";
 import { changeDescriptionCard } from "redux/card";
 import { getColumnNameByColumnId } from "redux/column";
@@ -53,28 +54,33 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
     dispatch(addComment({ id, username, newCommentCard }));
   };
 
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(ref, onActiveCardModel);
+
   return (
     <Root>
-      <CloseBlock onClick={onActiveCardModel} />
-      <CardModalBlock>
+      <CardModalBlock ref={ref}>
         <NameAuthor>Create by: {card.author}</NameAuthor>
         <NameAuthor>Status: {columnName}</NameAuthor>
 
-        {isTitleCardEditEnable ? (
-          <EditTitleCard
-            card={card}
-            onClose={handleCloseTitleCardEdit}
-            Form={CardModalCardTitleForm}
-          />
-        ) : (
-          <FlexBlock>
-            <TitleBlock>{card.title}</TitleBlock>
-            <StyledButtonIcon
-              icon={<SvgPencil />}
-              onClick={() => setIsTitleCardEditEnable(true)}
+        <WrapCardTitle>
+          {isTitleCardEditEnable ? (
+            <EditTitleCard
+              card={card}
+              onClose={handleCloseTitleCardEdit}
+              Form={CardModalCardTitleForm}
             />
-          </FlexBlock>
-        )}
+          ) : (
+            <FlexBlock>
+              <TitleBlock>{card.title}</TitleBlock>
+              <StyledButtonIcon
+                icon={<SvgPencil />}
+                onClick={() => setIsTitleCardEditEnable(true)}
+              />
+            </FlexBlock>
+          )}
+        </WrapCardTitle>
 
         <StyledButtonIconClose
           icon={<SvgClose />}
@@ -117,16 +123,6 @@ const Root = styled.div`
   z-index: ${Z_INDEX.cardModal};
 `;
 
-const CloseBlock = styled.button`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: none;
-  border: none;
-`;
-
 const CardModalBlock = styled.div`
   position: relative;
   width: 60%;
@@ -134,6 +130,10 @@ const CardModalBlock = styled.div`
   padding: 30px;
   border-radius: 5px;
   background-color: ${COLORS.zambezi};
+`;
+
+const WrapCardTitle = styled.div`
+  width: fit-content;
 `;
 
 const FlexBlock = styled.div`

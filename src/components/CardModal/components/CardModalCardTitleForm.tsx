@@ -16,7 +16,6 @@ export type CardNameFormValues = {
 
 export const CardModalCardTitleForm: FC<CardTitleFormProps> = ({
   initialValues,
-  onClose,
   onConfirm,
 }) => {
   const {
@@ -44,41 +43,26 @@ export const CardModalCardTitleForm: FC<CardTitleFormProps> = ({
   };
 
   return (
-    <>
-      <CloseForm onClick={onClose} />
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <WrapInputBlock>
-          <StyledInput
-            {...register("titleCard", {
-              maxLength: {
-                value: 25,
-                message: "Name is too length, max 25 characters",
-              },
-              validate: checkStringIsEmpty,
-            })}
-            placeholder="Enter a name of card..."
-            type="text"
-            autoFocus
-          />
-          <StyledButtonIcon icon={<SvgCheckMark />} type="submit" />
-        </WrapInputBlock>
-        {errors.titleCard && (
-          <ErrorMessage message={errors.titleCard.message} />
-        )}
-      </form>
-    </>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <WrapInputBlock>
+        <StyledInput
+          {...register("titleCard", {
+            maxLength: {
+              value: 25,
+              message: "Name is too length, max 25 characters",
+            },
+            validate: checkStringIsEmpty,
+          })}
+          placeholder="Enter a name of card..."
+          type="text"
+          autoFocus
+        />
+        <StyledButtonIcon icon={<SvgCheckMark />} type="submit" />
+      </WrapInputBlock>
+      {errors.titleCard && <ErrorMessage message={errors.titleCard.message} />}
+    </form>
   );
 };
-
-const CloseForm = styled.button`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: none;
-  border: none;
-`;
 
 const WrapInputBlock = styled.div`
   position: relative;

@@ -15,7 +15,7 @@ export type CardNameFormValues = {
 
 export const CardTitleForm: FC<CardTitleFormProps> = ({
   initialValues,
-  onClose,
+  onCancel,
   onConfirm,
 }) => {
   const {
@@ -43,44 +43,28 @@ export const CardTitleForm: FC<CardTitleFormProps> = ({
   };
 
   return (
-    <>
-      <CloseForm onClick={onClose} />
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <StyledLegend>Title Card:</StyledLegend>
-        <StyledInput
-          {...register("titleCard", {
-            maxLength: {
-              value: 25,
-              message: "Name is too length, max 25 characters",
-            },
-            validate: checkStringIsEmpty,
-          })}
-          placeholder="Enter a name of card..."
-          type="text"
-          autoFocus
-        />
-        {errors.titleCard && (
-          <ErrorMessage message={errors.titleCard.message} />
-        )}
-        <WrapButton>
-          <Button text="Save" type="submit" />
-          <Button text="Cancel" type="button" onClick={onClose} />
-        </WrapButton>
-      </Form>
-    </>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <StyledLegend>Title Card:</StyledLegend>
+      <StyledInput
+        {...register("titleCard", {
+          maxLength: {
+            value: 25,
+            message: "Name is too length, max 25 characters",
+          },
+          validate: checkStringIsEmpty,
+        })}
+        placeholder="Enter a name of card..."
+        type="text"
+        autoFocus
+      />
+      {errors.titleCard && <ErrorMessage message={errors.titleCard.message} />}
+      <WrapButton>
+        <Button text="Save" type="submit" />
+        <Button text="Cancel" type="button" onClick={onCancel} />
+      </WrapButton>
+    </Form>
   );
 };
-
-const CloseForm = styled.button`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: ${Z_INDEX.cardFormClose};
-  background: none;
-  border: none;
-`;
 
 const Form = styled.form`
   position: relative;

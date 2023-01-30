@@ -73,7 +73,7 @@ export const Description: FC<Props> = ({
             <TitleDescription>Description</TitleDescription>
             <WrapButton>
               <Button text="Save" type="submit" />
-              <Button text="Cancel" onClick={handleSaveCancel} />
+              <Button text="Cancel" type="button" onClick={handleSaveCancel} />
             </WrapButton>
           </WrapDescriptionTitle>
           <Textarea

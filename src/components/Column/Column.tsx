@@ -5,6 +5,7 @@ import React, { useState, FC } from "react";
 import { Card } from "components";
 import { CardTitleForm } from "components/Card/";
 import { ErrorMessage } from "components/ErrorMessage";
+import { useOnClickOutside } from "hoc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { addCard, getCardsByColumnId } from "redux/card";
 import { changeColumnName } from "redux/column";
@@ -47,6 +48,10 @@ export const Column: FC<Props> = ({ item }) => {
   const handleCloseAddCard = () => {
     setIsAddNewCard(false);
   };
+
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(ref, handleCloseAddCard);
 
   const handleGetCardName = (titleCard: string) => {
     dispactch(addCard({ columnId, nameNewCard: titleCard, username }));
@@ -104,11 +109,13 @@ export const Column: FC<Props> = ({ item }) => {
       </ul>
 
       {isAddNewCard ? (
-        <CardTitleForm
-          initialValues=""
-          onClose={handleCloseAddCard}
-          onConfirm={handleGetCardName}
-        />
+        <div ref={ref}>
+          <CardTitleForm
+            initialValues=""
+            onCancel={handleCloseAddCard}
+            onConfirm={handleGetCardName}
+          />
+        </div>
       ) : (
         <ButtonAddColumn
           text="Add a card"
