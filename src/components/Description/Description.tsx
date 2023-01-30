@@ -1,6 +1,6 @@
 import { COLORS } from "constants/";
 
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 import { CheckDelete } from "components";
 import { ErrorMessage } from "components/ErrorMessage";
@@ -30,12 +30,18 @@ export const Description: FC<Props> = ({
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm({
     defaultValues: {
       description: description,
     },
   });
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [reset, isSubmitSuccessful]);
 
   const handleSaveCancel = () => {
     setIsDescriptionEditEnable(false);
@@ -71,7 +77,7 @@ export const Description: FC<Props> = ({
             </WrapButton>
           </WrapDescriptionTitle>
           <Textarea
-            register={register("description", {
+            {...register("description", {
               validate: checkStringIsEmpty,
             })}
             placeholder="Write a description..."

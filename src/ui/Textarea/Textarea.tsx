@@ -1,16 +1,14 @@
-import React, { FC, TextareaHTMLAttributes } from "react";
+import React, { TextareaHTMLAttributes } from "react";
 
-import { UseFormRegisterReturn } from "react-hook-form";
 import styled from "styled-components";
 
 interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
-  register?: UseFormRegisterReturn;
 }
 
-export const Textarea: FC<Props> = React.forwardRef(
-  ({ className, register, ...props }, ref) => {
-    return <Root className={className} {...register} {...props}></Root>;
+export const Textarea = React.forwardRef<HTMLTextAreaElement, Props>(
+  ({ className, ...props }, ref) => {
+    return <Root ref={ref} className={className} {...props}></Root>;
   }
 );
 

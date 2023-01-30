@@ -71,7 +71,7 @@ export const Column: FC<Props> = ({ item }) => {
       {isColumnNameEditEnable ? (
         <Form onSubmit={handleSubmit(onSubmit)}>
           <InputColumnName
-            register={register("columnName", {
+            {...register("columnName", {
               maxLength: {
                 value: 15,
                 message: "Name is too length, max 15 characters",

@@ -1,16 +1,14 @@
-import React, { InputHTMLAttributes, FC, Ref } from "react";
+import React, { InputHTMLAttributes } from "react";
 
-import { UseFormRegisterReturn } from "react-hook-form";
 import styled from "styled-components";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  register?: UseFormRegisterReturn;
 }
 
-export const Input: FC<Props> = React.forwardRef(
-  ({ className, register, ...props }, ref) => {
-    return <Root className={className} {...register} {...props}></Root>;
+export const Input = React.forwardRef<HTMLInputElement, Props>(
+  ({ className, ...props }, ref) => {
+    return <Root ref={ref} className={className} {...props}></Root>;
   }
 );
 

@@ -1,6 +1,6 @@
 import { COLORS } from "constants/";
 
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 
 import { CheckDelete } from "components/CheckDelete";
 import { ErrorMessage } from "components/ErrorMessage";
@@ -25,19 +25,25 @@ export const Comment: FC<PropsComment> = ({ comment }) => {
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
   const dispatch = useAppDispatch();
 
-  const { commentId } = comment;
+  const { commentId, content } = comment;
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
     reset,
   } = useForm({
     mode: "onBlur",
     defaultValues: {
-      textComment: comment.content,
+      textComment: content,
     },
   });
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [reset, isSubmitSuccessful]);
 
   const handleDeleteClick = () => {
     dispatch(deleteComment(commentId));
@@ -66,7 +72,7 @@ export const Comment: FC<PropsComment> = ({ comment }) => {
       {isCommentEditEnable ? (
         <form onSubmit={handleSubmit(onSubmit)}>
           <Textarea
-            register={register("textComment", {
+            {...register("textComment", {
               validate: checkStringIsEmpty,
             })}
           />
@@ -75,7 +81,11 @@ export const Comment: FC<PropsComment> = ({ comment }) => {
           )}
           <WrapButton>
             <StyledButton text="Save" type="submit" />
-            <StyledButton text="Cancel" onClick={handleCancelEdit} />
+            <StyledButton
+              text="Cancel"
+              type="button"
+              onClick={handleCancelEdit}
+            />
           </WrapButton>
         </form>
       ) : (

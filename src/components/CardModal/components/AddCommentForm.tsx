@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 
 import { ErrorMessage } from "components/ErrorMessage";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -18,7 +18,7 @@ export const AddCommentForm: FC<Props> = ({ onConfirm }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
     reset,
   } = useForm({
     mode: "onSubmit",
@@ -27,17 +27,22 @@ export const AddCommentForm: FC<Props> = ({ onConfirm }) => {
     },
   });
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [reset, isSubmitSuccessful]);
+
   const onSubmit: SubmitHandler<CommentFormValues> = ({
     newCommentCard,
   }: CommentFormValues) => {
     onConfirm(newCommentCard);
-    reset();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <StyledTextArea
-        register={register("newCommentCard", {
+        {...register("newCommentCard", {
           validate: checkStringIsEmpty,
         })}
         placeholder="Write a comment ...."

@@ -1,6 +1,6 @@
 import { COLORS } from "constants/";
 
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 
 import { CardTitleFormProps } from "components/Card";
 import { ErrorMessage } from "components/ErrorMessage";
@@ -31,10 +31,11 @@ export const CardModalCardTitleForm: FC<CardTitleFormProps> = ({
     },
   });
 
-  const handleSaveCancel = () => {
-    onClose();
-    reset();
-  };
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, [reset]);
 
   const onSubmit: SubmitHandler<CardNameFormValues> = ({
     titleCard,
@@ -44,11 +45,11 @@ export const CardModalCardTitleForm: FC<CardTitleFormProps> = ({
 
   return (
     <>
-      <CloseForm onClick={handleSaveCancel} />
+      <CloseForm onClick={onClose} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <WrapInputBlock>
           <StyledInput
-            register={register("titleCard", {
+            {...register("titleCard", {
               maxLength: {
                 value: 25,
                 message: "Name is too length, max 25 characters",

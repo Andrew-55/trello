@@ -1,6 +1,6 @@
 import { Z_INDEX } from "constants/";
 
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 
 import { CardTitleFormProps } from "components/Card";
 import { ErrorMessage } from "components/ErrorMessage";
@@ -30,10 +30,11 @@ export const CardTitleForm: FC<CardTitleFormProps> = ({
     },
   });
 
-  const handleSaveCancel = () => {
-    onClose();
-    reset();
-  };
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, [reset]);
 
   const onSubmit: SubmitHandler<CardNameFormValues> = ({
     titleCard,
@@ -43,11 +44,11 @@ export const CardTitleForm: FC<CardTitleFormProps> = ({
 
   return (
     <>
-      <CloseForm onClick={handleSaveCancel} />
+      <CloseForm onClick={onClose} />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <StyledLegend>Title Card:</StyledLegend>
         <StyledInput
-          register={register("titleCard", {
+          {...register("titleCard", {
             maxLength: {
               value: 25,
               message: "Name is too length, max 25 characters",
@@ -63,7 +64,7 @@ export const CardTitleForm: FC<CardTitleFormProps> = ({
         )}
         <WrapButton>
           <Button text="Save" type="submit" />
-          <Button text="Cancel" type="button" onClick={handleSaveCancel} />
+          <Button text="Cancel" type="button" onClick={onClose} />
         </WrapButton>
       </Form>
     </>

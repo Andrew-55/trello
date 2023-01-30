@@ -38,7 +38,7 @@ export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <TitleBlock>Welcome to board</TitleBlock>
       <StyledInput
-        register={register("username", {
+        {...register("username", {
           required: "Name not entered",
           minLength: {
             value: 3,
