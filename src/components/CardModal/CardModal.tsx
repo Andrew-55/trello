@@ -2,10 +2,10 @@ import { COLORS, Z_INDEX } from "constants/";
 
 import React, { FC, useEffect, useState } from "react";
 
+import { SvgClose, SvgPencil } from "assets/svg";
 import { Comment, Description } from "components";
 import { EditTitleCard } from "components/Card/";
 import { AddCommentForm, CardModalCardTitleForm } from "components/CardModal";
-import { useOnClickOutside } from "hoc";
 import { CardInterface } from "redux/card";
 import { changeDescriptionCard } from "redux/card";
 import { getColumnNameByColumnId } from "redux/column";
@@ -13,8 +13,8 @@ import { addComment, getCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import { getUsername } from "redux/user";
 import styled from "styled-components";
-import { SvgClose, SvgPencil } from "svg";
 import { ButtonIcon } from "ui";
+import { useOnClickOutside } from "utils/hoocs";
 
 type Props = {
   card: CardInterface;

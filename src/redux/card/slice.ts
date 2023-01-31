@@ -21,6 +21,7 @@ export const cardSlice = createSlice({
       const copyCards = { ...state.cards };
       const id = uuidv4();
       const { columnId, nameNewCard, username } = payload;
+
       const newCard = {
         id: id,
         title: nameNewCard,
@@ -31,16 +32,19 @@ export const cardSlice = createSlice({
       copyCards[id] = newCard;
       state.cards = copyCards;
     },
+
     changeNameCard(state, { payload }: PayloadAction<CardChangeName>) {
       const copyCards = { ...state.cards };
       copyCards[payload.id].title = payload.titleCard;
       state.cards = copyCards;
     },
+
     deleteCard(state, { payload }: PayloadAction<string>) {
       const copyCards = { ...state.cards };
       delete copyCards[payload];
       state.cards = copyCards;
     },
+
     changeDescriptionCard(
       state,
       { payload }: PayloadAction<CardChangeDescription>

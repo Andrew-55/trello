@@ -2,11 +2,11 @@ import { COLORS } from "constants/";
 
 import React from "react";
 
+import GlobalStyles from "assets/styles/global";
 import { Header, WelcomePopUp } from "components";
 import { Main } from "pages";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
-import GlobalStyles from "styles/global";
 
 import { setUser } from "./redux/user/slice";
 
