@@ -122,7 +122,6 @@ export const Column: FC<Props> = ({ item }) => {
 const Root = styled.li`
   padding: 10px 20px;
   width: 20%;
-  min-width: 250px;
   font-size: 20px;
   font-weight: 500;
   background-color: ${COLORS.zambezi};

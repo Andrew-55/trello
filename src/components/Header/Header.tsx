@@ -8,6 +8,7 @@ import styled from "styled-components";
 
 export const Header = () => {
   const userName = useAppSelector(getUsername);
+
   return (
     <Root>
       <Logo>Trello</Logo>

@@ -17,6 +17,7 @@ export const commentsSlice = createSlice({
       const copyComments = { ...state.comments };
       const commentId = uuidv4();
       const { id, username, newCommentCard } = payload;
+
       const newComments = {
         commentId: commentId,
         cardId: id,
@@ -26,11 +27,13 @@ export const commentsSlice = createSlice({
       copyComments[commentId] = newComments;
       state.comments = copyComments;
     },
+
     changeComment(state, { payload }: PayloadAction<CommentEdit>) {
       const copyComments = { ...state.comments };
       copyComments[payload.commentId].content = payload.textComment;
       state.comments = copyComments;
     },
+
     deleteComment(state, { payload }: PayloadAction<string>) {
       const copyComments = { ...state.comments };
       delete copyComments[payload];

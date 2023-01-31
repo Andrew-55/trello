@@ -1,13 +1,11 @@
-import { Z_INDEX } from "constants/";
-
 import React, { FC, useEffect } from "react";
 
 import { CardTitleFormProps } from "components/Card";
 import { ErrorMessage } from "components/ErrorMessage";
-import { useOnClickOutside } from "hoc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { Button, Input } from "ui";
+import { useOnClickOutside } from "utils/hoocs";
 import { checkStringIsEmpty } from "utils/logic-functions";
 
 export type CardNameFormValues = {
@@ -73,7 +71,6 @@ export const CardTitleForm: FC<CardTitleFormProps> = ({
 
 const Form = styled.form`
   position: relative;
-  z-index: ${Z_INDEX.cardForm};
 `;
 
 const WrapButton = styled.div`

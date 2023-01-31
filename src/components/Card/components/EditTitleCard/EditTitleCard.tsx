@@ -4,7 +4,7 @@ import { CardInterface } from "redux/card";
 import { changeNameCard } from "redux/card";
 import { useAppDispatch } from "redux/hooks";
 
-import { CardTitleFormProps } from "../types";
+import { CardTitleFormProps } from "../../types";
 
 type Props = {
   card: CardInterface;

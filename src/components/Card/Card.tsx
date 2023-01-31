@@ -2,6 +2,7 @@ import { COLORS } from "constants/";
 
 import React, { FC, useState } from "react";
 
+import { SvgComment, SvgDelete, SvgPencil } from "assets/svg";
 import { CardModal, CheckDelete } from "components";
 import { EditTitleCard, CardTitleForm } from "components/Card";
 import { CardInterface } from "redux/card";
@@ -9,7 +10,6 @@ import { deleteCard } from "redux/card";
 import { getCountCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
-import { SvgComment, SvgDelete, SvgPencil } from "svg";
 import { ButtonIcon } from "ui";
 
 type Props = {
@@ -141,6 +141,6 @@ const ButtonDelete = styled(ButtonIcon)`
 
 const TitleCard = styled.h3`
   margin-bottom: 25px;
-  max-width: 85%;
+  width: 85%;
   overflow-wrap: break-word;
 `;
