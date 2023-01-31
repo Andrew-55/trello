@@ -1,4 +1,4 @@
-import React, { FC, TextareaHTMLAttributes } from "react";
+import React, { TextareaHTMLAttributes } from "react";
 
 import styled from "styled-components";
 
@@ -6,9 +6,11 @@ interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
 }
 
-export const Textarea: FC<Props> = ({ className, ...props }) => {
-  return <Root className={className} {...props}></Root>;
-};
+export const Textarea = React.forwardRef<HTMLTextAreaElement, Props>(
+  ({ className, ...props }, ref) => {
+    return <Root ref={ref} className={className} {...props}></Root>;
+  }
+);
 
 const Root = styled.textarea`
   border-radius: 5px;

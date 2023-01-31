@@ -1,48 +1,68 @@
 import { COLORS } from "constants/";
 
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 
 import { CheckDelete } from "components/CheckDelete";
+import { ErrorMessage } from "components/ErrorMessage";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { CommentInterface } from "redux/comment";
 import { changeComment, deleteComment } from "redux/comment";
 import { useAppDispatch } from "redux/hooks";
 import styled from "styled-components";
 import { Button, Textarea } from "ui";
+import { checkStringIsEmpty } from "utils/logic-functions";
 
 type PropsComment = {
   comment: CommentInterface;
 };
 
+type CommentFormValues = {
+  textComment: string;
+};
+
 export const Comment: FC<PropsComment> = ({ comment }) => {
-  const [textComment, setTextComment] = useState(comment.content);
   const [isCommentEditEnable, setIsCommentEditEnable] = useState(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState(false);
   const dispatch = useAppDispatch();
 
-  const { commentId } = comment;
+  const { commentId, content } = comment;
 
-  const handelClickDeleteComment = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful },
+    reset,
+  } = useForm({
+    mode: "onBlur",
+    defaultValues: {
+      textComment: content,
+    },
+  });
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [reset, isSubmitSuccessful]);
+
+  const handleDeleteClick = () => {
     dispatch(deleteComment(commentId));
   };
 
-  const handelClickCancelDeleteComment = () => {
+  const handleCancelClick = () => {
     setIsConfirmDeleteVisible(false);
   };
 
-  const handleChangeComment = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setTextComment(event.target.value);
+  const handleCancelEdit = () => {
+    setIsCommentEditEnable(false);
+    reset();
   };
 
-  const handleClickEditSave = () => {
-    setIsCommentEditEnable(false);
+  const onSubmit: SubmitHandler<CommentFormValues> = ({
+    textComment,
+  }: CommentFormValues) => {
     dispatch(changeComment({ commentId, textComment }));
-  };
-
-  const handleClickEditCancel = () => {
     setIsCommentEditEnable(false);
-    setTextComment(comment.content);
   };
 
   return (
@@ -50,34 +70,45 @@ export const Comment: FC<PropsComment> = ({ comment }) => {
       <AuthorComment>{comment.author}</AuthorComment>
 
       {isCommentEditEnable ? (
-        <>
-          <Textarea value={textComment} onChange={handleChangeComment} />
-          <FlexBlock>
-            <ButtonCommentClick text="Save" onClick={handleClickEditSave} />
-            <ButtonCommentClick text="Cancel" onClick={handleClickEditCancel} />
-          </FlexBlock>
-        </>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Textarea
+            {...register("textComment", {
+              validate: checkStringIsEmpty,
+            })}
+          />
+          {errors.textComment && (
+            <ErrorMessage message={errors.textComment.message} />
+          )}
+          <WrapButton>
+            <StyledButton text="Save" type="submit" />
+            <StyledButton
+              text="Cancel"
+              type="button"
+              onClick={handleCancelEdit}
+            />
+          </WrapButton>
+        </form>
       ) : (
         <>
-          <TextComment>{textComment}</TextComment>
-          <FlexBlock>
-            <ButtonCommentClick
+          <TextComment>{comment.content}</TextComment>
+          <WrapButton>
+            <StyledButton
               text="Edit"
               onClick={() => setIsCommentEditEnable(true)}
             />
-            <ButtonCommentClick
+            <StyledButton
               text="Delete"
               onClick={() => setIsConfirmDeleteVisible(true)}
             />
-          </FlexBlock>
+          </WrapButton>
         </>
       )}
 
       {isConfirmDeleteVisible && (
         <CheckDelete
           question="Do you really want to delete the comment?"
-          onClickDelete={handelClickDeleteComment}
-          onClickCancel={handelClickCancelDeleteComment}
+          onDeleteClick={handleDeleteClick}
+          onCancelClick={handleCancelClick}
         />
       )}
     </Root>
@@ -104,7 +135,7 @@ const TextComment = styled.p`
   overflow-wrap: break-word;
 `;
 
-const ButtonCommentClick = styled(Button)`
+const StyledButton = styled(Button)`
   color: ${COLORS.gray};
   padding: 0 10px;
   text-decoration: underline;
@@ -118,7 +149,7 @@ const ButtonCommentClick = styled(Button)`
   }
 `;
 
-const FlexBlock = styled.div`
+const WrapButton = styled.div`
   font-size: 14px;
   display: flex;
   column-gap: 20px;

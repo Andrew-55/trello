@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, FC } from "react";
+import React, { InputHTMLAttributes } from "react";
 
 import styled from "styled-components";
 
@@ -6,9 +6,11 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
 }
 
-export const Input: FC<Props> = ({ className, ...props }) => {
-  return <Root className={className} {...props}></Root>;
-};
+export const Input = React.forwardRef<HTMLInputElement, Props>(
+  ({ className, ...props }, ref) => {
+    return <Root ref={ref} className={className} {...props}></Root>;
+  }
+);
 
 const Root = styled.input`
   font-size: 25px;

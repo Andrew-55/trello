@@ -1,53 +1,58 @@
 import { COLORS } from "constants/";
 
-import React, { useState, FC } from "react";
+import React, { FC } from "react";
 
+import { ErrorMessage } from "components/ErrorMessage";
+import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { Button, Input } from "ui";
-import { checkInputName } from "utils/logic-functions";
+import { checkUsernameValidation } from "utils/logic-functions";
 
 type Props = {
   onUserNameChange: (userName: string) => void;
 };
 
+type WelcomePopUpFormValues = {
+  username: string;
+};
+
 export const WelcomePopUp: FC<Props> = ({ onUserNameChange }) => {
-  const [valueInput, setValueInput] = useState("");
-  const [isNotCorrectValueInput, setIsNotCorrectValueInput] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<WelcomePopUpFormValues>({
+    mode: "onBlur",
+    defaultValues: {
+      username: "",
+    },
+  });
 
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValueInput(event.target.value);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const value = valueInput.trim();
-    if (checkInputName(value)) {
-      onUserNameChange(value);
-      setIsNotCorrectValueInput(false);
-    } else {
-      setIsNotCorrectValueInput(true);
-    }
+  const onSubmit: SubmitHandler<WelcomePopUpFormValues> = ({
+    username,
+  }: WelcomePopUpFormValues) => {
+    onUserNameChange(username);
   };
 
   return (
-    <Form onSubmit={(e) => handleSubmit(e)}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <TitleBlock>Welcome to board</TitleBlock>
       <StyledInput
-        value={valueInput}
-        onChange={handleChangeName}
+        {...register("username", {
+          required: "Name not entered",
+          minLength: {
+            value: 3,
+            message: "Name has length  min 3 characters",
+          },
+          validate: checkUsernameValidation,
+        })}
         type="text"
         maxLength={15}
         placeholder="Please, enter your name"
         autoFocus
       />
 
-      {isNotCorrectValueInput && (
-        <DescriptionError>
-          Invalid name. Please check your name against the following parameters:
-          <br />
-          Name has length min 3 max 15 characters.
-        </DescriptionError>
-      )}
+      {errors.username && <ErrorMessage message={errors.username.message} />}
 
       <StyledButton type="submit" text="OK" />
     </Form>
@@ -74,12 +79,6 @@ const TitleBlock = styled.h1`
   font-size: 32px;
   text-transform: uppercase;
   user-select: none;
-  margin-bottom: 30px;
-`;
-
-const DescriptionError = styled.p`
-  font-size: 15px;
-  color: ${COLORS.red};
   margin-bottom: 30px;
 `;
 

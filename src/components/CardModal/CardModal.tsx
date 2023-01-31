@@ -3,15 +3,18 @@ import { COLORS, Z_INDEX } from "constants/";
 import React, { FC, useEffect, useState } from "react";
 
 import { Comment, Description } from "components";
+import { EditTitleCard } from "components/Card/";
+import { AddCommentForm, CardModalCardTitleForm } from "components/CardModal";
+import { useOnClickOutside } from "hoc";
 import { CardInterface } from "redux/card";
-import { changeNameCard, changeDescriptionCard } from "redux/card";
+import { changeDescriptionCard } from "redux/card";
 import { getColumnNameByColumnId } from "redux/column";
 import { addComment, getCommentsByCardId } from "redux/comment";
 import { useAppSelector, useAppDispatch } from "redux/hooks";
 import { getUsername } from "redux/user";
 import styled from "styled-components";
-import { SvgCheckMark, SvgClose, SvgPencil } from "svg";
-import { Button, ButtonIcon, Input, Textarea } from "ui";
+import { SvgClose, SvgPencil } from "svg";
+import { ButtonIcon } from "ui";
 
 type Props = {
   card: CardInterface;
@@ -23,78 +26,61 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
   const username = useAppSelector(getUsername);
   const columnName = useAppSelector(getColumnNameByColumnId(card.columnId));
 
-  const [titleCard, setTitleCard] = useState(card.title);
   const [isTitleCardEditEnable, setIsTitleCardEditEnable] = useState(false);
-  const [newCommentCard, setNewCommentCard] = useState("");
 
   const dispatch = useAppDispatch();
   const { id } = card;
 
   useEffect(() => {
-    const handelPushEsc = (e: any) => {
-      if (e.keyCode === 27) {
+    const handleEscapePress = (event: KeyboardEvent) => {
+      if (event.code === "Escape") {
         onActiveCardModel();
       }
     };
-    document.body.addEventListener("keydown", handelPushEsc);
-    return () => document.body.removeEventListener("keydown", handelPushEsc);
+    document.body.addEventListener("keydown", handleEscapePress);
+    return () =>
+      document.body.removeEventListener("keydown", handleEscapePress);
   });
 
-  const handleSaveNewDescriptionCard = (newDescription: string) => {
+  const handleSaveDescriptionCard = (newDescription: string) => {
     dispatch(changeDescriptionCard({ id, newDescription }));
   };
 
-  const handleChangeCardName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleCard(event.target.value);
-  };
-
-  const handleChangeNewComment = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setNewCommentCard(event.target.value);
-  };
-
-  const handelClickSaveTitleCard = () => {
-    dispatch(changeNameCard({ id, titleCard }));
+  const handleCloseTitleCardEdit = () => {
     setIsTitleCardEditEnable(false);
   };
 
-  const handelClickSaveNewComment = () => {
-    if (newCommentCard.trim().length) {
-      dispatch(addComment({ id, username, newCommentCard }));
-      setNewCommentCard("");
-    }
-    setNewCommentCard("");
+  const handleSaveNewComment = (newCommentCard: string) => {
+    dispatch(addComment({ id, username, newCommentCard }));
   };
 
-  const handelClickCanselNewComment = () => {
-    setNewCommentCard("");
-  };
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(ref, onActiveCardModel);
 
   return (
     <Root>
-      <CloseBlock onClick={onActiveCardModel} />
-      <CardModalBlock>
+      <CardModalBlock ref={ref}>
         <NameAuthor>Create by: {card.author}</NameAuthor>
         <NameAuthor>Status: {columnName}</NameAuthor>
 
-        {isTitleCardEditEnable ? (
-          <FlexBlock>
-            <StyledInput value={titleCard} onChange={handleChangeCardName} />
-            <StyledButtonIcon
-              icon={<SvgCheckMark />}
-              onClick={handelClickSaveTitleCard}
+        <WrapCardTitle>
+          {isTitleCardEditEnable ? (
+            <EditTitleCard
+              card={card}
+              onClose={handleCloseTitleCardEdit}
+              Form={CardModalCardTitleForm}
             />
-          </FlexBlock>
-        ) : (
-          <FlexBlock>
-            <TitleBlock>{card.title}</TitleBlock>
-            <StyledButtonIcon
-              icon={<SvgPencil />}
-              onClick={() => setIsTitleCardEditEnable(true)}
-            />
-          </FlexBlock>
-        )}
+          ) : (
+            <FlexBlock>
+              <TitleBlock>{card.title}</TitleBlock>
+              <StyledButtonIcon
+                icon={<SvgPencil />}
+                onClick={() => setIsTitleCardEditEnable(true)}
+              />
+            </FlexBlock>
+          )}
+        </WrapCardTitle>
 
         <StyledButtonIconClose
           icon={<SvgClose />}
@@ -102,24 +88,16 @@ export const CardModal: FC<Props> = ({ onActiveCardModel, card }) => {
         />
         <Description
           description={card.description}
-          onSaveNewDescriptionCard={handleSaveNewDescriptionCard}
+          onSaveDescriptionCard={handleSaveDescriptionCard}
         />
         <>
           <TitleComment>Comments</TitleComment>
-          <StyledTextArea
-            value={newCommentCard}
-            onChange={handleChangeNewComment}
-            placeholder="Write a comment ...."
-          />
-          <WrapButton>
-            <StyledButton text="Add" onClick={handelClickSaveNewComment} />
-            <StyledButton text="Cancel" onClick={handelClickCanselNewComment} />
-          </WrapButton>
+          <AddCommentForm onConfirm={handleSaveNewComment} />
           <ContainerComments>
             <ul>
-              {commentsCard.map((elem) => (
-                <li key={elem.commentId}>
-                  <Comment comment={elem} />
+              {commentsCard.map((comment) => (
+                <li key={comment.commentId}>
+                  <Comment comment={comment} />
                 </li>
               ))}
             </ul>
@@ -142,15 +120,7 @@ const Root = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${COLORS.black1};
-  z-index: ${Z_INDEX.carsModal};
-`;
-
-const CloseBlock = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  z-index: ${Z_INDEX.cardModal};
 `;
 
 const CardModalBlock = styled.div`
@@ -160,6 +130,10 @@ const CardModalBlock = styled.div`
   padding: 30px;
   border-radius: 5px;
   background-color: ${COLORS.zambezi};
+`;
+
+const WrapCardTitle = styled.div`
+  width: 60%;
 `;
 
 const FlexBlock = styled.div`
@@ -194,12 +168,6 @@ const StyledButtonIcon = styled(ButtonIcon)`
   }
 `;
 
-const StyledTextArea = styled(Textarea)`
-  margin-left: 20px;
-  width: 95%;
-  margin-bottom: 10px;
-`;
-
 const TitleBlock = styled.h1`
   color: ${COLORS.white_smoke};
   font-size: 32px;
@@ -219,24 +187,7 @@ const ContainerComments = styled.div`
   overflow-y: auto;
 `;
 
-const StyledInput = styled(Input)`
-  font-size: 15px;
-  width: 50%;
-  margin-bottom: 20px;
-`;
-
 const NameAuthor = styled.p`
   max-width: 90%;
-  margin-bottom: 20px;
-`;
-
-const StyledButton = styled(Button)`
-  min-width: 80px;
-`;
-
-const WrapButton = styled.div`
-  display: flex;
-  column-gap: 15px;
-  justify-content: center;
   margin-bottom: 20px;
 `;
