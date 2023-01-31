@@ -4,6 +4,7 @@ import React, { FC, useEffect } from "react";
 
 import { CardTitleFormProps } from "components/Card";
 import { ErrorMessage } from "components/ErrorMessage";
+import { useOnClickOutside } from "hoc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { SvgCheckMark } from "svg";
@@ -16,6 +17,7 @@ export type CardNameFormValues = {
 
 export const CardModalCardTitleForm: FC<CardTitleFormProps> = ({
   initialValues,
+  onCancel,
   onConfirm,
 }) => {
   const {
@@ -36,6 +38,10 @@ export const CardModalCardTitleForm: FC<CardTitleFormProps> = ({
     };
   }, [reset]);
 
+  const ref = React.useRef<HTMLFormElement>(null);
+
+  useOnClickOutside(ref, onCancel);
+
   const onSubmit: SubmitHandler<CardNameFormValues> = ({
     titleCard,
   }: CardNameFormValues) => {
@@ -43,7 +49,7 @@ export const CardModalCardTitleForm: FC<CardTitleFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form ref={ref} onSubmit={handleSubmit(onSubmit)}>
       <WrapInputBlock>
         <StyledInput
           {...register("titleCard", {

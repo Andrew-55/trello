@@ -4,6 +4,7 @@ import React, { FC, useEffect } from "react";
 
 import { CardTitleFormProps } from "components/Card";
 import { ErrorMessage } from "components/ErrorMessage";
+import { useOnClickOutside } from "hoc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import styled from "styled-components";
 import { Button, Input } from "ui";
@@ -36,6 +37,10 @@ export const CardTitleForm: FC<CardTitleFormProps> = ({
     };
   }, [reset]);
 
+  const ref = React.useRef<HTMLFormElement>(null);
+
+  useOnClickOutside(ref, onCancel);
+
   const onSubmit: SubmitHandler<CardNameFormValues> = ({
     titleCard,
   }: CardNameFormValues) => {
@@ -43,7 +48,7 @@ export const CardTitleForm: FC<CardTitleFormProps> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form ref={ref} onSubmit={handleSubmit(onSubmit)}>
       <StyledLegend>Title Card:</StyledLegend>
       <StyledInput
         {...register("titleCard", {

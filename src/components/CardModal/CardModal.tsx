@@ -133,7 +133,7 @@ const CardModalBlock = styled.div`
 `;
 
 const WrapCardTitle = styled.div`
-  width: fit-content;
+  width: 60%;
 `;
 
 const FlexBlock = styled.div`
